@@ -19,51 +19,51 @@ $year = date('Y');
 switch ($month) {
     case 'Jan':
         $term = '2nd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Feb':
         $term = '2nd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Mar':
         $term = '2nd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Apr':
         $term = '2nd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'May':
         $term = '3rd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Jun':
         $term = '3rd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Jul':
         $term = '3rd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Aug':
         $term = '3rd term';
-        $sch_session = $year - (1) . '/' . $year;
+        $sch_session = $year - (1) . "/" . $year;
         break;
     case 'Sep':
         $term = '1st term';
-        $sch_session = $year . '/' . $year + (1);
+        $sch_session = $year . "/" . $year + (1);
         break;
     case 'Oct':
         $term = '1st term';
-        $sch_session = $year . '/' . $year + (1);
+        $sch_session = $year . "/" . $year + (1);
         break;
     case 'Nov':
         $term = '1st term';
-        $sch_session = $year . '/' . $year + (1);
+        $sch_session = $year . "/" . $year + (1);
         break;
     case 'Dec':
         $term = '1st term';
-        $sch_session = $year . '/' . $year + (1);
+        $sch_session = $year . "/" . $year + (1);
         break;
     default:
         $term = 'No active term found';
