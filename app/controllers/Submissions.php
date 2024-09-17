@@ -51,7 +51,7 @@ class Submissions extends Controller
       $data = [
         'subject' => trim($_POST['subject']),
         'user_id' => $_SESSION['user_id'],
-         'sch_id' => $_COOKIE['sch_id']
+        'sch_id' => $_COOKIE['sch_id']
       ];
 
       if ($this->postModel->addSubject($data)) {
@@ -129,14 +129,14 @@ class Submissions extends Controller
         'opt4' => trim($_POST['opt4']),
         'total_subject_num_rows' => $expected_num_rows->num_rows
       ];
-      
+
       // For Theory Question
       if ($param == 'theory_questions') {
         // check if exam theory exists 
-       $exam_exits = $this->postModel->checkExamParams($data); // checks for objectives iniated
-       $exam_exits2 = $this->postModel->checkExamParams2($data); // checks if theory exist
-       if (!$exam_exits) {// Exam param did not exist both as obj and as theory
-        //Generate paperID
+        $exam_exits = $this->postModel->checkExamParams($data); // checks for objectives initiated
+        $exam_exits2 = $this->postModel->checkExamParams2($data); // checks if theory exist
+        if (!$exam_exits) { // Exam param did not exist both as obj and as theory
+          //Generate paperID
           $data['paperID'] = substr(md5(time()), 22);
           //Initiate exam question on the params table
           $this->postModel->addExamParams($data);
@@ -151,8 +151,8 @@ class Submissions extends Controller
           $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows2;
           // Load index view to continue with set question 1
           redirect('posts/add2', $data);
-       }elseif ($exam_exits && !$exam_exits2) { // found objective in params but not theory
-         //Generate paperID
+        } elseif ($exam_exits && !$exam_exits2) { // found objective in params but not theory
+          //Generate paperID
           $data['paperID'] = $exam_exits->paperID;
           //Initiate exam question on the params table
           $this->postModel->addExamParams($data);
@@ -167,7 +167,9 @@ class Submissions extends Controller
           $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows2;
           // Load index view to continue with set question 1
           redirect('posts/add2', $data);
-       }elseif ($exam_exits && $exam_exits2) { // found both obj and theory in param
+        } elseif ($exam_exits && $exam_exits2) { // found both obj and theory in param
+          //Generate paperID
+          $data['paperID'] = $exam_exits->paperID;
           // Set exam params to sessions variables
           $_SESSION['paperID'] = $data['paperID'];
           $_SESSION['class'] = $data['class'];
@@ -176,19 +178,19 @@ class Submissions extends Controller
           $_SESSION['section'] = $data['section'];
           $_SESSION['year'] = $data['year'];
           $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows2;
-         // Check for theory num rows
+          // Check for theory num rows
           $num_rows = $this->postModel->checkTheoryNumRows($exam_exits->paperID, $_COOKIE['sch_id']);
-           if (empty($num_rows)) {
-             $_SESSION['num_rows'] = 0;
-           }else{
+          if (empty($num_rows)) {
+            $_SESSION['num_rows'] = 0;
+          } else {
             $_SESSION['num_rows'] = $num_rows;
-           }
+          }
           redirect('posts/add2', $data);
-       }
-       exit(); 
+        }
+        exit();
       }
-      
-      
+
+
       if (empty($data['question'])) {
         // Coming from users/set_question
         $exam_exits = $this->postModel->checkExamParams($data);
@@ -212,7 +214,7 @@ class Submissions extends Controller
             $this->view('posts/add', $data);
           } else {
             // Questions has been set
-            $data['num_rows'] = $num_rows+1;
+            $data['num_rows'] = $num_rows + 1;
             $this->view('posts/add', $data);
           }
         } else {
@@ -237,16 +239,35 @@ class Submissions extends Controller
       else {
         //Coming from posts/add
         //Insert to objectives table
-        $data['paperID'] = $_SESSION['paperID'];
-        $expected_num_rows = $this->postModel->checkSubjectNumRows($_SESSION['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
-        if ($this->postModel->setQuestions($data)) {
-          // Update num rows
-          $num_rows = $this->postModel->checkObjectivesNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
-          flash('msg', 'Question ' . $num_rows . ' is set successfully');
-          
-          $_SESSION['num_rows'] = $num_rows+1;
-          $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows;
-          redirect('posts/add');
+        if (empty($_SESSION['daigram'])) { // Question has no daigram
+          $data['paperID'] = $_SESSION['paperID'];
+          $data['daigram'] = '';
+          $expected_num_rows = $this->postModel->checkSubjectNumRows($_SESSION['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
+          if ($this->postModel->setQuestions($data)) {
+            // Update num rows
+            $num_rows = $this->postModel->checkObjectivesNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
+            flash('msg', 'Question ' . $num_rows . ' is set successfully');
+
+            $_SESSION['num_rows'] = $num_rows + 1;
+            $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows;
+            redirect('posts/add');
+          }
+        } else { // Question has daigram
+
+          $data['paperID'] = $_SESSION['paperID'];
+          $data['daigram'] = $_SESSION['daigram'];
+          $expected_num_rows = $this->postModel->checkSubjectNumRows($_SESSION['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
+          if ($this->postModel->setQuestions($data)) {
+            // Unset question diAGRAM
+            unset($_SESSION['daigram']);
+            // Update num rows
+            $num_rows = $this->postModel->checkObjectivesNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
+            flash('msg', 'Question ' . $num_rows . ' is set successfully');
+
+            $_SESSION['num_rows'] = $num_rows + 1;
+            $_SESSION['total_subject_num_rows'] = $expected_num_rows->num_rows;
+            redirect('posts/add');
+          }
         }
       }
     } else { // Not a post request

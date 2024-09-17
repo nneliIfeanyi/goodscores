@@ -147,7 +147,7 @@
                 <table class="table table-borderless">
                   <thead>
                     <tr>
-                      
+
                       <th scope="col">Subject</th>
                       <th scope="col">Section</th>
                       <th scope="col">Class</th>
@@ -158,41 +158,42 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <?php foreach ($data['recent'] as $recent) : 
+                    <?php foreach ($data['recent'] as $recent) :
                       $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
                       $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
                       $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
-                      ?>
+                    ?>
                       <tr>
                         <td><?php echo $recent->subject; ?></td>
                         <td class="text-primary"><?php echo $recent->section; ?></td>
                         <td><?php echo $recent->class; ?></td>
                         <td><?php echo $recent->term; ?></td>
                         <td><?php echo $recent->year; ?></td>
-                        <?php if($recent->section == 'objectives_questions'):?>
-                          <?php if ($obj_num_rows != $status->num_rows):?>
+                        <?php if ($recent->section == 'objectives_questions') : ?>
+                          <?php if ($obj_num_rows != $status->num_rows) : ?>
                             <td><span class="badge bg-warning">Pending</span></td>
-                          <?php else:?>
+                          <?php else : ?>
                             <td><span class="badge bg-success">Completed</span></td>
-                          <?php endif;?>
-                        <?php elseif($recent->section == 'theory_questions'):?>
-                          <?php if ($theory_num_rows != $status->num_rows2):?>
+                          <?php endif; ?>
+                          <td scope="row">
+                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&year=<?= $recent->year; ?>&term=<?= $recent->term; ?>">
+                              <i class="bi bi-eye fs-3"></i>
+                            </a>
+                          </td>
+                        <?php elseif ($recent->section == 'theory_questions') : ?>
+                          <?php if ($theory_num_rows != $status->num_rows2) : ?>
                             <td><span class="badge bg-warning">Pending</span></td>
-                          <?php else:?>
+                          <?php else : ?>
                             <td><span class="badge bg-success">Completed</span></td>
-                          <?php endif;?>
-                        <?php endif;?>
-
-                        <th scope="row">
-                          <a href="<?php echo URLROOT;?>/posts/show/<?php echo $recent->paperID;?>?class=<?= $recent->class;?>&subject=<?= $recent->subject;?>&year=<?= $recent->year;?>&term=<?= $recent->term;?>">
-                            <i class="bi bi-eye fs-3"></i>
-                          </a>
-                         <!--  <a href="#" data-bs-toggle="modal" data-bs-target="#deleteSection<?php echo $recent->paperID;?>">
-                            <i class="bi bi-trash fs-6 text-danger"></i>
-                          </a> -->
-                        </th>
+                          <?php endif; ?>
+                          <td scope="row">
+                            <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                              <i class="bi bi-eye fs-3"></i>
+                            </a>
+                          </td>
+                        <?php endif; ?>
                       </tr>
-                     
+
                     <?php endforeach; ?>
                   </tbody>
                 </table>
@@ -246,26 +247,26 @@
 
 
 
- <!-- Delete Modal -->
-                        <div class="modal fade" id="deleteSection<?php echo $recent->paperID;?>" tabindex="-1">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title">This action wil delete both <span class="fw-bold text-primary"><?php echo $recent->section; ?> and theory_questions for </span> <?php echo $recent->class; ?> <?php echo $recent->term; ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                This action is dangerous and cannot be reversed..
-                              </div>
-                              <div class="modal-footer">
-                                <div class="d-flex gap-4">
-                                  <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                                  <form action="<?php echo URLROOT; ?>/posts/delete_obj_all/<?= $recent->paperID; ?>" method="POST">
-                                  <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
-                                  </form>
-                                </div>
-                              </div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteSection<?php echo $recent->paperID; ?>" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">This action wil delete both <span class="fw-bold text-primary"><?php echo $recent->section; ?> and theory_questions for </span> <?php echo $recent->class; ?> <?php echo $recent->term; ?></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        This action is dangerous and cannot be reversed..
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex gap-4">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+          <form action="<?php echo URLROOT; ?>/posts/delete_obj_all/<?= $recent->paperID; ?>" method="POST">
+            <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
+          </form>
+        </div>
+      </div>
 
-                            </div>
-                          </div>
-                        </div><!-- End Delete Modal-->
+    </div>
+  </div>
+</div><!-- End Delete Modal-->

@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 <?php require APPROOT . '/views/inc/navbar.php'; ?>
-<?php require APPROOT . '/views/inc/sidebar.php';?>
+<?php require APPROOT . '/views/inc/sidebar.php'; ?>
 
 <main id="main" class="main">
 
@@ -43,8 +43,11 @@
                   <input type="text" class="form-control" value="<?php echo $data['post']->opt4; ?>" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <div class="d-grid">
+              <div class="d-flex gap-3">
                 <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
+                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>&year=<?= $data['params']->year; ?>&term=<?= $data['params']->term; ?>" class="btn-outline-dark btn" onclick="history.go(-1)">
+                  <i class="bi bi-chevron-left"></i> Back
+                </a>
               </div>
             </form>
 
@@ -58,6 +61,3 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
-
-
-

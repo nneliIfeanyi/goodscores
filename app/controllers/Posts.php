@@ -58,6 +58,30 @@ class Posts extends Controller
     }
   }
 
+  public function show2($paperID)
+  {
+
+    if ($_GET['class'] && $_GET['subject']) {
+      $theory = $this->postModel->getTheory($paperID);
+      $params = $this->postModel->getParamsByPaperID($paperID);
+      $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+      $data = [
+        'class' => $_GET['class'],
+        'subject' => $_GET['subject'],
+        'term' => TERM,
+        'year' => SCH_SESSION,
+        'theory' => $theory,
+        'params' => $params,
+        'expected_num_rows' => $expected_num_rows
+      ];
+      $this->view('posts/show2', $data);
+    } // get request
+
+    else {
+      die('Something went wrong');
+    }
+  }
+
 
 
 
@@ -68,7 +92,44 @@ class Posts extends Controller
   // Add Post
   public function add()
   {
-    if ($_GET['class'] && $_GET['subject'] && $_GET['term'] && $_GET['year']) {
+
+    $data = [
+      'num_rows' => $_SESSION['num_rows'],
+      'year' => $_SESSION['year'],
+      'class' => $_SESSION['class'],
+      'term' => $_SESSION['term'],
+      'section' => $_SESSION['section'],
+      'subject' => $_SESSION['subject'],
+      'total_subject_num_rows' => $_SESSION['total_subject_num_rows']
+    ];
+
+    $this->view('posts/add', $data);
+  }
+
+
+  public function daigram()
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if (is_array($_FILES)) {
+        $file = $_FILES['photo']['tmp_name'];
+        $source_properties = getimagesize($file);
+        $image_type = $source_properties[2];
+        if ($image_type == IMAGETYPE_JPEG) {
+          $image_resource_id = imagecreatefromjpeg($file);
+          $target_layer = fn_resize($image_resource_id, $source_properties[0], $source_properties[1]);
+          imagejpeg($target_layer, "daigrams/" . $_FILES['photo']['name']);
+          $db_image_file =  "daigrams/" . $_FILES['photo']['name'];
+          $_SESSION['daigram'] = $db_image_file;
+          redirect('posts/add');
+        } elseif ($image_type == IMAGETYPE_PNG) {
+          $image_resource_id = imagecreatefrompng($file);
+          $target_layer = fn_resize($image_resource_id, $source_properties[0], $source_properties[1]);
+          imagepng($target_layer, "daigrams/" . $_FILES['photo']['name']);
+          $db_image_file =  "daigrams/" . $_FILES['photo']['name'];
+          $_SESSION['daigram'] = $db_image_file;
+          redirect('posts/add');
+        }
+      } // End if is_array
     } else {
       $data = [
         'num_rows' => $_SESSION['num_rows'],
@@ -80,7 +141,7 @@ class Posts extends Controller
         'total_subject_num_rows' => $_SESSION['total_subject_num_rows']
       ];
 
-      $this->view('posts/add', $data);
+      $this->view('posts/daigram', $data);
     }
   }
 
@@ -97,11 +158,27 @@ class Posts extends Controller
         'class' => $_POST['class'],
         'subject' => $_POST['subject'],
         'term' => $_POST['term'],
+        'questionID' => $_POST['questionID'],
         'section' => 'theory_questions',
         'sch_id' => $_COOKIE['sch_id'],
         'user_id' => $_SESSION['user_id'],
         'num_rows' => '',
-        'question' => $_POST['question'],
+        'img' => '',
+        'question-A' => $_POST['question-A'],
+        'A-i' => $_POST['A-i'],
+        'A-ii' => $_POST['A-ii'],
+        'A-iii' => $_POST['A-iii'],
+        'A-iv' => $_POST['A-iv'],
+        'question-B' => $_POST['question-B'],
+        'B-i' => $_POST['B-i'],
+        'B-ii' => $_POST['B-ii'],
+        'B-iii' => $_POST['B-iii'],
+        'B-iv' => $_POST['B-iv'],
+        'question-C' => $_POST['question-C'],
+        'C-i' => $_POST['C-i'],
+        'C-ii' => $_POST['C-ii'],
+        'C-iii' => $_POST['C-iii'],
+        'question-D' => $_POST['question-D'],
         'total_subject_num_rows' => $expected_num_rows->num_rows2
       ];
 
@@ -111,14 +188,17 @@ class Posts extends Controller
         flash('msg', 'Theory question ' . $num_rows . ' is set successfully');
         redirect('posts/add2');
       }
-    } else {
+    } else { // Not post request method
+      $expected_num_rows = $this->postModel->checkSubjectNumRows($_SESSION['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
+      $num_rows = $this->postModel->checkTheoryNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
       $data = [
-        'num_rows' => $_SESSION['num_rows'],
+        'num_rows' => $num_rows,
         'year' => $_SESSION['year'],
         'class' => $_SESSION['class'],
         'term' => $_SESSION['term'],
         'section' => $_SESSION['section'],
         'subject' => $_SESSION['subject'],
+        'total_subject_num_rows' => $expected_num_rows->num_rows2
       ];
 
       $this->view('posts/add2', $data);
@@ -144,7 +224,7 @@ class Posts extends Controller
       if ($this->postModel->updateObj($data)) {
         // Redirect to login
         flash('msg', 'Question is Updated');
-        redirect('posts/show/' . $_POST['paperID']);
+        redirect('posts/edit/' . $id);
       } else {
         die('Something went wrong');
       }
