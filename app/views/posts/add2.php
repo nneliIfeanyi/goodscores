@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <?php
-            if ($_SESSION['num_rows'] == $_SESSION['total_subject_num_rows']) {
+            if ($data['num_rows'] == $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong><?php echo $data['section']; ?></strong>
@@ -46,7 +46,20 @@
                 </div>
               </div>
               <div class="d-grid">
-                <a href="<?php echo URLROOT; ?>/submissions/set/theory_questions" class="btn btn-outline-primary">Goto Theory Questions</a>
+                <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
+                  <input type="hidden" name="question" value="">
+                  <input type="hidden" name="opt1" value="">
+                  <input type="hidden" name="opt2" value="">
+                  <input type="hidden" name="opt3" value="">
+                  <input type="hidden" name="opt4" value="">
+                  <input type="hidden" name="class" value="<?php echo $_SESSION['class']; ?>">
+                  <input type="hidden" name="subject" value="<?php echo $_SESSION['subject']; ?>">
+                  <input type="hidden" name="year" value="<?php echo SCH_SESSION; ?>">
+                  <input type="hidden" name="term" value="<?php echo TERM; ?>">
+                  <div class="d-grid">
+                    <input type="submit" name="set" value="Go to Objectives Questions" class="btn btn-outline-primary">
+                  </div>
+                </form>
               </div>
               </form>
             <?php
@@ -226,7 +239,7 @@
                       </div>
                     </div>
                     <div class="col-2">
-                      <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $_SESSION['paperID']; ?>?class=<?= $_SESSION['class']; ?>&subject=<?= $_SESSION['subject']; ?>&year=<?= $_SESSION['year']; ?>&term=<?= $_SESSION['term']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                      <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $_SESSION['paperID']; ?>?class=<?= $_SESSION['class']; ?>&subject=<?= $_SESSION['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                         <i class="bi bi-eye"></i>
                       </a>
                     </div>

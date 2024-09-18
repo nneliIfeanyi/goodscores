@@ -45,7 +45,7 @@
               </div>
               <div class="d-flex gap-3">
                 <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
-                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>&year=<?= $data['params']->year; ?>&term=<?= $data['params']->term; ?>" class="btn-outline-dark btn" onclick="history.go(-1)">
+                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
                   <i class="bi bi-chevron-left"></i> Back
                 </a>
               </div>

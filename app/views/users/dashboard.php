@@ -176,7 +176,7 @@
                             <td><span class="badge bg-success">Completed</span></td>
                           <?php endif; ?>
                           <td scope="row">
-                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&year=<?= $recent->year; ?>&term=<?= $recent->term; ?>">
+                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                               <i class="bi bi-eye fs-3"></i>
                             </a>
                           </td>

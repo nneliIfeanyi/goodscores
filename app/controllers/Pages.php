@@ -121,6 +121,8 @@ class Pages extends Controller
     setcookie('sch_id', $id, time() - 3, '/');
     setcookie('sch_name', $name, time() - 3, '/');
     setcookie('sch_username', $name, time() - 3, '/');
+    session_unset();
+    session_destroy();
     redirect('pages/login');
   }
 

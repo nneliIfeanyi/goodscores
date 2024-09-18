@@ -16,12 +16,7 @@ class Posts extends Controller
   // Load All Posts
   public function index()
   {
-    $activities = $this->postModel->getAllActivities($_COOKIE['sch_id'], $_SESSION['user_id']);
-    $data = [
-      'activities' => $activities
-    ];
-
-    $this->view('posts/index', $data);
+    redirect('users/dashboard');
   }
 
 
@@ -33,28 +28,21 @@ class Posts extends Controller
   public function show($paperID)
   {
 
-    if ($_GET['class'] && $_GET['subject'] && $_GET['term'] && $_GET['year']) {
+    if ($_GET['class'] && $_GET['subject']) {
       $obj = $this->postModel->getObjectives($paperID);
       $params = $this->postModel->getParamsByPaperID($paperID);
       $data = [
         'class' => $_GET['class'],
         'subject' => $_GET['subject'],
-        'term' => $_GET['term'],
-        'year' => $_GET['year'],
+        'term' => TERM,
+        'year' => SCH_SESSION,
         'obj' => $obj,
         'params' => $params,
       ];
       $this->view('posts/show', $data);
     } // get request
-
     else {
-      $obj = $this->postModel->getObjectives($paperID);
-      $params = $this->postModel->getParamsByPaperID($paperID);
-      $data = [
-        'obj' => $obj,
-        'params' => $params,
-      ];
-      $this->view('posts/show', $data);
+      die('Something went wrong');
     }
   }
 
@@ -249,7 +237,7 @@ class Posts extends Controller
       if ($this->postModel->deleteObj($id)) {
         // Redirect to login
         flash('msg', 'Question Removed', 'alert alert-danger');
-        redirect('posts/show/' . $_POST['paperID']);
+        redirect('posts/show/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
       } else {
         die('Something went wrong');
       }

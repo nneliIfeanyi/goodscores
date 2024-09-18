@@ -61,12 +61,20 @@
 
 
 
-     <li class="nav-heading">Pages</li>
+     <li class="nav-heading">More</li>
 
      <li class="nav-item">
        <a class="nav-link collapsed" href="users-profile.html">
          <i class="bi bi-person"></i>
          <span>Profile</span>
+       </a>
+     </li><!-- End Profile Page Nav -->
+
+
+     <li class="nav-item">
+       <a class="nav-link collapsed" href="<?= URLROOT; ?>/pages/logout">
+         <i class="bi bi-chevron-left"></i>
+         <span>LOGOUT</span>
        </a>
      </li><!-- End Profile Page Nav -->
 
