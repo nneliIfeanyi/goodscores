@@ -1,6 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
+    <meta http-equiv="refresh" content="64; <?php echo URLROOT ;?>/pages/login">
 
     <main>
         <div class="container">

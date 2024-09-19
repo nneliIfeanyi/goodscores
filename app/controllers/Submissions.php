@@ -29,6 +29,9 @@ class Submissions extends Controller
         'sch_id' => $_COOKIE['sch_id']
       ];
 
+      $data['classname'] = strtolower($data['classname']);
+      $data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
+
       if ($this->postModel->addClass($data)) {
         // Redirect to login
         flash('msg', 'Class is added successfully');

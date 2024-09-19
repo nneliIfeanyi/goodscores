@@ -34,9 +34,6 @@
               <input type="hidden" name="opt2" value="">
               <input type="hidden" name="opt3" value="">
               <input type="hidden" name="opt4" value="">
-               <input type="hidden" name="year" value="<?php echo SCH_SESSION;?>">
-              <input type="hidden" name="term" value="<?php echo TERM;?>">
-              <input type="hidden" name="section" value="<?php echo $data['param'];?>">
             	<div class="my-4">
               <select class="form-control form-control-lg" name="class" required>
                 <option value="">Select Class</option>
@@ -72,20 +69,21 @@
 
       </div>
 
-     <!--  <div class="col-lg-6">
+      <div class="col-lg-4">
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Default Solid Color</h5>
+            <h5 class="card-title">Usage Tips</h5>
 
-            <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-              A simple primary alert with solid color—check it out!
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <i class="bi bi-star me-1 text-warning"></i>
+                First add class and subjects you teach before set questions.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
 
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </section>
 

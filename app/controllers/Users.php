@@ -142,7 +142,6 @@ class Users extends Controller
         'username' => '',
         'password' => '',
         'confirm_password' => '',
-
         'username_err' => '',
         'password_err' => '',
         'confirm_password_err' => ''
@@ -234,6 +233,9 @@ class Users extends Controller
     unset($_SESSION['name']);
     unset($_SESSION['username']);
     session_destroy();
+    setcookie('sch_id', $id, time() - 3, '/');
+    setcookie('sch_name', $name, time() - 3, '/');
+    setcookie('sch_username', $name, time() - 3, '/');
     redirect('users/login');
   }
 

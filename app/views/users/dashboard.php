@@ -89,42 +89,6 @@
             </div>
           </div><!-- End Classes Card -->
 
-
-          <!-- All Activities Card -->
-          <!-- <div class="col-xxl-4 col-md-6">
-            <div class="card info-card sales-card">
-
-              <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                  <li class="dropdown-header text-start">
-                    <h6>New Activity</h6>
-                  </li>
-
-                  <li><a class="dropdown-item" href="<?php echo URLROOT; ?>/users/set">Set Questions</a></li>
-                </ul>
-              </div>
-
-              <div class="card-body">
-                <h5 class="card-title">Total <span>| Activities</span></h5>
-
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-pen"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6><?php echo $data['all']; ?></h6>
-                    <span class="text-success small pt-1 fw-bold">For current</span> <span class="text-muted small pt-2 ps-1">school session</span>
-
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div> --><!-- End All Activities Card -->
-
-
-
           <!-- Recent Activity -->
           <div class="col-12">
             <div class="card top-selling overflow-auto">
@@ -158,7 +122,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <?php foreach ($data['recent'] as $recent) :
+
+                    <?php
+                    if(!empty($data['recent'])):
+                     foreach ($data['recent'] as $recent) :
                       $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
                       $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
                       $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
@@ -194,7 +161,12 @@
                         <?php endif; ?>
                       </tr>
 
-                    <?php endforeach; ?>
+                    <?php endforeach; 
+                  else:?>
+                    <tr>
+                      <td class="text-danger">No data set</td>
+                    </tr>
+                  <?php endif;?>
                   </tbody>
                 </table>
 

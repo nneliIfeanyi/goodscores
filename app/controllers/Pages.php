@@ -29,7 +29,7 @@ class Pages extends Controller
         $data['username_err'] = 'Kindly enter your school username';
         $this->view('pages/login', $data);
       } elseif (!$this->userModel->findSchByUsername($data['username'])) {
-        $data['username_err'] = 'Username incorrect!';
+        $data['username_err'] = 'User not found | Username incorrect!';
         $this->view('pages/login', $data);
       } elseif ($sch = $this->userModel->findSchByUsername($data['username'])) {
         setcookie('sch_id', $sch->id, time() + (86400), '/');

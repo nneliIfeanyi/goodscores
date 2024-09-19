@@ -26,8 +26,32 @@
               <strong><?php echo $data['params']->section; ?></strong>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            <?php if (!empty($data['post']->img) && empty($_SESSION['daigram'])) : ?>
+                  <div class="d-flex justify-content-center">
+                    <div class="mt-2 mb-4">
+                      <img src="<?php echo URLROOT . '/' . $data['post']->img; ?>" class="img-fluid rounded-3" alt="daigram">
+                    </div>
+                  </div>
+                    <label style="font-size: x-small;">To change question diagram | click camera icon.</label>
+                  <?php elseif (!empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+                  <div class="d-flex justify-content-center">
+                    <div class="mt-2 mb-4">
+                      <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+                    </div>
+                  </div>
+                <?php elseif (empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+                <div class="d-flex justify-content-center">
+                    <div class="mt-2 mb-4">
+                      <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+                    </div>
+                  </div>
+                  <?php else:?>
+                    <label style="font-size: x-small;">To append a diagram | click camera icon.</label>
+
+                <?php endif; ?>
             <form action="<?php echo URLROOT; ?>/posts/edit/<?php echo $data['post']->id; ?>" method="POST">
               <input type="hidden" name="paperID" value="<?php echo $data['post']->paperID; ?>">
+              <input type="hidden" name="daigram" value="<?= $data['post']->img;?>">
               <textarea class="form-control" name="question" required placeholder="Reset Question"><?php echo $data['post']->question; ?></textarea>
               <div class="row my-3">
                 <div class="col-6 col-md-3">
@@ -44,6 +68,9 @@
                 </div>
               </div>
               <div class="d-flex gap-3">
+                      <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Change diagram">
+                        <i class="bi bi-camera"></i>
+                      </a>
                 <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
                   <i class="bi bi-chevron-left"></i> Back

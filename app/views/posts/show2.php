@@ -150,7 +150,15 @@
                       </h2>
                     <?php endif; ?>
                     <!-- End Question D Display -->
-
+                    <div class="d-flex justify-content-center mb-2">
+                      <a href="<?php echo URLROOT; ?>/posts/edit2/<?php echo $pull_each->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
+                      <form action="<?php echo URLROOT; ?>/posts/delete2/<?php echo $pull_each->id; ?>" method="POST">
+                        <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
+                        <input type="hidden" name="class" value="<?= $data['params']->class; ?>">
+                        <input type="hidden" name="subject" value="<?= $data['params']->subject; ?>">
+                        <input type="submit" name="" value="Delete" class="btn btn-danger btn-sm mt-3 rounded-0">
+                      </form>
+                    </div>
                   </div>
                 </div><!-- End Default Accordion Example -->
               <?php $numberin++;

@@ -106,7 +106,7 @@
                 </div>
                 <div class="row">
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/daigram" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
+                    <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $_SESSION['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
                       <i class="bi bi-camera"></i>
                     </a>
                   </div>

@@ -89,6 +89,23 @@ class Post
     }
   }
 
+  // Delete single obj
+  public function deleteTheory($id)
+  {
+    // Prepare Query
+    $this->db->query('DELETE FROM theory WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $id);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Delete all obj
   public function deleteObjall($id)
   {
@@ -462,11 +479,24 @@ class Post
     return $row;
   }
 
+  // Get Post By ID
+  public function getTheoryById($id)
+  {
+    $this->db->query("SELECT * FROM theory WHERE id = :id");
+
+    $this->db->bind(':id', $id);
+
+    $row = $this->db->single();
+
+    return $row;
+  }
+
+
   // Update Post
   public function updateObj($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE objectives SET question = :question, opt1 = :opt1, opt2 = :opt2, opt3 = :opt3, opt4 = :opt4 WHERE id = :id');
+    $this->db->query('UPDATE objectives SET question = :question, opt1 = :opt1, opt2 = :opt2, opt3 = :opt3, opt4 = :opt4, img = :img WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
@@ -475,6 +505,7 @@ class Post
     $this->db->bind(':opt2', $data['opt2']);
     $this->db->bind(':opt3', $data['opt3']);
     $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':img', $data['daigram']);
 
     //Execute
     if ($this->db->execute()) {

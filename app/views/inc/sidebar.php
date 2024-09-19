@@ -71,12 +71,12 @@
      </li><!-- End Profile Page Nav -->
 
 
-     <li class="nav-item">
+     <!-- <li class="nav-item">
        <a class="nav-link collapsed" href="<?= URLROOT; ?>/pages/logout">
          <i class="bi bi-chevron-left"></i>
          <span>LOGOUT</span>
        </a>
-     </li><!-- End Profile Page Nav -->
+     </li> --><!-- End Profile Page Nav -->
 
 
 

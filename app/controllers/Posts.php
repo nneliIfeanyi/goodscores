@@ -95,7 +95,7 @@ class Posts extends Controller
   }
 
 
-  public function daigram()
+  public function daigram($paperID)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (is_array($_FILES)) {
@@ -108,25 +108,24 @@ class Posts extends Controller
           imagejpeg($target_layer, "daigrams/" . $_FILES['photo']['name']);
           $db_image_file =  "daigrams/" . $_FILES['photo']['name'];
           $_SESSION['daigram'] = $db_image_file;
-          redirect('posts/add');
+          echo "<script>
+                history.go(-2)
+          </script>";
         } elseif ($image_type == IMAGETYPE_PNG) {
           $image_resource_id = imagecreatefrompng($file);
           $target_layer = fn_resize($image_resource_id, $source_properties[0], $source_properties[1]);
           imagepng($target_layer, "daigrams/" . $_FILES['photo']['name']);
           $db_image_file =  "daigrams/" . $_FILES['photo']['name'];
           $_SESSION['daigram'] = $db_image_file;
-          redirect('posts/add');
+          echo "<script>
+                history.go(-2)
+          </script>";
         }
       } // End if is_array
     } else {
+      //$num_rows = $this->postModel->checkObjectivesNumRows($paperID, $_COOKIE['sch_id']);
       $data = [
-        'num_rows' => $_SESSION['num_rows'],
-        'year' => $_SESSION['year'],
-        'class' => $_SESSION['class'],
-        'term' => $_SESSION['term'],
-        'section' => $_SESSION['section'],
-        'subject' => $_SESSION['subject'],
-        'total_subject_num_rows' => $_SESSION['total_subject_num_rows']
+        'paperID' => $paperID,
       ];
 
       $this->view('posts/daigram', $data);
@@ -209,13 +208,25 @@ class Posts extends Controller
         'opt3' => trim($_POST['opt3'])
       ];
 
-      if ($this->postModel->updateObj($data)) {
-        // Redirect to login
+      if (empty($_SESSION['daigram'])) { // Update has no diagram
+        $data['daigram'] = $_POST['daigram'];
+        if ($this->postModel->updateObj($data)) {
         flash('msg', 'Question is Updated');
         redirect('posts/edit/' . $id);
       } else {
         die('Something went wrong');
       }
+      }else{
+        $data['daigram'] = $_SESSION['daigram'];
+        if ($this->postModel->updateObj($data)) {
+          unset($_SESSION['daigram']);
+        flash('msg', 'Question is Updated');
+        redirect('posts/edit/' . $id);
+      } else {
+        die('Something went wrong');
+      }
+      }
+      
     } else {
       // Get post from model
       $post = $this->postModel->getObjById($id);
@@ -228,6 +239,45 @@ class Posts extends Controller
       $this->view('posts/edit', $data);
     }
   }
+
+
+  // Edit Post
+  public function edit2($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'id' => $id,
+        'question' => trim($_POST['question']),
+        'opt1' => trim($_POST['opt1']),
+        'opt4' => trim($_POST['opt4']),
+        'opt2' => trim($_POST['opt2']),
+        'opt3' => trim($_POST['opt3'])
+      ];
+
+      if ($this->postModel->updateObj($data)) {
+        // Redirect to login
+        flash('msg', 'Question is Updated');
+        redirect('posts/edit/' . $id);
+      } else {
+        die('Something went wrong');
+      }
+    } else {
+      // Get post from model
+      $post = $this->postModel->getTheoryById($id);
+      $params = $this->postModel->getParamsByPaperID($post->paperID);
+      $data = [
+        'post' => $post,
+        'params' => $params
+      ];
+
+      $this->view('posts/edit2', $data);
+    }
+  }
+
+
 
   // Delete single obj question
   public function delete($id)
@@ -245,6 +295,24 @@ class Posts extends Controller
       redirect('posts');
     }
   }
+
+  // Delete single theory question
+  public function delete2($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      //Execute
+      if ($this->postModel->deleteTheory($id)) {
+        // Redirect to login
+        flash('msg', 'Question Removed', 'alert alert-danger');
+        redirect('posts/show2/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
+      } else {
+        die('Something went wrong');
+      }
+    } else {
+      redirect('posts');
+    }
+  }
+
   // Delete all  obj question
   public function delete_obj_all($id)
   {
