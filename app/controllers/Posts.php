@@ -78,20 +78,58 @@ class Posts extends Controller
 
 
   // Add Post
-  public function add()
+  public function add($paper_id)
   {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      $params = $this->postModel->getParamsByPaperID($paper_id);
+      $num_rows = $this->postModel->checkObjectivesNumRows($paper_id, $_COOKIE['sch_id']);
+      $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+      $data = [
+        'paperID' => $paper_id,
+        'question' => trim($_POST['question']),
+        'opt1' => trim($_POST['opt1']),
+        'opt2' => trim($_POST['opt2']),
+        'opt3' => trim($_POST['opt3']),
+        'opt4' => trim($_POST['opt4']),
+        'sch_id' => $_COOKIE['sch_id'],
+        'user_id' => $_SESSION['user_id'],
+        'num_rows' => $num_rows,
+        'total_subject_num_rows' => $expected_num_rows->num_rows
+      ];
+      if (empty($_SESSION['daigram'])) { // Question has no daigram
+        $data['daigram'] = '';
+        if ($this->postModel->setQuestions($data)) {
+          flash('msg', 'Question ' . $num_rows + (1) . ' is set successfully');
+          redirect('posts/add/' . $paper_id);
+        } else {
+          die('Something went wrong..');
+        }
+      } else { // Question has daigram
+        $data['daigram'] = $_SESSION['daigram'];
+        if ($this->postModel->setQuestions($data)) {
+          // Unset question diAGRAM
+          unset($_SESSION['daigram']);
+          flash('msg', 'Question ' . $num_rows + (1) . ' is set successfully');
+          redirect('posts/add/' . $paper_id);
+        }
+      }
+    } else {
+      $params = $this->postModel->getParamsByPaperID($paper_id);
+      $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
+      $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+      $data = [
+        'paperID' => $paper_id,
+        'num_rows' => $num_rows,
+        'year' => $params->year,
+        'class' => $params->class,
+        'term' => $params->term,
+        'section' => $params->section,
+        'subject' => $params->subject,
+        'total_subject_num_rows' => $expected_num_rows->num_rows
+      ];
 
-    $data = [
-      'num_rows' => $_SESSION['num_rows'],
-      'year' => $_SESSION['year'],
-      'class' => $_SESSION['class'],
-      'term' => $_SESSION['term'],
-      'section' => $_SESSION['section'],
-      'subject' => $_SESSION['subject'],
-      'total_subject_num_rows' => $_SESSION['total_subject_num_rows']
-    ];
-
-    $this->view('posts/add', $data);
+      $this->view('posts/add', $data);
+    }
   }
 
 
@@ -123,7 +161,6 @@ class Posts extends Controller
         }
       } // End if is_array
     } else {
-      //$num_rows = $this->postModel->checkObjectivesNumRows($paperID, $_COOKIE['sch_id']);
       $data = [
         'paperID' => $paperID,
       ];
@@ -133,24 +170,25 @@ class Posts extends Controller
   }
 
   // Add Post
-  public function add2()
+  public function add2($paper_id)
   {
+    $params = $this->postModel->getParamsByPaperID($paper_id);
+    $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
+    $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
       $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
       // Pull the set num_rows for the particular subject
-      $expected_num_rows = $this->postModel->checkSubjectNumRows($_POST['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
+
       $data = [
-        'paperID' => $_POST['paperID'],
-        'class' => $_POST['class'],
-        'subject' => $_POST['subject'],
-        'term' => $_POST['term'],
+        'paperID' => $paper_id,
+        // 'class' => $_POST['class'],
+        // 'subject' => $_POST['subject'],
+        // 'term' => $_POST['term'],
         'questionID' => $_POST['questionID'],
         'section' => 'theory_questions',
         'sch_id' => $_COOKIE['sch_id'],
         'user_id' => $_SESSION['user_id'],
-        'num_rows' => '',
-        'img' => '',
         'question-A' => $_POST['question-A'],
         'A-i' => $_POST['A-i'],
         'A-ii' => $_POST['A-ii'],
@@ -166,25 +204,36 @@ class Posts extends Controller
         'C-ii' => $_POST['C-ii'],
         'C-iii' => $_POST['C-iii'],
         'question-D' => $_POST['question-D'],
-        'total_subject_num_rows' => $expected_num_rows->num_rows2
+        //'total_subject_num_rows' => $expected_num_rows->num_rows2
       ];
 
-      if ($this->postModel->setQuestions2($data)) {
-        // Update num rows
-        $num_rows = $this->postModel->checkTheoryNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
-        flash('msg', 'Theory question ' . $num_rows . ' is set successfully');
-        redirect('posts/add2');
+      if (empty($_SESSION['daigram'])) { // Question has no daigram
+        $data['img'] = '';
+        if ($this->postModel->setQuestions2($data)) {
+          flash('msg', 'Theory Question ' . $num_rows + (1) . ' is set successfully');
+          redirect('posts/add2/' . $paper_id);
+        } else {
+          die('Something went wrong..');
+        }
+      } else { // Question has daigram
+        $data['img'] = $_SESSION['daigram'];
+        if ($this->postModel->setQuestions2($data)) {
+          // Unset question diAGRAM
+          unset($_SESSION['daigram']);
+          flash('msg', 'Theory Question ' . $num_rows + (1) . ' is set successfully');
+          redirect('posts/add2/' . $paper_id);
+        } else {
+          die('Something went wrong..');
+        }
       }
     } else { // Not post request method
-      $expected_num_rows = $this->postModel->checkSubjectNumRows($_SESSION['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
-      $num_rows = $this->postModel->checkTheoryNumRows($_SESSION['paperID'], $_COOKIE['sch_id']);
       $data = [
+        'paperID' => $paper_id,
         'num_rows' => $num_rows,
-        'year' => $_SESSION['year'],
-        'class' => $_SESSION['class'],
-        'term' => $_SESSION['term'],
-        'section' => $_SESSION['section'],
-        'subject' => $_SESSION['subject'],
+        'year' => $params->year,
+        'class' => $params->class,
+        'term' => $params->term,
+        'subject' => $params->subject,
         'total_subject_num_rows' => $expected_num_rows->num_rows2
       ];
 
@@ -211,22 +260,21 @@ class Posts extends Controller
       if (empty($_SESSION['daigram'])) { // Update has no diagram
         $data['daigram'] = $_POST['daigram'];
         if ($this->postModel->updateObj($data)) {
-        flash('msg', 'Question is Updated');
-        redirect('posts/edit/' . $id);
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit/' . $id);
+        } else {
+          die('Something went wrong');
+        }
       } else {
-        die('Something went wrong');
-      }
-      }else{
         $data['daigram'] = $_SESSION['daigram'];
         if ($this->postModel->updateObj($data)) {
           unset($_SESSION['daigram']);
-        flash('msg', 'Question is Updated');
-        redirect('posts/edit/' . $id);
-      } else {
-        die('Something went wrong');
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit/' . $id);
+        } else {
+          die('Something went wrong');
+        }
       }
-      }
-      
     } else {
       // Get post from model
       $post = $this->postModel->getObjById($id);

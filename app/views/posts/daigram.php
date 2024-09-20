@@ -15,7 +15,7 @@
                             <strong>Add Diagram</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <form action="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID'];?>" method="post" enctype="multipart/form-data">
+                        <form action="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group mb-3">
                                 <input type="file" name="photo" accept="image*/" required class="form-control form-control-lg">
                             </div>
@@ -25,17 +25,17 @@
                                     <input type="submit" name="upload" class="btn btn-primary" value="Upload">
                                 </div>
                         </form>
-                                <div>
-                                    <button class="btn btn-dark" onclick="history.back()">
-                                        <i class="bi bi-chevron-left"></i> Back
-                                    </button>
-                                </div>
-                            </div>
-
+                        <div>
+                            <button type="button" class="btn btn-dark" onclick="history.back()">
+                                <i class="bi bi-chevron-left"></i> Back
+                            </button>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
+
+        </div>
         </div>
     </section>
 

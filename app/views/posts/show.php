@@ -15,7 +15,7 @@
   </div><!-- End Page Title -->
   <section class="row">
     <div class="col-lg-8">
-      <h5 class="fw-bold text-primary"><?php echo $data['params']->section; ?></h5>
+      <h5 class="fw-bold text-primary">objectives_questions</h5>
       <?php if (!empty($data['obj'])) : ?>
         <?php $n = 1;
         foreach ($data['obj'] as $obj) : ?>

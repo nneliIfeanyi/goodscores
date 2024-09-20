@@ -29,6 +29,13 @@
                 <!-- Default Accordion -->
                 <div class="accordion" id="parent">
                   <div class="accordion-item">
+                    <?php if (!empty($pull_each->img)) : ?>
+                      <div class="d-flex justify-content-center">
+                        <div class="mt-2 mb-4">
+                          <img src="<?php echo URLROOT . '/' . $pull_each->img; ?>" class="rounded-3" height="90px" alt="daigram">
+                        </div>
+                      </div>
+                    <?php endif; ?>
                     <?php if (!empty($pull_each->Ai)) : ?>
                       <h2 class="accordion-header" id="headA">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#body<?= $numberin; ?>a" aria-expanded="true" aria-controls="collapseOne">

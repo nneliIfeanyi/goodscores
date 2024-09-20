@@ -24,10 +24,10 @@
         <div class="card">
           <div class="card-body">
             <?php
-            if ($data['num_rows'] > $data['total_subject_num_rows']) {
+            if ($data['num_rows'] == $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong><?php echo $data['section']; ?></strong>
+                <strong>objectives_questions</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <textarea class="form-control" disabled name="question" required placeholder="COMPLETED"></textarea>
@@ -51,10 +51,10 @@
                 <input type="hidden" name="opt2" value="">
                 <input type="hidden" name="opt3" value="">
                 <input type="hidden" name="opt4" value="">
-                <input type="hidden" name="class" value="<?php echo $_SESSION['class']; ?>">
-                <input type="hidden" name="subject" value="<?php echo $_SESSION['subject']; ?>">
-                <input type="hidden" name="year" value="<?php echo SCH_SESSION; ?>">
-                <input type="hidden" name="term" value="<?php echo TERM; ?>">
+                <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
+                <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
+                <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
+                <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
                 <input type="hidden" name="section" value="theory_questions">
                 <div class="d-grid">
                   <input type="submit" name="set" value="Go to Theory Questions" class="btn btn-outline-primary">
@@ -62,18 +62,24 @@
               </form>
             <?php
             } else {
-
+              if (empty($data['num_rows'])) {
+                $data['num_rows'] = 1;
+              } else {
+                $data['num_rows'] = $data['num_rows'] + 1;
+              }
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong><?php echo $data['section']; ?></strong>
+                <strong>objectives_questions</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
-              <form action="<?php echo URLROOT; ?>/submissions/set/<?php echo $_SESSION['section']; ?>" method="POST">
-                <input type="hidden" name="class" value="<?php echo $_SESSION['class']; ?>">
-                <input type="hidden" name="subject" value="<?php echo $_SESSION['subject']; ?>">
-                <input type="hidden" name="term" value="<?php echo $_SESSION['term']; ?>">
-                <input type="hidden" name="section" value="<?php echo $_SESSION['section']; ?>">
-                <input type="hidden" name="paperID" value="<?php echo $_SESSION['paperID']; ?>">
+              <form action="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>" method="POST">
+                <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
+                <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
+                <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
+                <input type="hidden" name="section" value="objectives_questions">
+                <input type="hidden" name="paperID" value="<?php echo $data['paperID']; ?>">
+                <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
+
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
                     <div class="mt-2 mb-4">
@@ -106,7 +112,7 @@
                 </div>
                 <div class="row">
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $_SESSION['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
+                    <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
                       <i class="bi bi-camera"></i>
                     </a>
                   </div>
@@ -116,7 +122,7 @@
                     </div>
                   </div>
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $_SESSION['paperID']; ?>?class=<?= $_SESSION['class']; ?>&subject=<?= $_SESSION['subject']; ?>&year=<?= $_SESSION['year']; ?>&term=<?= $_SESSION['term']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                    <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                       <i class="bi bi-eye"></i>
                     </a>
                   </div>

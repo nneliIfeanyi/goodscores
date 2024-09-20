@@ -27,7 +27,7 @@
             if ($data['num_rows'] == $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong><?php echo $data['section']; ?></strong>
+                <strong>theory_questions</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <textarea class="form-control" disabled name="question" required placeholder="COMPLETED"></textarea>
@@ -47,15 +47,10 @@
               </div>
               <div class="d-grid">
                 <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
-                  <input type="hidden" name="question" value="">
-                  <input type="hidden" name="opt1" value="">
-                  <input type="hidden" name="opt2" value="">
-                  <input type="hidden" name="opt3" value="">
-                  <input type="hidden" name="opt4" value="">
-                  <input type="hidden" name="class" value="<?php echo $_SESSION['class']; ?>">
-                  <input type="hidden" name="subject" value="<?php echo $_SESSION['subject']; ?>">
-                  <input type="hidden" name="year" value="<?php echo SCH_SESSION; ?>">
-                  <input type="hidden" name="term" value="<?php echo TERM; ?>">
+                  <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
+                  <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
+                  <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
+                  <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
                   <div class="d-grid">
                     <input type="submit" name="set" value="Go to Objectives Questions" class="btn btn-outline-primary">
                   </div>
@@ -67,17 +62,23 @@
 
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong><?php echo $data['section']; ?> <?php echo $data['num_rows'] + (1) . ' of ' . $data['total_subject_num_rows']; ?></strong>
+                <strong>theory_questions <?php echo $data['num_rows'] + (1) . ' of ' . $data['total_subject_num_rows']; ?></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <!-- Theory question form submit -->
-              <form action="<?php echo URLROOT; ?>/posts/add2" method="POST">
+              <form action="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>" method="POST">
                 <input type="hidden" name="questionID" value="question <?= $data['num_rows'] + (1); ?>">
-                <input type="hidden" name="class" value="<?php echo $_SESSION['class']; ?>">
-                <input type="hidden" name="subject" value="<?php echo $_SESSION['subject']; ?>">
-                <input type="hidden" name="term" value="<?php echo $_SESSION['term']; ?>">
-                <input type="hidden" name="section" value="<?php echo $_SESSION['section']; ?>">
-                <input type="hidden" name="paperID" value="<?php echo $_SESSION['paperID']; ?>">
+                <?php if (!empty($_SESSION['daigram'])) : ?>
+                  <div class="d-flex justify-content-center">
+                    <div class="mt-2 mb-4">
+                      <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+                    </div>
+                  </div>
+                <?php else : ?>
+                  <div class="lead">
+                    <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
+                  </div>
+                <?php endif; ?>
                 <!-- Accordion without outline borders is overall parent for the question is a child of th e form -->
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                   <div class="accordion-item border-0"><!-- Numbering A Parent div -->
@@ -229,7 +230,7 @@
                   </div><!-- Question D div ends here -->
                   <div class="row my-3">
                     <div class="col-2">
-                      <a href="<?php echo URLROOT; ?>/posts/daigram" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
+                      <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
                         <i class="bi bi-camera"></i>
                       </a>
                     </div>
@@ -239,7 +240,7 @@
                       </div>
                     </div>
                     <div class="col-2">
-                      <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $_SESSION['paperID']; ?>?class=<?= $_SESSION['class']; ?>&subject=<?= $_SESSION['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                      <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                         <i class="bi bi-eye"></i>
                       </a>
                     </div>
