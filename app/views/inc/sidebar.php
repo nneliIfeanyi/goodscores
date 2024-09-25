@@ -9,6 +9,22 @@
          <span>Dashboard</span>
        </a>
      </li><!-- End Dashboard Nav -->
+
+
+     <li class="nav-item">
+       <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/users/classes">
+         <i class="bi bi-people"></i>
+         <span>Classes</span>
+       </a>
+     </li><!-- End Classes Nav -->
+     <li class="nav-item">
+       <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/users/subjects">
+         <i class="bi bi-journal-text"></i>
+         <span>Subjects</span>
+       </a>
+     </li><!-- End Subjects Nav -->
+
+
      <li class="nav-item">
        <a class="nav-link collapsed" data-bs-target="#setquestionsnav" data-bs-toggle="collapse" href="#">
          <i class="bi bi-pen"></i><span>Set Questions</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -28,18 +44,7 @@
        </ul>
      </li><!-- End Set Questions Nav -->
 
-     <li class="nav-item">
-       <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/users/classes">
-         <i class="bi bi-people"></i>
-         <span>Classes</span>
-       </a>
-     </li><!-- End Classes Nav -->
-     <li class="nav-item">
-       <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/users/subjects">
-         <i class="bi bi-journal-text"></i>
-         <span>Subjects</span>
-       </a>
-     </li><!-- End Subjects Nav -->
+
      <!-- <li class="nav-item">
        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
          <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>

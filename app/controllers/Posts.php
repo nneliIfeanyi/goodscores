@@ -182,9 +182,6 @@ class Posts extends Controller
 
       $data = [
         'paperID' => $paper_id,
-        // 'class' => $_POST['class'],
-        // 'subject' => $_POST['subject'],
-        // 'term' => $_POST['term'],
         'questionID' => $_POST['questionID'],
         'section' => 'theory_questions',
         'sch_id' => $_COOKIE['sch_id'],
@@ -292,27 +289,6 @@ class Posts extends Controller
   // Edit Post
   public function edit2($id)
   {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-      $data = [
-        'id' => $id,
-        'question' => trim($_POST['question']),
-        'opt1' => trim($_POST['opt1']),
-        'opt4' => trim($_POST['opt4']),
-        'opt2' => trim($_POST['opt2']),
-        'opt3' => trim($_POST['opt3'])
-      ];
-
-      if ($this->postModel->updateObj($data)) {
-        // Redirect to login
-        flash('msg', 'Question is Updated');
-        redirect('posts/edit/' . $id);
-      } else {
-        die('Something went wrong');
-      }
-    } else {
       // Get post from model
       $post = $this->postModel->getTheoryById($id);
       $params = $this->postModel->getParamsByPaperID($post->paperID);
@@ -322,7 +298,7 @@ class Posts extends Controller
       ];
 
       $this->view('posts/edit2', $data);
-    }
+
   }
 
 

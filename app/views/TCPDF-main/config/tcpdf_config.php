@@ -40,23 +40,6 @@
 // If you define the constant K_TCPDF_EXTERNAL_CONFIG, all the following settings will be ignored.
 // If you use the tcpdf_autoconfig.php, then you can overwrite some values here.
 
-$id = $_SESSION['user_id'];
-$path_main = APPROOT.'/views';
-$img_root = URLROOT.'/';
-if(!$conn = mysqli_connect(DB_HOST,DB_USER,DB_PASS,DB_NAME))
-{
-  die("failed to connect");
-}
-
-$sql = "SELECT * FROM bizusers WHERE id = '$id' ";
-$query = mysqli_query($conn, $sql);
-$result = mysqli_fetch_assoc($query);$date = date('D-jS-M, Y');
-$user_name = $result['bizname'];
-$logo = $result['logo'];
-$dsc = $result['biz_dsc'];
-$address = $result['bizaddress'];
-
-
 /**
  * Installation path (/var/www/tcpdf/).
  * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
@@ -79,7 +62,7 @@ $address = $result['bizaddress'];
  * Default images directory.
  * By default it is automatically set but you can also set it as a fixed string to improve performances.
  */
-define ('K_PATH_IMAGES', $img_root);
+define ('K_PATH_IMAGES', 'img_root');
 
 /**
  * Deafult image logo used be the default Header() method.
@@ -89,7 +72,7 @@ if (empty($logo)) {
 	define ('PDF_HEADER_LOGO', 'logo/logos1.png');
 }else{
 
-	define ('PDF_HEADER_LOGO', $logo);
+	define ('PDF_HEADER_LOGO', 'logo');
 }
 
 
@@ -134,12 +117,12 @@ define ('PDF_AUTHOR', 'Stanvic Concepts');
 /**
  * Header title.
  */
-define ('PDF_HEADER_TITLE', $user_name);
+define ('PDF_HEADER_TITLE', 'user_name');
 
 /**
  * Header description string.
  */
-define ('PDF_HEADER_STRING', "$dsc\n$address");
+define ('PDF_HEADER_STRING', "dsc\naddress");
 
 /**
  * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].

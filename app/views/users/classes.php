@@ -20,11 +20,11 @@
   <section class="section">
     <div class="row">
       <div class="col-lg-6">
-            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                <i class="bi bi-star me-1 text-warning"></i>
-                Class name should follow your school's pattern | Either Year-1 to Year-12 or Basic-1 to Basic-6 or Jss-1 to Sss-3
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <i class="bi bi-star me-1 text-warning"></i>
+          Class name should follow your school's pattern | Either Year-1 to Year-12 or Basic-1 to Basic-6 or Jss-1 to Sss-3
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
         <div class="card">
           <div class="card-body">
@@ -46,7 +46,17 @@
 
               <div class="my-4">
                 <label for="className">Number of theory questions</label>
-                <input type="number" id="className" name="theory_num_rows" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
+                <input type="number" id="className" name="theory_num_rows" class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
+              </div>
+
+              <div class="my-4">
+                <label for="className">How many theory questions to answer</label>
+                <input type="number" name="choice" class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
+              </div>
+
+              <div class="my-4">
+                <label for="className">Exam duration</label>
+                <input name="duration" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
               </div>
 
               <div class="d-grid">
@@ -81,8 +91,9 @@
                     <tr>
                       <th scope="row"><?php echo $n; ?></th>
                       <td><?php echo $class->classname; ?></td>
-                      <td>
-                        <a href="javascript:void" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#class<?php echo $class->id; ?>"><i class="bi bi-trash"></i></a>
+                      <td class="d-flex gap-2">
+                        <a href="<?php echo URLROOT; ?>/users/edit_class/<?php echo $class->id; ?>"><i class="bi bi-pen"></i></a>
+                        <a href="javascript:void" data-bs-toggle="modal" data-bs-target="#class<?php echo $class->id; ?>"><i class="bi bi-trash text-danger"></i></a>
                       </td>
                     </tr>
                     <!-- Delete Modal -->
@@ -100,7 +111,7 @@
                             <div class="d-flex gap-4">
                               <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                               <form action="<?php echo URLROOT; ?>/submissions/delete_class/<?php echo $class->id; ?>" method="POST">
-                              <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
+                                <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
                               </form>
                             </div>
                           </div>

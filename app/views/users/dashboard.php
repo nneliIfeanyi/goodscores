@@ -139,25 +139,43 @@
                         <?php if ($recent->section == 'objectives_questions') : ?>
                           <?php if ($obj_num_rows != $status->num_rows) : ?>
                             <td><span class="badge bg-warning">Pending</span></td>
-                          <?php else : ?>
-                            <td><span class="badge bg-success">Completed</span></td>
-                          <?php endif; ?>
-                          <td scope="row">
+                            <td scope="row">
                             <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                               <i class="bi bi-eye fs-3"></i>
                             </a>
                           </td>
+                          <?php else : ?>
+                            <td><span class="badge bg-success">Completed</span></td>
+                            <td scope="row">
+                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                              <i class="bi bi-eye fs-3"></i>
+                            </a>
+                            <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
+                              <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
+                            </a>
+                          </td>
+                          <?php endif; ?>
+                          
                         <?php elseif ($recent->section == 'theory_questions') : ?>
                           <?php if ($theory_num_rows != $status->num_rows2) : ?>
                             <td><span class="badge bg-warning">Pending</span></td>
-                          <?php else : ?>
-                            <td><span class="badge bg-success">Completed</span></td>
-                          <?php endif; ?>
-                          <td scope="row">
+                            <td scope="row">
                             <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                               <i class="bi bi-eye fs-3"></i>
                             </a>
                           </td>
+                          <?php else : ?>
+                            <td><span class="badge bg-success">Completed</span></td>
+                            <td scope="row">
+                            <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                              <i class="bi bi-eye fs-3"></i>
+                            </a>
+                            <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
+                              <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
+                            </a>
+                          </td>
+                          <?php endif; ?>
+                          
                         <?php endif; ?>
                       </tr>
 

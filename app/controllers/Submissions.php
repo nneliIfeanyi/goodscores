@@ -26,18 +26,125 @@ class Submissions extends Controller
         'obj_num_rows' => val_entry($_POST['obj_num_rows']),
         'theory_num_rows' => val_entry($_POST['theory_num_rows']),
         'user_id' => $_SESSION['user_id'],
-        'sch_id' => $_COOKIE['sch_id']
+        'sch_id' => $_COOKIE['sch_id'],
+        'choice' => val_entry($_POST['choice']),
+        'duration' => val_entry($_POST['duration'])
       ];
 
-      $data['classname'] = strtolower($data['classname']);
-      $data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
+      //$data['classname'] = strtolower($data['classname']);
+      //$data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
 
-      if ($this->postModel->addClass($data)) {
+      if ($this->userModel->addClass($data)) {
         // Redirect to login
         flash('msg', 'Class is added successfully');
         redirect('users/classes');
       } else {
         die('Something went wrong');
+      }
+    } else { // Not a post request
+      die('Something went wrong');
+    }
+  }
+
+  public function edit_class($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'classname' => val_entry($_POST['classname']),
+        'num_rows' => val_entry($_POST['obj_num_rows']),
+        'num_rows2' => val_entry($_POST['theory_num_rows']),
+        'id' => $id,
+        'choice' => val_entry($_POST['choice']),
+        'duration' => val_entry($_POST['duration'])
+      ];
+
+      //$data['classname'] = strtolower($data['classname']);
+      //$data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
+
+      if ($this->userModel->editClass($data)) {
+        // Redirect to classes
+        flash('msg', 'Changes saved successfully');
+        redirect('users/classes');
+      } else {
+        die('Something went wrong');
+      }
+    } else { // Not a post request
+      die('Something went wrong');
+    }
+  }
+
+
+  public function profile($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'name' => val_entry($_POST['name']),
+        'username' => val_entry($_POST['username']),
+        'phone' => val_entry($_POST['phone']),
+        'email' => val_entry($_POST['email']),
+        'id' => $id,
+        'role' => val_entry($_POST['role'])
+      ];
+      if ($this->userModel->editProfile($data)) {
+        // Redirect to classes
+        flash('msg', 'Changes saved successfully');
+        redirect('users/profile/' . $id);
+      } else {
+        die('Something went wrong');
+      }
+    } else { // Not a post request
+      die('Something went wrong');
+    }
+  }
+
+  // Remove | delete teacher profile image
+  public function remove_img($id)
+  {
+    $user = $this->userModel->findTeacherById($id);
+    if ($this->userModel->removePhoto($id)) {
+      unlink($user->img);
+      unset($_SESSION['photo']);
+      flash('msg', 'Profile photo removed..', 'alert alert-danger bg-danger text-light border-0 alert-dismissible');
+      echo "<script>
+                history.go(-1)
+          </script>";
+    } else {
+      die('Something went wrong');
+    }
+  } // End remove | delete teacher profile image
+
+  // Change | update teacher password
+  public function password($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $user = $this->userModel->findTeacherById($id);
+      $data = [
+        'id' => $id,
+        'old' => val_entry($_POST['old']),
+        'new' => val_entry($_POST['new']),
+        'err' => '',
+      ];
+      //$data['new'] = password_hash($data['new'], PASSWORD_DEFAULT);
+      if (password_verify($data['new'], $user->password)) {
+        // validation complete
+        if ($this->userModel->changePass($data)) {
+          // Redirect to login
+          flash('msg', 'Password reset is successfull..');
+          redirect('users/profile/' . $id);
+        } else {
+          die('Something went wrong');
+        }
+      } else {
+        flash('msg', 'The current password entered is incorrect..', 'alert alert-danger bg-danger text-light border-0 alert-dismissible');
+        redirect('users/profile/' . $id);
       }
     } else {
       die('Something went wrong');
@@ -57,7 +164,7 @@ class Submissions extends Controller
         'sch_id' => $_COOKIE['sch_id']
       ];
 
-      if ($this->postModel->addSubject($data)) {
+      if ($this->userModel->addSubject($data)) {
         // Redirect to login
         flash('msg', 'Subject Added Successfully');
         redirect('users/subjects');
@@ -74,7 +181,7 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       //Execute
-      if ($this->postModel->deleteSubject($id)) {
+      if ($this->userModel->deleteSubject($id)) {
         // Redirect to login
         flash('msg', 'Subject is deleted successfull', 'alert alert-danger');
         redirect('users/subjects');
@@ -92,7 +199,7 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       //Execute
-      if ($this->postModel->deleteClass($id)) {
+      if ($this->userModel->deleteClass($id)) {
         // Redirect to login
         flash('msg', 'Class is deleted successfully', 'alert alert-danger');
         redirect('users/classes');
@@ -179,28 +286,8 @@ class Submissions extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Edit Post
-  public function edit($id)
+  // Edit Theory question
+  public function edit2($id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
@@ -208,70 +295,42 @@ class Submissions extends Controller
 
       $data = [
         'id' => $id,
-        'title' => trim($_POST['title']),
-        'body' => trim($_POST['body']),
-        'user_id' => $_SESSION['user_id'],
-        'title_err' => '',
-        'body_err' => ''
+        'question-A' => $_POST['question-A'],
+        'A-i' => $_POST['A-i'],
+        'A-ii' => $_POST['A-ii'],
+        'A-iii' => $_POST['A-iii'],
+        'A-iv' => $_POST['A-iv'],
+        'question-B' => $_POST['question-B'],
+        'B-i' => $_POST['B-i'],
+        'B-ii' => $_POST['B-ii'],
+        'B-iii' => $_POST['B-iii'],
+        'B-iv' => $_POST['B-iv'],
+        'question-C' => $_POST['question-C'],
+        'C-i' => $_POST['C-i'],
+        'C-ii' => $_POST['C-ii'],
+        'C-iii' => $_POST['C-iii'],
+        'question-D' => $_POST['question-D']
       ];
-
-      // Validate email
-      if (empty($data['title'])) {
-        $data['title_err'] = 'Please enter name';
-        // Validate name
-        if (empty($data['body'])) {
-          $data['body_err'] = 'Please enter the post body';
-        }
-      }
-
-      // Make sure there are no errors
-      if (empty($data['title_err']) && empty($data['body_err'])) {
-        // Validation passed
-        //Execute
-        if ($this->postModel->updatePost($data)) {
-          // Redirect to login
-          flash('post_message', 'Post Updated');
-          redirect('posts');
+      if (empty($_SESSION['daigram'])) { // Update has no diagram
+        $data['daigram'] = $_POST['daigram'];
+        if ($this->postModel->updateTheory($data)) {
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit2/' . $id);
         } else {
           die('Something went wrong');
         }
       } else {
-        // Load view with errors
-        $this->view('posts/edit', $data);
+        $data['daigram'] = $_SESSION['daigram'];
+        if ($this->postModel->updateTheory($data)) {
+          unset($_SESSION['daigram']);
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit2/' . $id);
+        } else {
+          die('Something went wrong');
+        }
       }
-    } else {
-      // Get post from model
-      $post = $this->postModel->getPostById($id);
-
-      // Check for owner
-      if ($post->user_id != $_SESSION['user_id']) {
-        redirect('posts');
-      }
-
-      $data = [
-        'id' => $id,
-        'title' => $post->title,
-        'body' => $post->body,
-      ];
-
-      $this->view('posts/edit', $data);
-    }
-  }
-
-  // Delete Post
-  public function delete($id)
-  {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      //Execute
-      if ($this->postModel->deletePost($id)) {
-        // Redirect to login
-        flash('post_message', 'Post Removed');
-        redirect('posts');
-      } else {
-        die('Something went wrong');
-      }
-    } else {
-      redirect('posts');
+    } else { // Not a post request
+      die('Something went wrong..');
     }
   }
 }

@@ -26,16 +26,16 @@
           <a class="nav-link nav-icon search-bar-toggle " href="#">
             <i class="bi bi-search"></i>
           </a>
-        </li> --><!-- End Search Icon-->
+        </li> --><!-- End Search Icon--
 
         <li class="nav-item dropdown">
 
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+          <!-- <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-bell"></i>
             <span class="badge bg-primary badge-number">1</span>
-          </a><!-- End Notification Icon -->
+          </a>End Notification Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+        <!-- <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
             <li class="dropdown-header">
               You have 1 new notifications
               <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
@@ -51,21 +51,21 @@
                 <p>Quae dolorem earum veritatis oditseno</p>
                 <p>30 min. ago</p>
               </div>
-            </li>
+            </li> -->
 
-            <!-- <li>
+        <!-- <li>
               <hr class="dropdown-divider">
             </li> -->
 
 
 
-            <!-- <li class="dropdown-footer">
+        <!-- <li class="dropdown-footer">
               <a href="#">Show all notifications</a>
-            </li> -->
+            </li> 
 
-          </ul><!-- End Notification Dropdown Items -->
+      </ul> End Notification Dropdown Items 
 
-        </li><!-- End Notification Nav -->
+      </li> End Notification Nav -->
 
 
 
@@ -73,7 +73,7 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <?php if (isset($_SESSION['photo'])) : ?>
-              <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+              <img src="<?= URLROOT; ?>/<?= $_SESSION['photo']; ?>" alt="Profile" class="rounded-circle">
             <?php else : ?>
               <i class="bi bi-person-circle fs-3"></i>
             <?php endif; ?>
@@ -90,7 +90,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="<?= URLROOT; ?>/users/profile/<?= $_SESSION['user_id']; ?>">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -99,7 +99,7 @@
               <hr class="dropdown-divider">
             </li>
 
-            <li>
+            <!-- <li>
               <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
                 <i class="bi bi-gear"></i>
                 <span>Account Settings</span>
@@ -107,7 +107,7 @@
             </li>
             <li>
               <hr class="dropdown-divider">
-            </li>
+            </li> -->
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">

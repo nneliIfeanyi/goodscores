@@ -9,68 +9,6 @@ class Post
   }
 
 
-  // Add Class
-  public function addClass($data)
-  {
-    // Prepare Query
-    $this->db->query('INSERT INTO classes (sch_id, user_id, classname, num_rows, num_rows2) 
-      VALUES (:sch_id, :user_id, :classname, :obj_num_rows, :theory_num_rows)');
-
-    // Bind Values
-    $this->db->bind(':sch_id', $data['sch_id']);
-    $this->db->bind(':user_id', $data['user_id']);
-    $this->db->bind(':classname', $data['classname']);
-    $this->db->bind(':obj_num_rows', $data['obj_num_rows']);
-    $this->db->bind(':theory_num_rows', $data['theory_num_rows']);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-  // Add Subject
-  public function addSubject($data)
-  {
-    // Prepare Query
-    $this->db->query('INSERT INTO subjects (sch_id, user_id, subject) 
-      VALUES (:sch_id, :user_id, :subject)');
-
-    // Bind Values
-    $this->db->bind(':sch_id', $data['sch_id']);
-    $this->db->bind(':user_id', $data['user_id']);
-    $this->db->bind(':subject', $data['subject']);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-
-  // Delete Class
-  public function deleteClass($id)
-  {
-    // Prepare Query
-    $this->db->query('DELETE FROM classes WHERE id = :id');
-
-    // Bind Values
-    $this->db->bind(':id', $id);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
 
   // Delete single obj
   public function deleteObj($id)
@@ -128,25 +66,6 @@ class Post
   {
     // Prepare Query
     $this->db->query('DELETE FROM params WHERE paperID = :id');
-
-    // Bind Values
-    $this->db->bind(':id', $id);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-
-  // Delete Subject
-  public function deleteSubject($id)
-  {
-    // Prepare Query
-    $this->db->query('DELETE FROM subjects WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $id);
@@ -505,6 +424,39 @@ class Post
     $this->db->bind(':opt2', $data['opt2']);
     $this->db->bind(':opt3', $data['opt3']);
     $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':img', $data['daigram']);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Update Post
+  public function updateTheory($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE theory SET questionA = :questionA, questionB = :questionB, questionC = :questionC,questionD = :questionD, Ai = :Ai, Aii = :Aii, Aiii = :Aiii, Aiv = :Aiv, Bi = :Bi, Bii = :Bii, Biii = :Biii, Biv = :Biv, Ci = :Ci, Cii = :Cii, Ciii = :Ciii, img = :img WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':questionA', $data['question-A']);
+    $this->db->bind(':questionB', $data['question-B']);
+    $this->db->bind(':questionC', $data['question-C']);
+    $this->db->bind(':questionD', $data['question-D']);
+    $this->db->bind(':Ai', $data['A-i']);
+    $this->db->bind(':Aii', $data['A-ii']);
+    $this->db->bind(':Aiii', $data['A-iii']);
+    $this->db->bind(':Aiv', $data['A-iv']);
+    $this->db->bind(':Bi', $data['B-i']);
+    $this->db->bind(':Bii', $data['B-ii']);
+    $this->db->bind(':Biii', $data['B-iii']);
+    $this->db->bind(':Biv', $data['B-iv']);
+    $this->db->bind(':Ci', $data['C-i']);
+    $this->db->bind(':Cii', $data['C-ii']);
+    $this->db->bind(':Ciii', $data['C-iii']);
     $this->db->bind(':img', $data['daigram']);
 
     //Execute

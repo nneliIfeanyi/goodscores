@@ -67,7 +67,7 @@
               </div>
               <!-- Theory question form submit -->
               <form action="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>" method="POST">
-                <input type="hidden" name="questionID" value="question <?= $data['num_rows'] + (1); ?>">
+                <input type="hidden" name="questionID" value="<?= $data['num_rows'] + (1); ?>">
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
                     <div class="mt-2 mb-4">

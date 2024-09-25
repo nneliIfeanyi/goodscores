@@ -56,7 +56,7 @@
                       <p class="small mb-0">Don't have account? <a href="<?php echo URLROOT; ?>/users/register">Create teacher's account</a></p>
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0"><a href="<?php echo URLROOT; ?>/admin/login">Go To Admin Section <i class="bi bi-chevron-right"></i></a></p>
+                      <p class="small mb-0"><a href="<?php echo URLROOT; ?>/pages/logout"><i class="bi bi-chevron-left"></i> Go back</a></p>
                     </div>
                   </form>
 

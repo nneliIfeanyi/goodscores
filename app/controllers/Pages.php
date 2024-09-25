@@ -2,9 +2,11 @@
 class Pages extends Controller
 {
   public $userModel;
+  public $pageModel;
   public function __construct()
   {
     $this->userModel = $this->model('User');
+    $this->pageModel = $this->model('Page');
   }
 
   // Load Homepage
@@ -41,7 +43,9 @@ class Pages extends Controller
     } // End Post Request
     else {
       //Set Data
+      $schools = $this->pageModel->getSchools();
       $data = [
+        'schools' => $schools,
         'username' => '',
         'username_err' => ''
       ];
@@ -117,10 +121,11 @@ class Pages extends Controller
   {
     $id = $_COOKIE['sch_id'];
     $name = $_COOKIE['sch_name'];
+    $username = $_COOKIE['sch_username'];
 
     setcookie('sch_id', $id, time() - 3, '/');
     setcookie('sch_name', $name, time() - 3, '/');
-    setcookie('sch_username', $name, time() - 3, '/');
+    setcookie('sch_username', $username, time() - 3, '/');
     session_unset();
     session_destroy();
     redirect('pages/login');

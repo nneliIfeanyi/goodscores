@@ -5,6 +5,9 @@ class Users extends Controller
   public $postModel;
   public function __construct()
   {
+    if (!isset($_COOKIE['sch_id'])) {
+      redirect('pages/login');
+    }
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
   }
@@ -31,13 +34,13 @@ class Users extends Controller
       'subjects' => $subjects,
       'classes' => $classes,
       'recent' => $params,
-     // 'all' => $all,
+      // 'all' => $all,
     ];
 
     $this->view('users/dashboard', $data);
   }
 
-// Dashboard View Ends
+  // Dashboard View Ends
 
   public function set($param)
   {
@@ -50,7 +53,7 @@ class Users extends Controller
     $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
     $data = [
-      'param'=> $param,
+      'param' => $param,
       'subjects' => $subjects,
       'classes' => $classes
     ];
@@ -70,6 +73,16 @@ class Users extends Controller
     $this->view('users/classes', $data);
   }
 
+  public function edit_class($id)
+  {
+    $class = $this->userModel->getSingleClass($id);
+    $data = [
+      'class' => $class
+    ];
+
+    $this->view('users/edit_class', $data);
+  }
+
   public function subjects()
   {
     $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
@@ -78,6 +91,64 @@ class Users extends Controller
     ];
 
     $this->view('users/subjects', $data);
+  }
+
+  public function profile($id)
+  {
+    $user = $this->userModel->findTeacherById($id);
+    $data = [
+      'err' => '',
+      'user' => $user
+    ];
+
+    $this->view('users/profile', $data);
+  }
+
+  public function upload($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      if (is_array($_FILES)) {
+        $file = $_FILES['photo']['tmp_name'];
+        $source_properties = getimagesize($file);
+        $image_type = $source_properties[2];
+        if ($image_type == IMAGETYPE_JPEG) {
+          $image_resource_id = imagecreatefromjpeg($file);
+          $target_layer = fn_resize($image_resource_id, $source_properties[0], $source_properties[1]);
+          imagejpeg($target_layer, "assets/img/" . $_FILES['photo']['name']);
+          $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
+          if ($this->userModel->editPhoto($id, $db_image_file)) {
+            $_SESSION['photo'] = $db_image_file;
+            flash('msg', 'Profile photo updated..');
+            echo "<script>
+                history.go(-2)
+          </script>";
+          } else {
+            die('Something went wrong, try again later.');
+          }
+        } elseif ($image_type == IMAGETYPE_PNG) {
+          $image_resource_id = imagecreatefrompng($file);
+          $target_layer = fn_resize($image_resource_id, $source_properties[0], $source_properties[1]);
+          imagepng($target_layer, "assets/img/" . $_FILES['photo']['name']);
+          $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
+          if ($this->userModel->editPhoto($id, $db_image_file)) {
+            $_SESSION['photo'] = $db_image_file;
+            flash('msg', 'Profile photo updated..');
+            echo "<script>
+                history.go(-2)
+          </script>";
+          } else {
+            die('Something went wrong, try again later.');
+          }
+        }
+      } // End if is_array
+    } else {
+      $user = $this->userModel->findTeacherById($id);
+      $data = [
+        'user' => $user
+      ];
+
+      $this->view('users/upload', $data);
+    }
   }
 
   public function register()
@@ -224,18 +295,23 @@ class Users extends Controller
     $_SESSION['user_id'] = $user->id;
     $_SESSION['name'] = $user->name;
     $_SESSION['username'] = $user->username;
+    $_SESSION['photo'] = $user->img;
   }
 
   // Logout & Destroy Session
   public function logout()
   {
+
+    $id = $_COOKIE['sch_id'];
+    $name = $_COOKIE['sch_name'];
+    $username = $_COOKIE['sch_username'];
+    setcookie('sch_id', $id, time() - 3, '/');
+    setcookie('sch_name', $name, time() - 3, '/');
+    setcookie('sch_username', $username, time() - 3, '/');
     unset($_SESSION['user_id']);
     unset($_SESSION['name']);
     unset($_SESSION['username']);
     session_destroy();
-    setcookie('sch_id', $id, time() - 3, '/');
-    setcookie('sch_name', $name, time() - 3, '/');
-    setcookie('sch_username', $name, time() - 3, '/');
     redirect('users/login');
   }
 

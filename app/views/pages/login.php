@@ -31,7 +31,12 @@
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                <input type="text" name="username" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
+                                                <input type="input" autocomplete="off" name="username" list="schools" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
+                                                <datalist id="schools">
+                                                    <?php foreach ($data['schools'] as $sch) : ?>
+                                                        <option value="<?= $sch->username; ?>"></option>
+                                                    <?php endforeach; ?>
+                                                </datalist>
                                                 <div class="invalid-feedback"><?php echo $data['username_err'] ?></div>
                                             </div>
                                         </div>
