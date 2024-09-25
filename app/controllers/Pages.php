@@ -141,4 +141,39 @@ class Pages extends Controller
     // Load about view
     $this->view('pages/about', $data);
   }
+
+
+  public function profile($id)
+  {
+    // If post 
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'name' => val_entry($_POST['name']),
+        'username' => val_entry($_POST['username']),
+        'phone' => val_entry($_POST['phone']),
+        'motto' => val_entry($_POST['motto']),
+        'id' => $id,
+        'address' => val_entry($_POST['address'])
+      ];
+      if ($this->pageModel->editProfile($data)) {
+        // Redirect to classes
+        flash('msg', 'Changes saved successfully');
+        redirect('pages/profile/' . $id);
+      } else {
+        die('Something went wrong');
+      }
+    } else { // Not post request
+      $school = $this->pageModel->getSchool($id);
+      //Set Data
+      $data = [
+        'user' => $school,
+      ];
+
+      // Load about view
+      $this->view('pages/profile', $data);
+    }
+  }
 }

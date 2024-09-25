@@ -1,6 +1,9 @@
 <?php
 define('SUBJECT', $data['params']->subject);
 define('KLASS', $data['params']->class);
+define('SCH_NAME', $data['sch']->name);
+define('MOTTO', $data['sch']->motto);
+define('E_TIME', $data['check']->duration);
 // Include the main TCPDF library (search for installation path).
 require APPROOT . '/views/TCPDF-main/tcpdf.php';
 
@@ -10,18 +13,19 @@ class MYPDF extends TCPDF
 	private $klass = KLASS;
 	private $sub = SUBJECT;
 	private $year = SCH_SESSION;
+	private $time = E_TIME;
 	//Page header
 	public function Header()
 	{
 		// Set font
 		$this->setFont('helvetica', 'B', 17);
 		// Title
-		$this->Cell(0, 15, 'Glory Land Academy', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 15, SCH_NAME, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		$this->Ln(6);
 		// Set font
 		$this->setFont('helvetica', 'I', 10);
 		// Title
-		$this->Cell(0, 15, 'Knowledge is power', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		$this->Ln(6);
 		// Set font
 		$this->setFont('helvetica', 'B', 11);
@@ -47,7 +51,7 @@ class MYPDF extends TCPDF
 		$html3 = "
               <div class='row'>
                  <div class='col-md-3'>
-                   <p><strong>Time:</strong> 2hours</p>  
+                   <p><strong>Time:</strong> $this->time </p>  
                   <p><strong>Class:</strong> $this->klass <strong></p>
                 </div>
               </div>
@@ -188,7 +192,7 @@ $pdf->Write(0, $hr2, '', 0, 'C', true, 0, false, false, 0);
 
 // Output a centered text string with normal font 10 pixels size
 $pdf->setFont('times', 'N', 10);
-$amt = 4;
+$amt = $data['check']->choice;
 $ins = <<<EOD
 Answer any $amt questions of your choice
 -------------------------------------------------------
@@ -318,7 +322,7 @@ foreach ($data['theory'] as $theory) {
 					</td>
 				</tr>
 			</table>';
-	$pdf->writeHTML($subtable2, true, false, true, false, '');
+	//$pdf->writeHTML($subtable2, true, false, true, false, '');
 } // End foreach loop
 
 

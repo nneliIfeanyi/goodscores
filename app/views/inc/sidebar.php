@@ -69,9 +69,9 @@
      <li class="nav-heading">More</li>
 
      <li class="nav-item">
-       <a class="nav-link collapsed" href="users-profile.html">
-         <i class="bi bi-person"></i>
-         <span>Profile</span>
+       <a class="nav-link collapsed" href="<?= URLROOT; ?>/pages/profile/<?= $_COOKIE['sch_id']; ?>">
+         <i class="bi bi-gear"></i>
+         <span>Site Settings</span>
        </a>
      </li><!-- End Profile Page Nav -->
 
