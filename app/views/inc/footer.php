@@ -7,6 +7,8 @@
 <!-- Template Main JS File -->
 <script src="<?php echo URLROOT; ?>/assets/js/main.js"></script>
 
+<script src="<?php echo URLROOT; ?>/app.js"></script>
+
 <!-- Vendor JS Files -->
 <script src="<?php echo URLROOT; ?>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/vendor/simple-datatables/simple-datatables.js"></script>

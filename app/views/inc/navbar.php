@@ -72,7 +72,7 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <?php if (isset($_SESSION['photo'])) : ?>
+            <?php if (!empty($_SESSION['photo'])) : ?>
               <img src="<?= URLROOT; ?>/<?= $_SESSION['photo']; ?>" alt="Profile" class="rounded-circle">
             <?php else : ?>
               <i class="bi bi-person-circle fs-3"></i>

@@ -10,75 +10,17 @@ require APPROOT . '/views/TCPDF-main/tcpdf.php';
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
-	private $klass = KLASS;
-	private $sub = SUBJECT;
-	private $year = SCH_SESSION;
-	private $time = E_TIME;
-	//Page header
-	public function Header()
-	{
-		// Set font
-		$this->setFont('helvetica', 'B', 17);
-		// Title
-		$this->Cell(0, 15, SCH_NAME, 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		$this->Ln(6);
-		// Set font
-		$this->setFont('helvetica', 'I', 10);
-		// Title
-		$this->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		$this->Ln(6);
-		// Set font
-		$this->setFont('helvetica', 'B', 11);
-		// Title
-		$this->Cell(0, 15, TERM . ' Examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		// Set font
-		$this->setFont('helvetica', 'N', 11);
-		$html = "
-              <div class='row'>
-                 <div class='col-md-3'>
-                   <p><strong>Subject:</strong> $this->sub</p> 
-                   <p><strong>Session:</strong> $this->year</p> 
-                </div>
-              </div>
-              <style>
-                h3{font-size: 12px; text-transform: lowercase !important;}  
-                p{font-size: 11px; line-height: 0px;} 
-                span{font-size: 12px;}
-             </style>
-            ";
-
-
-		$html3 = "
-              <div class='row'>
-                 <div class='col-md-3'>
-                   <p><strong>Time:</strong> $this->time </p>  
-                  <p><strong>Class:</strong> $this->klass <strong></p>
-                </div>
-              </div>
-              <style> 
-                p{font-size: 11px; line-height: 0px;} 
-                div{padding-right: 10px;}
-             </style>
-            ";
-		$html2 = "
-              <hr>
-            ";
-
-		$this->WriteHtmlCell(80, 10, '', 10, $html);
-		$this->WriteHtmlCell(60, 20, 156, 10, $html3);
-		$this->WriteHtmlCell('', 20, '', 22, $html2);
-		//$this->Image($img_file, 170, 28, 32, 32, '', '', '', false, 300, '', false, false, 0);
-	}
 
 	// Page footer
 	public function Footer()
 	{
 		// Position at 15 mm from bottom
-		$this->setY(-15);
+		$this->setY(-10);
 		// Set font
-		$this->setFont('helvetica', 'I', 8);
+		$this->setFont('helvetica', 'I', 7);
 		// Page number
-		$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		//$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Powered by Stanvic Concepts', 0, false, 'C', 0, '', 0, false, 'T', 'M');
 	}
 }
 
@@ -92,20 +34,15 @@ $pdf->setTitle('GoodScores Sample Output');
 $pdf->setSubject('Exam Questions Document');
 $pdf->setKeywords('Stanvic, Stanvic Concepts, GoodScores, Teachers Aid, Set Exam Questions Online');
 
-// set default header data
-$pdf->setHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-
-// set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+// remove default header/footer
+$pdf->setPrintHeader(false);
+//$pdf->setPrintFooter(false);
 
 // set default monospaced font
 $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
 $pdf->setMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->setHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->setFooterMargin(PDF_MARGIN_FOOTER);
 
 // set auto page breaks
 $pdf->setAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
@@ -120,13 +57,71 @@ if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 }
 
 // ---------------------------------------------------------
+
+
+// ---------------------------------------------------------
 // add a page
 $pdf->AddPage();
+$motto = $data['sch']->motto;
+$name = $data['sch']->name;
+$klass = KLASS;
+$sub = SUBJECT;
+$year = SCH_SESSION;
+$time = E_TIME;
+
+		// Set font
+		$pdf->setFont('helvetica', 'B', 17);
+		// Title
+		$pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 2, false, 'M', 'M');
+		$pdf->Ln(6);
+		// Set font
+		$pdf->setFont('helvetica', 'I', 10);
+		// Title
+		$pdf->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$pdf->Ln(6);
+		// Set font
+		$pdf->setFont('times', 'B', 11);
+		// Title
+		$pdf->Cell(0, 15, TERM . ' Examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+	$pdf->setFont('times', 'N', 12);
+$html = "
+              <div class='row'>
+                 <div class='col-md-3'>
+                   <p><strong>Subject: </strong> $sub</p> 
+                   <p><strong>Session: </strong> $year</p> 
+                </div>
+              </div>
+              <style>
+                h3{font-size: 12px; text-transform: lowercase !important;}  
+                p{font-size: 11px; line-height: 0px;} 
+                span{font-size: 12px;}
+             </style>
+            ";
 
 
-// set font
+$html3 = "
+              <div class='row'>
+                 <div class='col-md-3'>
+                   <p><strong>Time: </strong> $time </p>  
+                  <p><strong>Class: </strong> $klass <strong></p>
+                </div>
+              </div>
+              <style> 
+                p{font-size: 11px; line-height: 0px;} 
+                div{padding-right: 10px;}
+             </style>
+            ";
+
+		$hr = "
+              <hr>
+            ";
+    $pdf->WriteHtmlCell('', 20, '', 25, $hr);
+		$pdf->WriteHtmlCell(80, 10, '', 13, $html);
+		$pdf->WriteHtmlCell(60, 20, 156, 13, $html3);
+// -------------------------------------------------------------
+
+$pdf->Ln(15);
 $pdf->setFont('times', 'BI', 12);
-// set some text to print
 $txt = <<<EOD
 Objectives Questions
 EOD;
@@ -164,7 +159,7 @@ foreach ($data['obj'] as $obj) {
 				<tr>
 					<td width="21"><b>' . $num . ')</b></td>
 					<td style="width:667px;">' . $obj->question . '<br>
-					<span style="font-size:12px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
+					<span style="font-size:13px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
 					</span></td>
 				</tr>
 			</table>';
@@ -207,42 +202,38 @@ foreach ($data['theory'] as $theory) {
 	$num2++;
 	$pull_each = $this->postModel->pullEach($theory->questionID, $theory->paperID);
 	$pdf->setFont('times', 'N', 11);
-	$subtable2 = '<table>
+	$table = '<table>
 				<tr>
 					<td width="25"><b>' . $num2 . 'a)</b></td>
 					<td style="width:667px;">' . $pull_each->questionA . '<br>';
 	if (!empty($pull_each->Ai)) {
-		$subtable2 .= '
+		$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ai . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Aii)) {
-		$subtable2 .= '
+		$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Aii . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Aiii)) {
-		$subtable2 .= '
+		$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Aiii . '</span>
 						
 		';
 	}
-	if (!empty($pull_each->Ai)) {
-		$subtable2 .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Ai . '</span>
-						
-		';
+	if (!empty($pull_each->Aiv)) {
+		$table .= '
+					<span><b>(iv)&nbsp;</b>' . $pull_each->Aiv . '</span>';
 	}
-	$subtable2 .= '			
-					</td>
-				</tr>
-			</table>';
+	$table .= '</td>
+	</tr>
+</table>';
 
 	if (!empty($pull_each->questionB)) {
-		$subtable2 .= '<table>
-				<tr>
+		$subtable2 = '
 					<td width="25"><b>' . $num2 . 'b)</b></td>
 					<td style="width:667px;">' . $pull_each->questionB . '<br>';
 	}
@@ -268,18 +259,14 @@ foreach ($data['theory'] as $theory) {
 	}
 	if (!empty($pull_each->Biv)) {
 		$subtable2 .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>
-						
-		';
+					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
 	}
-	$subtable2 .= '			
-					</td>
-				</tr>
-			</table>';
+	$subtable2.= '</td>
+	</tr>
+</table>';
 
 	if (!empty($pull_each->questionC)) {
-		$subtable2 .= '<table>
-				<tr>
+		$subtable2 .= '
 					<td width="25"><b>' . $num2 . 'c)</b></td>
 					<td style="width:667px;">' . $pull_each->questionC . '<br>';
 	}
@@ -301,28 +288,28 @@ foreach ($data['theory'] as $theory) {
 		$subtable2 .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>
 						
-		';
+		</td>';
 	}
 
-	$subtable2 .= '			
-					</td>
-				</tr>
-			</table>';
+	// $subtable2 .= '			
+	// 				</td>
+	// 			</tr>
+	// 		</table>';
 
 	if (!empty($pull_each->questionD)) {
-		$subtable2 .= '<table>
-				<tr>
+		$subtable2 .= '
 					<td width="25"><b>' . $num2 . 'd)</b></td>
-					<td style="width:667px;">' . $pull_each->questionD . '<br>';
+					<td style="width:667px;">' . $pull_each->questionD . '</td>';
 	}
 
 
 
-	$subtable2 .= '			
-					</td>
+	$subtable2 .= '
 				</tr>
 			</table>';
-	//$pdf->writeHTML($subtable2, true, false, true, false, '');
+	$pdf->writeHTML($table, true, false, true, false, '');
+
+	$pdf->writeHTML($subtable2, true, false, true, false, '');
 } // End foreach loop
 
 

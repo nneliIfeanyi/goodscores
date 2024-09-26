@@ -12,7 +12,18 @@ class Pages extends Controller
   // Load Homepage
   public function index()
   {
-    redirect('pages/login');
+     if (isset($_COOKIE['sch_id'])) {
+      redirect('users/login');
+    }
+    $schools = $this->pageModel->getSchools();
+      $data = [
+        'schools' => $schools,
+        'username' => '',
+        'username_err' => ''
+      ];
+
+      // Load about view
+      $this->view('pages/index', $data);
   }
 
 
