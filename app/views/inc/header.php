@@ -10,8 +10,8 @@
   <meta content="" name="keywords">
   <!-- Site Manifest -->
   <link href="<?php echo URLROOT; ?>/site.webmanifest" rel="manifest">
-  <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
-  <meta name="theme-color" content="#FFE1C4">
+  <meta name="apple-mobile-web-app-status-bar" content="#0d6efd">
+  <meta name="theme-color" content="#0d6efd">
   <!-- Favicons -->
   <link href="<?php echo URLROOT; ?>/icons/mask3.png" rel="icon">
   <link href="<?php echo URLROOT; ?>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">

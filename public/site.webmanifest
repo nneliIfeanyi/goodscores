@@ -1,0 +1,38 @@
+{
+  "name": "Good Scores",
+  "short_name": "GoodScores",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f6f9ff",
+  "theme_color": "#0d6efd",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/mask.png",
+      "type": "image/png",
+      "sizes": "104x104"
+    },
+    {
+      "src": "icons/mask3.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "icons/mask2.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "icons/mask4.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose":"maskable"
+    },
+    {
+      "src": "icons/mask5.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose":"any"
+    }
+  ]
+}
