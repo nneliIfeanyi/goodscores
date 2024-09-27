@@ -301,13 +301,6 @@ class Users extends Controller
   // Logout & Destroy Session
   public function logout()
   {
-
-    $id = $_COOKIE['sch_id'];
-    $name = $_COOKIE['sch_name'];
-    $username = $_COOKIE['sch_username'];
-    setcookie('sch_id', $id, time() - 3, '/');
-    setcookie('sch_name', $name, time() - 3, '/');
-    setcookie('sch_username', $username, time() - 3, '/');
     unset($_SESSION['user_id']);
     unset($_SESSION['name']);
     unset($_SESSION['username']);

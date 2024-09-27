@@ -36,6 +36,11 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
   <style type="text/css">
+    #loader {
+      min-height: 100%;
+      z-index: 99999;
+    }
+
     /*flash Message*/
     #msg-flash {
       margin: 0;

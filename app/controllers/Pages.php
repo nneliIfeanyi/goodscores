@@ -12,18 +12,18 @@ class Pages extends Controller
   // Load Homepage
   public function index()
   {
-     if (isset($_COOKIE['sch_id'])) {
+    if (isset($_COOKIE['sch_id'])) {
       redirect('users/login');
     }
     $schools = $this->pageModel->getSchools();
-      $data = [
-        'schools' => $schools,
-        'username' => '',
-        'username_err' => ''
-      ];
+    $data = [
+      'schools' => $schools,
+      'username' => '',
+      'username_err' => ''
+    ];
 
-      // Load about view
-      $this->view('pages/index', $data);
+    // Load about view
+    $this->view('pages/index', $data);
   }
 
 
@@ -45,9 +45,9 @@ class Pages extends Controller
         $data['username_err'] = 'User not found | Username incorrect!';
         $this->view('pages/login', $data);
       } elseif ($sch = $this->userModel->findSchByUsername($data['username'])) {
-        setcookie('sch_id', $sch->id, time() + (86400), '/');
-        setcookie('sch_name', $sch->name, time() + (86400), '/');
-        setcookie('sch_username', $sch->username, time() + (86400), '/');
+        setcookie('sch_id', $sch->id, time() + (86400 * 365), '/');
+        setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
+        setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
         flash('msg', 'School authentication approved');
         redirect('users/login');
       }

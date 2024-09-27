@@ -1,4 +1,10 @@
 <body>
+  <!-- PAGE LOADER -->
+  <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
+    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.7);z-index: 500;">
+      <span class="spinner-border text-primary"> </span>
+    </div>
+  </div>
   <!-- ======= Flash Message ======= -->
   <?php echo flash('msg'); ?>
   <!-- ======= Header ======= -->
@@ -71,14 +77,14 @@
 
         <li class="nav-item dropdown pe-3">
 
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <label class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <?php if (!empty($_SESSION['photo'])) : ?>
               <img src="<?= URLROOT; ?>/<?= $_SESSION['photo']; ?>" alt="Profile" class="rounded-circle">
             <?php else : ?>
               <i class="bi bi-person-circle fs-3"></i>
             <?php endif; ?>
             <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $_SESSION['username']; ?></span>
-          </a><!-- End Profile Iamge Icon -->
+          </label><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">

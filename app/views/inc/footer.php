@@ -14,6 +14,32 @@
 <script src="<?php echo URLROOT; ?>/assets/vendor/simple-datatables/simple-datatables.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/vendor/tinymce/tinymce.min.js"></script>
 
+<!-- Page loader fadeout -->
+<script>
+    $(document).ready(function() {
+        $('#loader').fadeOut();
+    });
+</script>
+<!-- Page loader fade in on link click -->
+<script>
+    $(document).ready(function() {
+        $('a').each(function() {
+            $(this).click(function() {
+                $('#loader').fadeIn();
+            });
+        });
+    });
+</script>
+<!-- Page loader fade in on form submit -->
+<script>
+    $(document).ready(function() {
+        $(':submit').each(function() {
+            $(this).click(function() {
+                $('#loader').fadeIn();
+            });
+        });
+    });
+</script>
 
 </body>
 

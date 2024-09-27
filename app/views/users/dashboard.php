@@ -10,7 +10,7 @@
     <h1>Dashboard</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/dashboard">Home</a></li>
         <li class="breadcrumb-item">Dashboard</li>
       </ol>
     </nav>
@@ -124,67 +124,67 @@
                   <tbody>
 
                     <?php
-                    if(!empty($data['recent'])):
-                     foreach ($data['recent'] as $recent) :
-                      $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
-                      $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
-                      $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
+                    if (!empty($data['recent'])) :
+                      foreach ($data['recent'] as $recent) :
+                        $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+                        $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
+                        $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
                     ?>
-                      <tr>
-                        <td><?php echo $recent->subject; ?></td>
-                        <td class="text-primary"><?php echo $recent->section; ?></td>
-                        <td><?php echo $recent->class; ?></td>
-                        <td><?php echo $recent->term; ?></td>
-                        <td><?php echo $recent->year; ?></td>
-                        <?php if ($recent->section == 'objectives_questions') : ?>
-                          <?php if ($obj_num_rows != $status->num_rows) : ?>
-                            <td><span class="badge bg-warning">Pending</span></td>
-                            <td scope="row">
-                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                              <i class="bi bi-eye fs-3"></i>
-                            </a>
-                          </td>
-                          <?php else : ?>
-                            <td><span class="badge bg-success">Completed</span></td>
-                            <td scope="row">
-                            <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                              <i class="bi bi-eye fs-3"></i>
-                            </a>
-                            <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
-                              <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
-                            </a>
-                          </td>
-                          <?php endif; ?>
-                          
-                        <?php elseif ($recent->section == 'theory_questions') : ?>
-                          <?php if ($theory_num_rows != $status->num_rows2) : ?>
-                            <td><span class="badge bg-warning">Pending</span></td>
-                            <td scope="row">
-                            <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                              <i class="bi bi-eye fs-3"></i>
-                            </a>
-                          </td>
-                          <?php else : ?>
-                            <td><span class="badge bg-success">Completed</span></td>
-                            <td scope="row">
-                            <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                              <i class="bi bi-eye fs-3"></i>
-                            </a>
-                            <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
-                              <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
-                            </a>
-                          </td>
-                          <?php endif; ?>
-                          
-                        <?php endif; ?>
-                      </tr>
+                        <tr>
+                          <td><?php echo $recent->subject; ?></td>
+                          <td class="text-primary"><?php echo $recent->section; ?></td>
+                          <td><?php echo $recent->class; ?></td>
+                          <td><?php echo $recent->term; ?></td>
+                          <td><?php echo $recent->year; ?></td>
+                          <?php if ($recent->section == 'objectives_questions') : ?>
+                            <?php if ($obj_num_rows != $status->num_rows) : ?>
+                              <td><span class="badge bg-warning">Pending</span></td>
+                              <td scope="row">
+                                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye fs-3"></i>
+                                </a>
+                              </td>
+                            <?php else : ?>
+                              <td><span class="badge bg-success">Completed</span></td>
+                              <td scope="row">
+                                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye fs-3"></i>
+                                </a>
+                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
+                                </a>
+                              </td>
+                            <?php endif; ?>
 
-                    <?php endforeach; 
-                  else:?>
-                    <tr>
-                      <td class="text-danger">No data set</td>
-                    </tr>
-                  <?php endif;?>
+                          <?php elseif ($recent->section == 'theory_questions') : ?>
+                            <?php if ($theory_num_rows != $status->num_rows2) : ?>
+                              <td><span class="badge bg-warning">Pending</span></td>
+                              <td scope="row">
+                                <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye fs-3"></i>
+                                </a>
+                              </td>
+                            <?php else : ?>
+                              <td><span class="badge bg-success">Completed</span></td>
+                              <td scope="row">
+                                <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye fs-3"></i>
+                                </a>
+                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
+                                </a>
+                              </td>
+                            <?php endif; ?>
+
+                          <?php endif; ?>
+                        </tr>
+
+                      <?php endforeach;
+                    else : ?>
+                      <tr>
+                        <td class="text-danger">No data set</td>
+                      </tr>
+                    <?php endif; ?>
                   </tbody>
                 </table>
 

@@ -19,7 +19,6 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'classname' => val_entry($_POST['classname']),
@@ -50,7 +49,6 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'classname' => val_entry($_POST['classname']),
@@ -81,7 +79,6 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'name' => val_entry($_POST['name']),
@@ -124,7 +121,6 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
       $user = $this->userModel->findTeacherById($id);
       $data = [
         'id' => $id,

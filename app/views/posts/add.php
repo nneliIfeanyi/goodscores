@@ -10,7 +10,7 @@
     <h1>Set Questions | <?php echo $data['subject']; ?></h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.html"><?php echo $data['class']; ?></a></li>
+        <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/classes"><?php echo $data['class']; ?></a></li>
         <li class="breadcrumb-item"><?php echo $data['term']; ?></li>
         <li class="breadcrumb-item active"><?php echo $data['year']; ?></li>
       </ol>

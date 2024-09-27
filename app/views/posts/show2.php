@@ -7,8 +7,8 @@
     <h1><?php echo $data['params']->subject; ?></h1>
     <nav>
       <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/classes"><?php echo $data['params']->class; ?></a></li>
         <li class="breadcrumb-item"><?php echo $data['params']->term; ?></li>
-        <li class="breadcrumb-item"><?php echo $data['params']->class; ?></li>
         <li class="breadcrumb-item active"><?php echo $data['params']->year; ?></li>
       </ol>
     </nav>

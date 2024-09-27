@@ -26,9 +26,9 @@
 
 
      <li class="nav-item">
-       <a class="nav-link collapsed" data-bs-target="#setquestionsnav" data-bs-toggle="collapse" href="#">
+       <label class="nav-link collapsed" data-bs-target="#setquestionsnav" data-bs-toggle="collapse" href="#">
          <i class="bi bi-pen"></i><span>Set Questions</span><i class="bi bi-chevron-down ms-auto"></i>
-       </a>
+       </label>
        <ul id="setquestionsnav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
          <li>
            <a href="<?php echo URLROOT; ?>/users/set/objectives_questions">
