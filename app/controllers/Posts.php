@@ -96,10 +96,12 @@ class Posts extends Controller
         'num_rows' => $num_rows,
         'total_subject_num_rows' => $expected_num_rows->num_rows
       ];
+
       if (empty($_SESSION['daigram'])) { // Question has no daigram
         $data['daigram'] = '';
         if ($this->postModel->setQuestions($data)) {
-          flash('msg', 'Question ' . $num_rows + 1 . ' is set successfully');
+          $num_rows = $num_rows + 1;
+          flash("msg", "Question $num_rows  is set successfully");
           redirect('posts/add/' . $paper_id);
         } else {
           die('Something went wrong..');
@@ -109,7 +111,8 @@ class Posts extends Controller
         if ($this->postModel->setQuestions($data)) {
           // Unset question diAGRAM
           unset($_SESSION['daigram']);
-          flash('msg', 'Question ' . $num_rows + 1 . ' is set successfully');
+          $num_rows = $num_rows + 1;
+          flash("msg", "Question $num_rows  is set successfully");
           redirect('posts/add/' . $paper_id);
         }
       }
@@ -207,7 +210,8 @@ class Posts extends Controller
       if (empty($_SESSION['daigram'])) { // Question has no daigram
         $data['img'] = '';
         if ($this->postModel->setQuestions2($data)) {
-          flash('msg', 'Theory Question ' . $num_rows + 1 . ' is set successfully');
+          $num_rows = $num_rows + 1;
+          flash("msg", "Theory Question  $num_rows is set successfully");
           redirect('posts/add2/' . $paper_id);
         } else {
           die('Something went wrong..');
@@ -217,7 +221,8 @@ class Posts extends Controller
         if ($this->postModel->setQuestions2($data)) {
           // Unset question diAGRAM
           unset($_SESSION['daigram']);
-          flash('msg', 'Theory Question ' . $num_rows + 1 . ' is set successfully');
+          $num_rows = $num_rows + 1;
+          flash("msg", "Theory Question $num_rows is set successfully");
           redirect('posts/add2/' . $paper_id);
         } else {
           die('Something went wrong..');
