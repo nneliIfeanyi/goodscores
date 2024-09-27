@@ -28,7 +28,7 @@
             <div class="card info-card sales-card">
 
               <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <label class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></label>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                   <li class="dropdown-header text-start">
                     <h6>Go to</h6>
@@ -61,7 +61,7 @@
             <div class="card info-card sales-card">
 
               <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <label class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></label>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                   <li class="dropdown-header text-start">
                     <h6>Go to</h6>
@@ -94,7 +94,7 @@
             <div class="card top-selling overflow-auto">
 
               <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <label class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></label>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                   <li class="dropdown-header text-start">
                     <h6>New Activity</h6>
