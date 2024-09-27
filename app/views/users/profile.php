@@ -48,15 +48,15 @@
                         <ul class="nav nav-tabs nav-tabs-bordered">
 
                             <li class="nav-item">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                                <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Photo</button>
+                                <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Photo</button>
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                                <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
                             </li>
 
                         </ul>
