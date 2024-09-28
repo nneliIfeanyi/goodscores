@@ -306,9 +306,9 @@ foreach ($data['theory'] as $theory) {
 	}
 
 	$pdf->writeHTML($table, true, false, true, false, '');
-	$pdf->writeHTML($table2, true, false, true, false, '');
-	$pdf->writeHTML($table3, true, false, true, false, '');
-	$pdf->writeHTML($table4, true, false, true, false, '');
+	//$pdf->writeHTML($table2, true, false, true, false, '');
+	//$pdf->writeHTML($table3, true, false, true, false, '');
+	//$pdf->writeHTML($table4, true, false, true, false, '');
 } // End foreach loop
 
 
