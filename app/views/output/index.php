@@ -290,12 +290,12 @@ foreach ($data['theory'] as $theory) {
 						
 		';
 	}
-		$table .= '</tr>
+		$table .= '<td></tr>
 	</table';
 	}
 
 	if (!empty($pull_each->questionD)) {
-		$table2 = '<table>
+		$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'd)</b></td>
 					<td style="width:667px;">' . $pull_each->questionD . '</td>
@@ -304,7 +304,7 @@ foreach ($data['theory'] as $theory) {
 	}
 
 	$pdf->writeHTML($table, true, false, true, false, '');
-	$pdf->writeHTML($table2, true, false, true, false, '');
+	//$pdf->writeHTML($table2, true, false, true, false, '');
 } // End foreach loop
 
 
