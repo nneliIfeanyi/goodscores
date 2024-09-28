@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
-
+    <?php echo flash('msg'); ?>
     <main>
         <div class="container">
 
@@ -22,21 +22,21 @@
                                 <div class="card-body">
                                     <div class="pt-4 pb-2">
                                         <h5 class="card-title text-center pb-0 fs-4">Welcome!</h5>
-                                        <p class="text-center small">Enter your Organization/Institution username to login</p>
+                                        <p class="text-center small">Enter your Organization/Institution username or email to login</p>
                                     </div>
 
                                     <form class="row g-3 needs-validation" method="POST" action="<?php echo URLROOT; ?>/pages/login">
 
                                         <div class="col-12">
-                                            <label for="yourUsername" class="form-label">Username</label>
+                                            <label for="yourUsername" class="form-label">Username | Email</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                <input type="input" autocomplete="off" name="username" list="schools" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
-                                                <datalist id="schools">
+                                                <input type="input" name="username" list="schools" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
+                                                <!-- <datalist id="schools">
                                                     <?php foreach ($data['schools'] as $sch) : ?>
                                                         <option value="<?= $sch->username; ?>"></option>
                                                     <?php endforeach; ?>
-                                                </datalist>
+                                                </datalist> -->
                                                 <div class="invalid-feedback"><?php echo $data['username_err'] ?></div>
                                             </div>
                                         </div>

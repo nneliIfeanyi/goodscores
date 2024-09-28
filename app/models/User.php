@@ -30,25 +30,7 @@ class User
     }
   }
 
-  // Add User / Register Teacher
-  public function registerSch($data)
-  {
-    // Prepare Query
-    $this->db->query('INSERT INTO school (name, email, phone, username) 
-      VALUES (:name, :email, :phone, :username)');
 
-    // Bind Values
-    $this->db->bind(':name', $data['name']);
-    $this->db->bind(':email', $data['email']);
-    $this->db->bind(':phone', $data['phone']);
-    $this->db->bind(':username', $data['username']);
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   // Find User BY Email
   public function findUserByEmail($email)
@@ -66,21 +48,7 @@ class User
     }
   }
 
-  // Find Sch BY Email
-  public function findSchByEmail($email)
-  {
-    $this->db->query("SELECT * FROM school WHERE email = :email");
-    $this->db->bind(':email', $email);
 
-    $row = $this->db->single();
-
-    //Check Rows
-    if ($this->db->rowCount() > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   // Find Teacher BY Username
   public function findTeacherByUsername($username)
@@ -93,6 +61,24 @@ class User
     //Check Rows
     if ($this->db->rowCount() > 0) {
       return true;
+    } else {
+      return false;
+    }
+  }
+
+
+
+  // Find Teacher BY Username
+  public function findTeacher($username)
+  {
+    $this->db->query("SELECT * FROM teachers WHERE username = :username OR email = :username");
+    $this->db->bind(':username', $username);
+
+    $row = $this->db->single();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $row;
     } else {
       return false;
     }
@@ -114,26 +100,11 @@ class User
     }
   }
 
-  // Find Teacher BY Username
-  public function findSchByUsername($username)
-  {
-    $this->db->query("SELECT * FROM school WHERE username = :username");
-    $this->db->bind(':username', $username);
-
-    $row = $this->db->single();
-
-    //Check Rows
-    if ($this->db->rowCount() > 0) {
-      return $row;
-    } else {
-      return false;
-    }
-  }
 
   // Login / Authenticate User
   public function login($username, $sch_id, $password)
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND username = :username");
+    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND username = :username OR email = :username");
     $this->db->bind(':username', $username);
     $this->db->bind(':sch_id', $sch_id);
 

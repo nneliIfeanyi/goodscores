@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 define('SUBJECT', $data['params']->subject);
 define('KLASS', $data['params']->class);
 define('SCH_NAME', $data['sch']->name);
@@ -69,21 +70,21 @@ $sub = SUBJECT;
 $year = SCH_SESSION;
 $time = E_TIME;
 
-		// Set font
-		$pdf->setFont('helvetica', 'B', 17);
-		// Title
-		$pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 2, false, 'M', 'M');
-		$pdf->Ln(6);
-		// Set font
-		$pdf->setFont('helvetica', 'I', 10);
-		// Title
-		$pdf->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
-		$pdf->Ln(6);
-		// Set font
-		$pdf->setFont('times', 'B', 11);
-		// Title
-		$pdf->Cell(0, 15, TERM . ' Examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-	$pdf->setFont('times', 'N', 12);
+// Set font
+$pdf->setFont('helvetica', 'B', 17);
+// Title
+$pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 2, false, 'M', 'M');
+$pdf->Ln(6);
+// Set font
+$pdf->setFont('helvetica', 'I', 10);
+// Title
+$pdf->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
+$pdf->Ln(6);
+// Set font
+$pdf->setFont('times', 'B', 11);
+// Title
+$pdf->Cell(0, 15, TERM . ' Examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+$pdf->setFont('times', 'N', 12);
 $html = "
               <div class='row'>
                  <div class='col-md-3'>
@@ -112,12 +113,12 @@ $html3 = "
              </style>
             ";
 
-		$hr = "
+$hr = "
               <hr>
             ";
-    $pdf->WriteHtmlCell('', 20, '', 25, $hr);
-		$pdf->WriteHtmlCell(80, 10, '', 13, $html);
-		$pdf->WriteHtmlCell(60, 20, 156, 13, $html3);
+$pdf->WriteHtmlCell('', 20, '', 25, $hr);
+$pdf->WriteHtmlCell(80, 10, '', 13, $html);
+$pdf->WriteHtmlCell(60, 20, 156, 13, $html3);
 // -------------------------------------------------------------
 
 $pdf->Ln(15);
@@ -262,7 +263,7 @@ foreach ($data['theory'] as $theory) {
 		$table2 .= '
 					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
 	}
-	$table2.= '</td>
+	$table2 .= '</td>
 	</tr>
 </table>';
 

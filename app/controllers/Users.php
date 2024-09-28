@@ -236,8 +236,6 @@ class Users extends Controller
 
     // Check if POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'sch_id' => $_COOKIE['sch_id'],
@@ -254,7 +252,7 @@ class Users extends Controller
       } elseif (empty($data['password'])) {
         $data['password_err'] = 'Please enter your password.';
         $this->view('users/login', $data);
-      } elseif (!$this->userModel->findTeacherByUsername($data['username'])) {
+      } elseif (!$this->userModel->findTeacher($data['username'])) {
         // User Not Found
         $data['username_err'] = 'User Not Found.';
         $this->view('users/login', $data);

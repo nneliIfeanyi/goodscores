@@ -1,6 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
+  <?php echo flash('msg'); ?>
   <!-- PAGE LOADER -->
   <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
     <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.7);z-index: 500;">
@@ -25,7 +26,7 @@
               <div class="card mb-3">
 
                 <div class="card-body">
-                  <?php echo flash('msg'); ?>
+
                   <div class="pt-4 pb-2">
                     <h5 class="card-title text-center pb-0 fs-4">Teacher's Section</h5>
                     <p class="text-center small">Enter your username & password to login</p>
@@ -34,7 +35,7 @@
                   <form class="row g-3 needs-validation" method="POST" action="<?php echo URLROOT; ?>/users/login">
 
                     <div class="col-12">
-                      <label for="yourUsername" class="form-label">Username</label>
+                      <label for="yourUsername" class="form-label">Username | Email</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
                         <input type="text" name="username" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">

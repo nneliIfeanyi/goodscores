@@ -41,10 +41,10 @@ class Pages extends Controller
       if (empty($data['username'])) {
         $data['username_err'] = 'Kindly enter your school username';
         $this->view('pages/login', $data);
-      } elseif (!$this->userModel->findSchByUsername($data['username'])) {
-        $data['username_err'] = 'User not found | Username incorrect!';
+      } elseif (!$this->pageModel->findSch($data['username'])) {
+        $data['username_err'] = 'User not found | Username or email incorrect!';
         $this->view('pages/login', $data);
-      } elseif ($sch = $this->userModel->findSchByUsername($data['username'])) {
+      } elseif ($sch = $this->pageModel->findSch($data['username'])) {
         setcookie('sch_id', $sch->id, time() + (86400 * 365), '/');
         setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
         setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
@@ -86,17 +86,17 @@ class Pages extends Controller
         'email_err' => ''
       ];
       // Validation
-      if ($this->userModel->findSchByEmail($data['email'])) {
+      if ($this->pageModel->findSchByEmail($data['email'])) {
         $data['email_err'] = 'Email already in use!';
         $this->view('pages/register', $data);
-      } elseif ($this->userModel->findSchByUsername($data['username'])) {
+      } elseif ($this->pageModel->findSchByUsername($data['username'])) {
         $data['username_err'] = 'Username' . $data['username'] . 'is taken!';
         $this->view('pages/register', $data);
       } else {
-        $register = $this->userModel->registerSch($data);
+        $register = $this->pageModel->registerSch($data);
         if ($register) {
-          flash('msg', 'Registration is successful');
-          redirect('pages/verify_email/' . $data['email']);
+          flash('msg', 'Registration is successful, you can now login');
+          redirect('pages/login');
         } else {
           die('Something went wrong!');
         }
@@ -159,7 +159,6 @@ class Pages extends Controller
     // If post 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'name' => val_entry($_POST['name']),
