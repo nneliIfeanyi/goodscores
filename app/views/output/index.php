@@ -239,32 +239,32 @@ foreach ($data['theory'] as $theory) {
 					<td style="width:667px;">' . $pull_each->questionB . '<br>';
 
 
-	if (!empty($pull_each->Bi)) {
-		$table .= '
+		if (!empty($pull_each->Bi)) {
+			$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Bii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Bii)) {
+			$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Biii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Biii)) {
+			$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Biv)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Biv)) {
+			$table .= '
 					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
-	}
-	$table .= '</td>
+		}
+		$table .= '</td>
 	</tr>
 </table>';
-}
+	}
 
 
 	if (!empty($pull_each->questionC)) {
@@ -272,26 +272,29 @@ foreach ($data['theory'] as $theory) {
 		<tr>
 					<td width="25"><b>' . $num2 . 'c)</b></td>
 					<td style="width:667px;">' . $pull_each->questionC . '<br>';
-					if (!empty($pull_each->Ci)) {
-		$table .= '
+
+
+		if (!empty($pull_each->Ci)) {
+			$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ci . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Cii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Cii)) {
+			$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Cii . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Ciii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Ciii)) {
+			$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>
 						
 		';
-	}
-		$table .= '<td></tr>
-	</table';
+		}
+		$table .= '</td>
+	</tr>
+</table>';
 	}
 
 	if (!empty($pull_each->questionD)) {
