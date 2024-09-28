@@ -6,8 +6,14 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
   <title><?php echo SITENAME; ?></title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+  <meta name="keyword" content="Online exam creation for teachers, Automated grading system for educators, Exam management software for schools, Online quiz platform for students, Educational assessment tools for teachers, Educational technology, Student evaluation, Create online exams" />
+  <meta name="description" content="Goodscores - The ultimate tool for teachers to create, manage and grade exams/assessments online. The leading online platform for educators." />
+  <meta name="robots" content="index, nofollow" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="apple-mobile-web-app-title" content="goodscores" />
+  <meta name="application-name" content="Goodscores" />
+  <meta name="msapplication-TileName" content="Goodscores" />
+  <meta name="msapplication-TileImage" content="<?php echo URLROOT; ?>/icons/mask3.png" width="20" height="20" />
   <!-- Site Manifest -->
   <link href="<?php echo URLROOT; ?>/site.webmanifest" rel="manifest">
   <meta name="apple-mobile-web-app-status-bar" content="#0d6efd">
@@ -27,6 +33,7 @@
 
   <!-- Template Main CSS File -->
   <link href="<?php echo URLROOT; ?>/assets/css/style.css" rel="stylesheet">
+  <link href="<?php echo URLROOT; ?>/assets/css/styles.css" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: NiceAdmin
