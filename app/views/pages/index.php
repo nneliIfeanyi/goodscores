@@ -5,7 +5,7 @@
     <nav id="nav" class="navbar navbar-nav navbar-expand-lg fixed-top bg-light shadow-sm">
         <div class="container">
             <a href="index.html" class="navbar-brand text-primary d-flex align-items-center justify-content-start">
-                <img src="<?= URLROOT; ?>/assets/img/goodscores.png" width="200" height="60" class="" />
+                <img src="<?= URLROOT; ?>/assets/img/goodscores.png" width="200" height="40" class="" />
                 <!-- <h1 class="fs-3 text-primary">Goodscores</h1> -->
             </a>
             <button class="navbar-toggler" type="button" data-bs-theme="lightt" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
