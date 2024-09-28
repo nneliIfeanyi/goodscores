@@ -272,8 +272,26 @@ foreach ($data['theory'] as $theory) {
 		$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'c)</b></td>
-					<td style="width:667px;">' . $pull_each->questionC . '</td>
-		</tr>
+					<td style="width:667px;">' . $pull_each->questionC . '<br>';
+					if (!empty($pull_each->Ci)) {
+		$table .= '
+					<span><b>(i)&nbsp;</b>' . $pull_each->Ci . '</span>
+						
+		';
+	}
+	if (!empty($pull_each->Cii)) {
+		$table .= '
+					<span><b>(ii)&nbsp;</b>' . $pull_each->Cii . '</span>
+						
+		';
+	}
+	if (!empty($pull_each->Ciii)) {
+		$table .= '
+					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>
+						
+		';
+	}
+		$table .= '</tr>
 	</table';
 	}
 
@@ -287,8 +305,9 @@ foreach ($data['theory'] as $theory) {
 	}
 
 	$pdf->writeHTML($table, true, false, true, false, '');
+	$pdf->writeHTML($table2, true, false, true, false, '');
 } // End foreach loop
-$pdf->writeHTML($table2, true, false, true, false, '');
+
 
 
 //Close and output PDF document
