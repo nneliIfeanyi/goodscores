@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL);
 define('SUBJECT', $data['params']->subject);
 define('KLASS', $data['params']->class);
 define('SCH_NAME', $data['sch']->name);

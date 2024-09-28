@@ -50,10 +50,10 @@
                             <li class="nav-item">
                                 <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">School Profile</button>
                             </li>
-
+                            <!-- 
                             <li class="nav-item">
                                 <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Badge | logo</button>
-                            </li>
+                            </li> -->
 
                             <li class="nav-item">
                                 <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</button>
