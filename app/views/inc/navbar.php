@@ -117,7 +117,7 @@
 
             <li>
               <a class="dropdown-item d-flex align-items-center" href="https://wa.me/2349127324517">
-                <i class="bi bi-question-circle"></i>
+                <i class="bi bi-whatsapp"></i>
                 <span>Need Help? | Feedback</span>
               </a>
             </li>
