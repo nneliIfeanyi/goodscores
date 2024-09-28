@@ -277,6 +277,15 @@ foreach ($data['theory'] as $theory) {
 	</table';
 	}
 
+	if (!empty($pull_each->questionD)) {
+		$table .= '<table>
+		<tr>
+					<td width="25"><b>' . $num2 . 'c)</b></td>
+					<td style="width:667px;">' . $pull_each->questionD . '</td>
+		</tr>
+	</table';
+	}
+
 	$pdf->writeHTML($table, true, false, true, false, '');
 	//$pdf->writeHTML($table2, true, false, true, false, '');
 	//$pdf->writeHTML($table3, true, false, true, false, '');
