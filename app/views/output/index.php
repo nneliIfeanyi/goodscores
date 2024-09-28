@@ -237,7 +237,6 @@ foreach ($data['theory'] as $theory) {
 		<tr>
 					<td width="25"><b>' . $num2 . 'b)</b></td>
 					<td style="width:667px;">' . $pull_each->questionB . '<br>';
-	}
 
 
 	if (!empty($pull_each->Bi)) {
@@ -265,7 +264,7 @@ foreach ($data['theory'] as $theory) {
 	$table .= '</td>
 	</tr>
 </table>';
-
+}
 
 
 	if (!empty($pull_each->questionC)) {
