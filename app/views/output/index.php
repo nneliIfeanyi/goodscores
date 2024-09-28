@@ -233,83 +233,82 @@ foreach ($data['theory'] as $theory) {
 </table>';
 
 	if (!empty($pull_each->questionB)) {
-		$subtable2 = '
+		$table2 = '<table>
+		<tr>
 					<td width="25"><b>' . $num2 . 'b)</b></td>
 					<td style="width:667px;">' . $pull_each->questionB . '<br>';
 	}
 
 
 	if (!empty($pull_each->Bi)) {
-		$subtable2 .= '
+		$table2 .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Bii)) {
-		$subtable2 .= '
+		$table2 .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Biii)) {
-		$subtable2 .= '
+		$table2 .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Biv)) {
-		$subtable2 .= '
+		$table2 .= '
 					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
 	}
-	$subtable2.= '</td>
+	$table2.= '</td>
 	</tr>
 </table>';
 
 	if (!empty($pull_each->questionC)) {
-		$subtable2 .= '
+		$table3 = '<table>
+		<tr>
 					<td width="25"><b>' . $num2 . 'c)</b></td>
 					<td style="width:667px;">' . $pull_each->questionC . '<br>';
 	}
 
 
 	if (!empty($pull_each->Ci)) {
-		$subtable2 .= '
+		$table3 .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ci . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Cii)) {
-		$subtable2 .= '
+		$table3 .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Cii . '</span>
 						
 		';
 	}
 	if (!empty($pull_each->Ciii)) {
-		$subtable2 .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>
-						
-		</td>';
+		$table3 .= '
+					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>';
 	}
 
-	// $subtable2 .= '			
-	// 				</td>
-	// 			</tr>
-	// 		</table>';
-
-	if (!empty($pull_each->questionD)) {
-		$subtable2 .= '
-					<td width="25"><b>' . $num2 . 'd)</b></td>
-					<td style="width:667px;">' . $pull_each->questionD . '</td>';
-	}
-
-
-
-	$subtable2 .= '
+	$table3 .= '			
+					</td>
 				</tr>
 			</table>';
-	$pdf->writeHTML($table, true, false, true, false, '');
 
-	$pdf->writeHTML($subtable2, true, false, true, false, '');
+	if (!empty($pull_each->questionD)) {
+		$table4 = '<table>
+		<tr>
+					<td width="25"><b>' . $num2 . 'd)</b></td>
+					<td style="width:667px;">' . $pull_each->questionD . '</td>
+		</tr>
+	</table';
+	}
+
+	$pdf->writeHTML($table, true, false, true, false, '');
+	$pdf->writeHTML($table2, true, false, true, false, '');
+	$pdf->writeHTML($table3, true, false, true, false, '');
+	$pdf->writeHTML($table4, true, false, true, false, '');
 } // End foreach loop
 
 
