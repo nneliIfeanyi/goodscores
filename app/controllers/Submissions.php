@@ -129,7 +129,7 @@ class Submissions extends Controller
         'err' => '',
       ];
       //$data['new'] = password_hash($data['new'], PASSWORD_DEFAULT);
-      if (password_verify($data['new'], $user->password)) {
+      if (password_verify($data['old'], $user->password)) {
         // validation complete
         if ($this->userModel->changePass($data)) {
           // Redirect to login

@@ -75,7 +75,7 @@ $pdf->setFont('helvetica', 'B', 18);
 $pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf->Ln(6);
 // Set font
-$pdf->setFont('helvetica', 'I', 10);
+$pdf->setFont('helvetica', 'I', 11);
 // Title
 $pdf->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf->Ln(6);
@@ -313,7 +313,7 @@ foreach ($data['theory'] as $theory) {
 
 
 //Close and output PDF document
-$pdf->Output('outputed.pdf', 'I');
+$pdf->Output($klass . $sub . '.pdf', 'I');
 
 //============================================================+
 // END OF FILE
