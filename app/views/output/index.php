@@ -70,9 +70,9 @@ $year = SCH_SESSION;
 $time = E_TIME;
 
 // Set font
-$pdf->setFont('helvetica', 'B', 17);
+$pdf->setFont('helvetica', 'B', 18);
 // Title
-$pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 2, false, 'M', 'M');
+$pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf->Ln(6);
 // Set font
 $pdf->setFont('helvetica', 'I', 10);
