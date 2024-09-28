@@ -267,36 +267,36 @@ foreach ($data['theory'] as $theory) {
 </table>';
 
 
-if (!empty($pull_each->questionB)) {
+if (!empty($pull_each->questionC)) {
 		$table .= '<table>
 		<tr>
-					<td width="25"><b>' . $num2 . 'b)</b></td>
-					<td style="width:667px;">' . $pull_each->questionB . '<br>';
+					<td width="25"><b>' . $num2 . 'c)</b></td>
+					<td style="width:667px;">' . $pull_each->questionC . '<br>';
 	}
 
 
-	if (!empty($pull_each->Bi)) {
-		$table .= '
-					<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
+	// if (!empty($pull_each->Bi)) {
+	// 	$table .= '
+	// 				<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
 						
-		';
-	}
-	if (!empty($pull_each->Bii)) {
-		$table .= '
-					<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
+	// 	';
+	// }
+	// if (!empty($pull_each->Bii)) {
+	// 	$table .= '
+	// 				<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
 						
-		';
-	}
-	if (!empty($pull_each->Biii)) {
-		$table .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
+	// 	';
+	// }
+	// if (!empty($pull_each->Biii)) {
+	// 	$table .= '
+	// 				<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
 						
-		';
-	}
-	if (!empty($pull_each->Biv)) {
-		$table .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
-	}
+	// 	';
+	// }
+	// if (!empty($pull_each->Biv)) {
+	// 	$table .= '
+	// 				<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
+	// }
 	$table .= '</td>
 	</tr>
 </table>';
