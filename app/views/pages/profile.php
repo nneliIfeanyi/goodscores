@@ -56,7 +56,7 @@
                             </li> -->
 
                             <li class="nav-item">
-                                <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</button>
+                                <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</a>
                             </li>
 
                         </ul>

@@ -128,9 +128,9 @@ class Submissions extends Controller
         'new' => val_entry($_POST['new']),
         'err' => '',
       ];
-      //$data['new'] = password_hash($data['new'], PASSWORD_DEFAULT);
       if (password_verify($data['old'], $user->password)) {
         // validation complete
+        $data['new'] = password_hash($data['new'], PASSWORD_DEFAULT);
         if ($this->userModel->changePass($data)) {
           // Redirect to login
           flash('msg', 'Password reset is successfull..');
