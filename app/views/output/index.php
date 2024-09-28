@@ -293,6 +293,10 @@ if (!empty($pull_each->questionC)) {
 						
 		';
 	}
+	if (!empty($pull_each->Biv)) {
+		$table .= '
+					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
+	}
 	$table .= '</td>
 	</tr>
 </table>';
