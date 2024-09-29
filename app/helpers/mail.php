@@ -10,26 +10,24 @@ require APPROOT . '/views/PHPMailer/src/SMTP.php';
 function sendMail($reciever)
 {
     $mail = new PHPMailer(true);
-
-    try {
-        $mail->SMTPDebug = 2;
-        $mail->SMTPSecure = 'tls';
-        $mail->isSMTP();
-        $mail->Host = 'live.smtp.mailtrap.io';
-        $mail->SMTPAuth = true;
-        $mail->Port = 587;
-        $mail->Username = 'api';
-        $mail->Password = '0dcbca9704cf4ae1be561df980807ca3';
+    $mail->SMTPDebug = 2;
+    $mail->SMTPSecure = 'tls';
+    $mail->isSMTP();
+    $mail->Host = 'live.smtp.mailtrap.io';
+    $mail->SMTPAuth = true;
+    $mail->Port = 587;
+    $mail->Username = 'api';
+    $mail->Password = '0dcbca9704cf4ae1be561df980807ca3';
 
 
-        $mail->setFrom('goodscores@stanvic.com.ng', 'Good Scores');
-        $mail->addAddress($reciever);
-        //$mail->addAddress('receiver2@gfg.com', 'Name');
+    $mail->setFrom('goodscores@stanvic.com.ng', 'Good Scores');
+    $mail->addAddress($reciever);
+    //$mail->addAddress('receiver2@gfg.com', 'Name');
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Email Verify';
-        $mail->Body =
-            "<div style='text-align:left;background-color:#f6f9ff;padding:0 10px 20px 10px;'>
+    $mail->isHTML(true);
+    $mail->Subject = 'Email Verify';
+    $mail->Body =
+        "<div style='text-align:left;background-color:#f6f9ff;padding:0 10px 20px 10px;'>
             <h1 style='color:#0d6efd;padding-top: 10px;border-radius:6px;'>A warm welcome to GoodScores</h1>
         <p><b>Hello there,</b><br>
                 My name is Victor, and I'm the CEO of GoodScores.
@@ -44,11 +42,11 @@ function sendMail($reciever)
             Nneli Ifeanyi Victor<br>
             CEO <b>GoodScores</b></p><br><br><br>
             </div>";
-        $mail->AltBody = 'A warm welcome to GoodScores, its fantastic to have you on board, navigate back to the page to continue..';
-        $mail->send();
-        // echo "Mail has been sent successfully!";
-    } catch (Exception $e) {
-        // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    $mail->AltBody = 'A warm welcome to GoodScores, its fantastic to have you on board, navigate back to the page to continue..';
+    if ($mail->send()) {
+        echo "Mail has been sent successfully!";
+    } else {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }
 
