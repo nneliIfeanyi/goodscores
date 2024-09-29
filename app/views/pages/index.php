@@ -5,7 +5,7 @@
     <nav id="nav" class="navbar navbar-nav navbar-expand-lg fixed-top bg-light shadow-sm">
         <div class="container">
             <a href="index.html" class="navbar-brand text-primary d-flex align-items-center justify-content-start">
-                <img src="<?= URLROOT; ?>/assets/img/goodscores.png" width="200" height="40" class="" />
+                <img src="<?= URLROOT; ?>/assets/img/goodscores.png" width="170" height="40" class="" />
                 <!-- <h1 class="fs-3 text-primary">Goodscores</h1> -->
             </a>
             <button class="navbar-toggler" type="button" data-bs-theme="lightt" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
                         <a href="pages/support.html" class="nav-link">Supports</a>
                     </li> -->
                     <li class="nav-item ms-5">
-                        <a href="<?= URLROOT; ?>/pages/login" class="btn btn-primary">Login</a>
+                        <a href="<?= URLROOT; ?>/pages/login" class="btn btn-primary px-5">Login</a>
                     </li>
                 </ul>
             </div>
@@ -36,11 +36,11 @@
         <div class="container">
             <div class="hero-contents row">
                 <div class="hero-texts col-lg-8">
-                    <h1 class="pt-3 fw-bold">Set Examination Questions With Ease</h1>
-                    <p class="lead my-3">Say goodbye to tedius paperwork and lost files. <strong>Goodscores</strong> helps schools efficiently manage assessments, saving teachers valueable time and reducing administrative burdens. </p>
-                    <a href="<?= URLROOT; ?>/pages/register" class="btn btn-primary  btn-lg mt-3">Get Started Today!</a>
+                    <h1 class="pt-3 fw-bold px-2">Set Examination Questions With Ease</h1>
+                    <p class="lead my-3 px-3">Say goodbye to tedius paperwork and lost files. <strong>Goodscores</strong> helps schools efficiently manage assessments, saving teachers valueable time and reducing administrative burdens. </p>
+                    <a href="<?= URLROOT; ?>/pages/register" class="btn btn-primary px-3 btn-lg mt-3">Get Started Today!</a>
                 </div>
-                <div class="hero-img col-lg-4 p-4">
+                <div class="hero-img col-lg-4 d-none d-lg-block">
                     <img src="<?= URLROOT; ?>/assets/img/img-1.jpg" class="img-fluid w-100 h-100" />
                 </div>
             </div>
@@ -51,22 +51,22 @@
             <!-- <h4>FEATURES</h4> -->
             <div class="feature-contents row mt-5">
                 <div class="col-lg-3 col-md-6 my-3">
-                    <span class="bi bi-pen-fill p-3 rounded-circle fs-3 bg-primary-subtle mb-3"></span>
+                    <span class="bi bi-pen-fill p-2 rounded-circle fs-1 bg-primary-subtle mb-3"></span>
                     <h5>Easy To Use</h5>
                     <p>Create and organize exam questions with ease.</p>
                 </div>
                 <div class="col-lg-3 col-md-6 my-3">
-                    <span class="bi bi-file-pdf-fill p-3 rounded-circle fs-3 bg-primary-subtle mb-3"></span>
+                    <span class="bi bi-file-pdf-fill p-2 rounded-circle fs-1 bg-primary-subtle mb-3"></span>
                     <h5>PDF Export</h5>
                     <p>Save questions as PDF files for offline use.</p>
                 </div>
                 <div class="col-lg-3 col-md-6 my-3">
-                    <span class="bi bi-person-bounding-box p-3 rounded-circle fs-3 bg-primary-subtle mb-3"></span>
+                    <span class="bi bi-person-bounding-box p-2 rounded-circle fs-1 bg-primary-subtle mb-3"></span>
                     <h5>Secure and Reliable</h5>
                     <p>Trusted platform for teachers and educators.</p>
                 </div>
                 <div class="col-lg-3 col-md-6 my-3">
-                    <span class="bi bi-phone-fill p-3 rounded-circle fs-3 bg-primary-subtle mb-3"></span>
+                    <span class="bi bi-phone-fill p-2 rounded-circle fs-1 bg-primary-subtle mb-3"></span>
                     <h5>User Friendly Interface</h5>
                     <p>Intuitive design for efficient navigation.</p>
                 </div>

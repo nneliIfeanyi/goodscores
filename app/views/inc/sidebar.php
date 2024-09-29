@@ -27,7 +27,7 @@
 
      <li class="nav-item">
        <label class="nav-link collapsed" data-bs-target="#setquestionsnav" data-bs-toggle="collapse" href="#">
-         <i class="bi bi-pen"></i><span>Set Questions</span><i class="bi bi-chevron-down ms-auto"></i>
+         <i class="bi bi-pen"></i><span>New Document</span><i class="bi bi-chevron-down ms-auto"></i>
        </label>
        <ul id="setquestionsnav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
          <li>
