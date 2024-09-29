@@ -110,7 +110,7 @@
         </div>
     </section><!-- END - .how-it-works-section -->
 
-    <section class="benefit-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light py-3">
+    <section class="benefit-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light py-5">
         <div class="container">
             <h3 class="fw-bold">Why Good Scores</h3>
             <div class="benefit-contents row mt-3">
