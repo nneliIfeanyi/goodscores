@@ -31,7 +31,7 @@
                                             <label for="yourUsername" class="form-label">Username | Email</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                <input type="input" name="username" list="schools" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
+                                                <input type="input" name="username" list="schools" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo (empty($_GET['email'])) ? $data['username'] : $_GET['email']; ?>" id="yourUsername">
                                                 <!-- <datalist id="schools">
                                                     <?php foreach ($data['schools'] as $sch) : ?>
                                                         <option value="<?= $sch->username; ?>"></option>

@@ -90,8 +90,8 @@ class Pages extends Controller
       } else {
         $register = $this->pageModel->registerSch($data);
         if ($register) {
-          flash('msg', 'Registration is successful, you can now login');
-          redirect('pages/login');
+          flash('msg', 'Registration successful, you can now login after 60s');
+          redirect('pages/verify_email/' . $data['email']);
         } else {
           die('Something went wrong!');
         }
@@ -113,13 +113,19 @@ class Pages extends Controller
 
   public function verify_email($email)
   {
-    //Set Data
-    $data = [
-      'email' => $email
-    ];
+    if ($_GET['email']) {
+      $email = $_GET['email'];
+      flash('msg', 'Email verify successfull..');
+      redirect('pages/login?email=' . $email);
+    } else {
+      //Set Data
+      $data = [
+        'email' => $email
+      ];
 
-    // Load about view
-    $this->view('pages/verify_email', $data);
+      // Load about view
+      $this->view('pages/verify_email', $data);
+    }
   }
 
 
@@ -141,7 +147,21 @@ class Pages extends Controller
   {
     //Set Data
     $data = [
-      'version' => '1.0.0'
+      "version" => "<div style='text-align:left;background-color:#f6f9ff;padding:0 10px 20px 10px;'>
+            <h1 style='color:#0d6efd;padding: 0;border-radius:6px;'>A warm welcome to GoodScores</h1>
+        <p><b>Hello there,</b><br>
+                My name is Victor, and I'm the CEO of GoodScores.
+                Its Fantastic to have you onboard!</p>
+            <p style='font-size:16px;'>
+                Please click the button below to register a user
+                either your school administrator or teachers<br>
+                <b>Note that: </b><span>You can register as many users as possible</span><br><br>
+                <a style='text-decoration:none;padding: 7px 12px;background-color:#0d6efd;color:antiquewhite;border-radius:10px;' href='https://goodscores.stanvic.com.ng/users/register'>Verify your email</a
+            </p><br><br><br>
+            <p>It's fantastic to have you!<br>
+            Nneli Ifeanyi Victor<br>
+            CEO <b>GoodScores</b></p><br><br><br>
+            </div>"
     ];
 
     // Load about view
