@@ -82,17 +82,26 @@ class Pages extends Controller
       ];
       // Validation
       if ($this->pageModel->findSchByEmail($data['email'])) {
-        $data['email_err'] = 'Email already in use!';
-        $this->view('pages/register', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Email is already taken! kindly login
+          </p>
+        ";
       } elseif ($this->pageModel->findSchByUsername($data['username'])) {
-        $data['username_err'] = 'Username' . $data['username'] . 'is taken!';
-        $this->view('pages/register', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i> &nbsp;Username is already taken! kindly login
+          </p>
+        ";
       } else {
         $register = $this->pageModel->registerSch($data);
         if ($register) {
           sendMail($data['email']);
           flash('msg', 'Registration successful, you can now login');
-          redirect('pages/verify_email/' . $data['email']);
+          // Redirect to verify email page
+          $redirect = URLROOT . '/pages/verify_email/' . $data['email'];
+          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Pls verify your email
+          </p><meta http-equiv='refresh' content='5; $redirect'>
+        ";
         } else {
           die('Something went wrong!');
         }

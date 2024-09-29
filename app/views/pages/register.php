@@ -26,7 +26,7 @@
                                         <p class="text-center small">Fill in the following details to create account</p>
                                     </div>
 
-                                    <form class="row g-3" method="POST" action="<?php echo URLROOT; ?>/pages/register">
+                                    <form class="row g-3" id="register">
                                         <div class="col-12">
                                             <label for="yourName" class="form-label">Name of Organization/Institution</label>
                                             <input type="text" name="name" class="form-control" id="yourName" value="<?php echo $data['name']; ?>" required>
@@ -34,8 +34,8 @@
 
                                         <div class="col-12">
                                             <label for="yourEmail" class="form-label">Email</label>
-                                            <input type="email" name="email" class="form-control <?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" id="yourEmail" value="<?php echo $data['email']; ?>" required>
-                                            <div class="invalid-feedback"><?php echo $data['email_err']; ?></div>
+                                            <input type="email" name="email" class="form-control" id="yourEmail" value="<?php echo $data['email']; ?>" required>
+
                                         </div>
 
                                         <div class="col-12">
@@ -47,13 +47,12 @@
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                <input type="text" name="username" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" id="yourUsername" value="<?php echo $data['username']; ?>" required>
-                                                <div class="invalid-feedback"><?php echo $data['username_err']; ?></div>
+                                                <input type="text" name="username" class="form-control" id="yourUsername" value="<?php echo $data['username']; ?>" required>
                                             </div>
                                         </div>
 
                                         <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Create Account</button>
+                                            <input class="btn btn-primary w-100" id="submit" type="submit" value="Create Account">
                                         </div>
                                         <div class="col-12">
                                             <p class="small mb-0">Already have an account? <a href="<?php echo URLROOT; ?>/users/login">Log in</a></p>
@@ -71,7 +70,32 @@
 
         </div>
     </main><!-- End #main -->
-
+    <!-- Ajax Response -->
+    <div id="ajax-msg"></div>
+    <!-- End Ajax Response -->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <?php require APPROOT . '/views/inc/footer.php'; ?>
+    <script>
+        $('#register').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/pages/register",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Submitting, pls wait ....');
+
+                },
+                success: function(data) {
+                    $('#submit').attr('disabled', false);
+                    $('#submit').val('Success!');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>

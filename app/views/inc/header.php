@@ -48,6 +48,23 @@
       z-index: 99999;
     }
 
+    /*Ajax response Message*/
+    .flash-msg {
+      margin: 0;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: auto;
+      text-align: center;
+      z-index: 500;
+      animation-name: fade;
+      animation-duration: 3s;
+      animation-delay: 5s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      transition: 2s;
+    }
+
     /*flash Message*/
     #msg-flash {
       margin: 0;
