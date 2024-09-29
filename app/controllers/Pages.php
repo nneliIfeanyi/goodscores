@@ -125,7 +125,7 @@ class Pages extends Controller
   {
     if ($_GET['email']) {
       $email = $_GET['email'];
-      flash('msg', 'Email verify successfull..');
+      flash('msg', 'Email verify successfull! Just click the login button.');
       redirect('pages/login?email=' . $email);
     } else {
       //Set Data
