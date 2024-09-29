@@ -22,7 +22,7 @@ function sendMail($reciever)
         $mail->Password = '0dcbca9704cf4ae1be561df980807ca3';
 
 
-        $mail->setFrom('goodscores@stanvic.com.ng', 'Good Scores | Teachers Aid');
+        $mail->setFrom('stanvic.com.ng', 'Good Scores');
         $mail->addAddress($reciever);
         //$mail->addAddress('receiver2@gfg.com', 'Name');
 
@@ -30,7 +30,7 @@ function sendMail($reciever)
         $mail->Subject = 'Email Verify';
         $mail->Body =
             "<div style='text-align:left;background-color:#f6f9ff;padding:0 10px 20px 10px;'>
-            <h1 style='color:#0d6efd;padding: 0;border-radius:6px;'>A warm welcome to GoodScores</h1>
+            <h1 style='color:#0d6efd;padding-top: 10px;border-radius:6px;'>A warm welcome to GoodScores</h1>
         <p><b>Hello there,</b><br>
                 My name is Victor, and I'm the CEO of GoodScores.
                 Its Fantastic to have you onboard!</p>
