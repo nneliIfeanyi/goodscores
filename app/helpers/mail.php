@@ -27,7 +27,7 @@ function sendMail($reciever)
 
         $mail->isHTML(true);
         $mail->Subject = 'Email Verify';
-        $logo = URLROOT . '/assets/img/logo.png';
+        //$logo = URLROOT . '/assets/img/logo.png';
         $mail->Body =
             "<div style='text-align:left;background-color:#f6f9ff;padding:0 10px 20px 10px;'>
                

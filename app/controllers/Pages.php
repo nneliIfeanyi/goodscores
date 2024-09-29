@@ -94,7 +94,6 @@ class Pages extends Controller
       } else {
         $register = $this->pageModel->registerSch($data);
         if ($register) {
-          sendMail($data['email']);
           flash('msg', 'Registration successful, you can now login');
           // Redirect to verify email page
           $redirect = URLROOT . '/pages/verify_email/' . $data['email'];
@@ -132,7 +131,7 @@ class Pages extends Controller
       $data = [
         'email' => $email
       ];
-
+      sendMail($data['email']);
       // Load about view
       $this->view('pages/verify_email', $data);
     }
