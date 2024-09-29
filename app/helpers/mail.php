@@ -22,7 +22,7 @@ function sendMail($reciever)
         $mail->Password = '0dcbca9704cf4ae1be561df980807ca3';
 
 
-        $mail->setFrom('stanvic.com.ng', 'Good Scores');
+        $mail->setFrom('goodscores@stanvic.com.ng', 'Good Scores');
         $mail->addAddress($reciever);
         //$mail->addAddress('receiver2@gfg.com', 'Name');
 

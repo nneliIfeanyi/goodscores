@@ -91,7 +91,7 @@ class Pages extends Controller
         $register = $this->pageModel->registerSch($data);
         if ($register) {
           sendMail($data['email']);
-          flash('msg', 'Registration successful, you can now login after 60s');
+          flash('msg', 'Registration successful, you can now login after');
           redirect('pages/verify_email/' . $data['email']);
         } else {
           die('Something went wrong!');
