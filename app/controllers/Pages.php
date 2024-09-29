@@ -94,12 +94,13 @@ class Pages extends Controller
       } else {
         $register = $this->pageModel->registerSch($data);
         if ($register) {
+          sendMail($data['email']);
           flash('msg', 'Registration successful, you can now login');
           // Redirect to verify email page
           $redirect = URLROOT . '/pages/verify_email/' . $data['email'];
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
             <i class='bi bi-check-circle'></i>  &nbsp;Pls verify your email
-          </p><meta http-equiv='refresh' content='5; $redirect'>
+          </p><meta http-equiv='refresh' content='0; $redirect'>
         ";
         } else {
           die('Something went wrong!');
@@ -131,7 +132,7 @@ class Pages extends Controller
       $data = [
         'email' => $email
       ];
-      sendMail($data['email']);
+
       // Load about view
       $this->view('pages/verify_email', $data);
     }
