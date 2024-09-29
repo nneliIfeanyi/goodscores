@@ -43,11 +43,12 @@ function sendMail($reciever)
             CEO <b>GoodScores</b></p><br><br><br>
             </div>";
     $mail->AltBody = 'A warm welcome to GoodScores, its fantastic to have you on board, navigate back to the page to continue..';
-    if ($mail->send()) {
-        echo "Mail has been sent successfully!";
-    } else {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-    }
+    // if ($mail->send()) {
+    //     echo "Mail has been sent successfully!";
+    // } else {
+    //     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    // }
+    $mail->send();
 }
 
 
