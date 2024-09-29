@@ -226,7 +226,7 @@ foreach ($data['theory'] as $theory) {
 	}
 	if (!empty($pull_each->Aiv)) {
 		$table .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Aiv . '</span>';
+					<span><b>(iv)&nbsp;</b>' . $pull_each->Aiv . '</span><br>';
 	}
 	$table .= '</td>
 	</tr>
@@ -259,7 +259,7 @@ foreach ($data['theory'] as $theory) {
 		}
 		if (!empty($pull_each->Biv)) {
 			$table .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span>';
+					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span><br>';
 		}
 		$table .= '</td>
 	</tr>
@@ -288,7 +288,7 @@ foreach ($data['theory'] as $theory) {
 		}
 		if (!empty($pull_each->Ciii)) {
 			$table .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span>
+					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span><br>
 						
 		';
 		}
