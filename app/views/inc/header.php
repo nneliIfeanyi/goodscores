@@ -45,7 +45,7 @@
   <style type="text/css">
     #loader {
       min-height: 100%;
-      z-index: 99999;
+      z-index: 1000;
     }
 
     /*Ajax response Message*/

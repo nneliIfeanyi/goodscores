@@ -1,7 +1,7 @@
 <body>
   <!-- PAGE LOADER -->
   <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
-    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.7);z-index: 500;">
+    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
       <span class="spinner-border text-primary"> </span>
     </div>
   </div>

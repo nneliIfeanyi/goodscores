@@ -53,12 +53,12 @@
                             <!-- 
                             <li class="nav-item">
                                 <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Badge | logo</button>
-                            </li> -->
-
-                            <li class="nav-item">
-                                <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</a>
-                            </li>
-
+                             </li> -->
+                            <?php if ($data['role'] == 'Admin') : ?>
+                                <li class="nav-item">
+                                    <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                         <div class="tab-content pt-2">
 
@@ -102,10 +102,11 @@
                                             <input name="address" class="form-control" id="address" value="<?= $data['user']->address; ?>">
                                         </div>
                                     </div>
-
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
+                                    <?php if ($data['role'] == 'Admin') : ?>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    <?php endif ?>
                                 </form><!-- End Profile Edit Form -->
                             </div>
 

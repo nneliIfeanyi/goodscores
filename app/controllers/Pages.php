@@ -202,9 +202,11 @@ class Pages extends Controller
       }
     } else { // Not post request
       $school = $this->pageModel->getSchool($id);
+      $user = $this->userModel->findTeacherById($_SESSION['user_id']);
       //Set Data
       $data = [
         'user' => $school,
+        'role' => $user->role
       ];
 
       // Load about view
