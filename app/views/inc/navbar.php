@@ -89,7 +89,7 @@
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
               <h6><?php echo $_SESSION['name']; ?></h6>
-              <span>Class Teacher</span>
+              <span><?php echo $_SESSION['role']; ?></span>
             </li>
             <li>
               <hr class="dropdown-divider">

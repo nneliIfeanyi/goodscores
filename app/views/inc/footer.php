@@ -13,7 +13,9 @@
 <script src="<?php echo URLROOT; ?>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/vendor/simple-datatables/simple-datatables.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/tinymce/tinymce.min.js"></script>
-
+<script>
+    $('form').parsley();
+</script>
 <!-- Page loader fadeout -->
 <script>
     $(document).ready(function() {
@@ -34,9 +36,11 @@
 <script>
     $(document).ready(function() {
         $(':submit').each(function() {
-            $(this).click(function() {
-                $('#loader').fadeIn();
-            });
+            if ($('form').parsley().isValid()) {
+                $(this).click(function() {
+                    $('#loader').fadeIn();
+                });
+            }
         });
     });
 </script>

@@ -294,6 +294,7 @@ class Users extends Controller
     $_SESSION['name'] = $user->name;
     $_SESSION['username'] = $user->username;
     $_SESSION['photo'] = $user->img;
+    $_SESSION['role'] = $user->role;
   }
 
   // Logout & Destroy Session
@@ -302,6 +303,8 @@ class Users extends Controller
     unset($_SESSION['user_id']);
     unset($_SESSION['name']);
     unset($_SESSION['username']);
+    unset($_SESSION['role']);
+    unset($_SESSION['photo']);
     session_destroy();
     redirect('users/login');
   }
