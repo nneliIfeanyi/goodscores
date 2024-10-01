@@ -72,7 +72,7 @@
                 <strong>objectives_questions</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
-              <form action="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>" method="POST">
+              <form action="<?php echo URLROOT; ?>/processing/add/<?= $data['paperID']; ?>" method="POST">
                 <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
                 <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
                 <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
@@ -122,7 +122,7 @@
                     </div>
                   </div>
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                       <i class="bi bi-eye"></i>
                     </a>
                   </div>

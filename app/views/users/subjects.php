@@ -72,7 +72,7 @@
                       <th scope="row"><?php echo $n; ?></th>
                       <td><?php echo $subject->subject; ?></td>
                       <td>
-                        <a href="javascript:void" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#subject<?php echo $subject->id; ?>"><i class="bi bi-trash"></i></a>
+                        <span class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#subject<?php echo $subject->id; ?>"><i class="bi bi-trash"></i></span>
                       </td>
                     </tr>
                     <!-- Delete Modal -->

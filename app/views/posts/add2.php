@@ -66,7 +66,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <!-- Theory question form submit -->
-              <form action="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>" method="POST">
+              <form action="<?php echo URLROOT; ?>/processing/add2/<?= $data['paperID']; ?>" method="POST">
                 <input type="hidden" name="questionID" value="<?= $data['num_rows'] + (1); ?>">
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">

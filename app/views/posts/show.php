@@ -26,13 +26,13 @@
               <h2 class="accordion-header" id="flush-headingOne">
                 <?php if (!empty($obj->img)) : ?>
                   <div class="d-flex justify-content-center">
-                    <div class="mt-2 mb-4">
+                    <div class="mt-2">
                       <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded-3" height="90px" alt="daigram">
                     </div>
                   </div>
                 <?php endif; ?>
                 <button class="lead accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?php echo $obj->id; ?>" aria-expanded="false" aria-controls="flush-collapseOne">
-                  <i>(<?= $n; ?>)</i>&nbsp;&nbsp;<?php echo $obj->question; ?>
+                  <p class="fw-bold">(<?= $n; ?>)</p>&nbsp;&nbsp;<?php echo $obj->question; ?>
                 </button>
               </h2>
               <div id="<?php echo $obj->id; ?>" class="accordion-collapse collapse py-0" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">

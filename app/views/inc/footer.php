@@ -12,7 +12,7 @@
 <!-- Vendor JS Files -->
 <script src="<?php echo URLROOT; ?>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo URLROOT; ?>/assets/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="<?php echo URLROOT; ?>/assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="<?php echo URLROOT; ?>/assets/tinymce/tinymce.min.js"></script>
 
 <!-- Page loader fadeout -->
 <script>

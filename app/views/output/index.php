@@ -165,152 +165,152 @@ foreach ($data['obj'] as $obj) {
 			</table>';
 	$pdf->writeHTML($subtable, true, false, true, false, '');
 } // End foreach loop
-
-// ---------------------------------------------------------
-// Output centered horizontal line
-$pdf->setFont('times', 'N', 10);
-$hr = <<<EOD
+if (!empty($data['theory'])) {
+	// ---------------------------------------------------------
+	// Output centered horizontal line
+	$pdf->setFont('times', 'N', 10);
+	$hr = <<<EOD
 
  -------------------------------------------------------
 EOD;
-$pdf->Write(0, $hr, '', 0, 'C', true, 0, false, false, 0);
-// Output a centered horizontal line Ends
-//--------------------------------------------------------------
-// Output a centered text string with bold font and italic font style 12 pixels size
-$pdf->setFont('times', 'BI', 12);
-$hr2 = <<<EOD
+	$pdf->Write(0, $hr, '', 0, 'C', true, 0, false, false, 0);
+	// Output a centered horizontal line Ends
+	//--------------------------------------------------------------
+	// Output a centered text string with bold font and italic font style 12 pixels size
+	$pdf->setFont('times', 'BI', 12);
+	$hr2 = <<<EOD
 Theory Questions
 EOD;
-$pdf->Write(0, $hr2, '', 0, 'C', true, 0, false, false, 0);
-// Output a centered text string Ends
-// ------------------------------------------------------------
+	$pdf->Write(0, $hr2, '', 0, 'C', true, 0, false, false, 0);
+	// Output a centered text string Ends
+	// ------------------------------------------------------------
 
-// Output a centered text string with normal font 10 pixels size
-$pdf->setFont('times', 'N', 10);
-$amt = $data['check']->choice;
-$ins = <<<EOD
+	// Output a centered text string with normal font 10 pixels size
+	$pdf->setFont('times', 'N', 10);
+	$amt = $data['check']->choice;
+	$ins = <<<EOD
 Answer any $amt questions of your choice
 -------------------------------------------------------
 EOD;
-$pdf->Write(0, $ins, '', 0, 'C', true, 0, false, false, 0);
-// Output a centered text string Ends..
-// -------------------------------------------------------------
+	$pdf->Write(0, $ins, '', 0, 'C', true, 0, false, false, 0);
+	// Output a centered text string Ends..
+	// -------------------------------------------------------------
 
-// Loop through theory questions
-$num2 = '';
-foreach ($data['theory'] as $theory) {
-	$num2++;
-	$pull_each = $this->postModel->pullEach($theory->questionID, $theory->paperID);
-	$pdf->setFont('times', 'N', 11);
-	$table = '<table>
+	// Loop through theory questions
+	$num2 = '';
+	foreach ($data['theory'] as $theory) {
+		$num2++;
+		$pull_each = $this->postModel->pullEach($theory->questionID, $theory->paperID);
+		$pdf->setFont('times', 'N', 11);
+		$table = '<table>
 				<tr>
 					<td width="25"><b>' . $num2 . 'a)</b></td>
 					<td style="width:667px;">' . $pull_each->questionA . '<br>';
-	if (!empty($pull_each->Ai)) {
-		$table .= '
+		if (!empty($pull_each->Ai)) {
+			$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ai . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Aii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Aii)) {
+			$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Aii . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Aiii)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Aiii)) {
+			$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Aiii . '</span>
 						
 		';
-	}
-	if (!empty($pull_each->Aiv)) {
-		$table .= '
+		}
+		if (!empty($pull_each->Aiv)) {
+			$table .= '
 					<span><b>(iv)&nbsp;</b>' . $pull_each->Aiv . '</span><br>';
-	}
-	$table .= '</td>
+		}
+		$table .= '</td>
 	</tr>
 </table>';
 
-	if (!empty($pull_each->questionB)) {
-		$table .= '<table>
+		if (!empty($pull_each->questionB)) {
+			$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'b)</b></td>
 					<td style="width:667px;">' . $pull_each->questionB . '<br>';
 
 
-		if (!empty($pull_each->Bi)) {
-			$table .= '
+			if (!empty($pull_each->Bi)) {
+				$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
 						
 		';
-		}
-		if (!empty($pull_each->Bii)) {
-			$table .= '
+			}
+			if (!empty($pull_each->Bii)) {
+				$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
 						
 		';
-		}
-		if (!empty($pull_each->Biii)) {
-			$table .= '
+			}
+			if (!empty($pull_each->Biii)) {
+				$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
 						
 		';
-		}
-		if (!empty($pull_each->Biv)) {
-			$table .= '
+			}
+			if (!empty($pull_each->Biv)) {
+				$table .= '
 					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span><br>';
-		}
-		$table .= '</td>
+			}
+			$table .= '</td>
 	</tr>
 </table>';
-	}
+		}
 
 
-	if (!empty($pull_each->questionC)) {
-		$table .= '<table>
+		if (!empty($pull_each->questionC)) {
+			$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'c)</b></td>
 					<td style="width:667px;">' . $pull_each->questionC . '<br>';
 
 
-		if (!empty($pull_each->Ci)) {
-			$table .= '
+			if (!empty($pull_each->Ci)) {
+				$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ci . '</span>
 						
 		';
-		}
-		if (!empty($pull_each->Cii)) {
-			$table .= '
+			}
+			if (!empty($pull_each->Cii)) {
+				$table .= '
 					<span><b>(ii)&nbsp;</b>' . $pull_each->Cii . '</span>
 						
 		';
-		}
-		if (!empty($pull_each->Ciii)) {
-			$table .= '
+			}
+			if (!empty($pull_each->Ciii)) {
+				$table .= '
 					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span><br>
 						
 		';
-		}
-		$table .= '</td>
+			}
+			$table .= '</td>
 	</tr>
 </table>';
-	}
+		}
 
-	if (!empty($pull_each->questionD)) {
-		$table .= '<table>
+		if (!empty($pull_each->questionD)) {
+			$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'd)</b></td>
 					<td style="width:667px;">' . $pull_each->questionD . '</td>
 		</tr>
 	</table';
-	}
+		}
 
-	$pdf->writeHTML($table, true, false, true, false, '');
-	//$pdf->writeHTML($table2, true, false, true, false, '');
-} // End foreach loop
+		$pdf->writeHTML($table, true, false, true, false, '');
+		//$pdf->writeHTML($table2, true, false, true, false, '');
+	} // End foreach loop
 
-
+}
 
 //Close and output PDF document
 $pdf->Output($klass . $sub . '.pdf', 'I');
