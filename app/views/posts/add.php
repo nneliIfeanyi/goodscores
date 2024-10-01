@@ -60,6 +60,9 @@
                   <input type="submit" name="set" value="Go to Theory Questions" class="btn btn-outline-primary">
                 </div>
               </form>
+              <div class="mt-3">
+                <a href="<?php echo URLROOT; ?>/output/<?php echo $data['paperID']; ?>"><i class="bi bi-download"></i> Download PDF</a>
+              </div>
             <?php
             } else {
               if (empty($data['num_rows'])) {

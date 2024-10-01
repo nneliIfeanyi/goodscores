@@ -143,7 +143,7 @@ $pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
 $num = 0;
 foreach ($data['obj'] as $obj) {
 	$num++;
-	$pdf->setFont('times', 'N', 12);
+	$pdf->setFont('times', 'N', 13);
 	if (empty($obj->opt3)) {
 		$obj->opt3 = '';
 	} else {
@@ -159,7 +159,7 @@ foreach ($data['obj'] as $obj) {
 				<tr>
 					<td width="21"><b>' . $num . ')</b></td>
 					<td style="width:667px;">' . $obj->question . '<br>
-					<span style="font-size:13px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
+					<span style="font-size:16px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
 					</span></td>
 				</tr>
 			</table>';
@@ -201,11 +201,11 @@ EOD;
 	foreach ($data['theory'] as $theory) {
 		$num2++;
 		$pull_each = $this->postModel->pullEach($theory->questionID, $theory->paperID);
-		$pdf->setFont('times', 'N', 11);
+		$pdf->setFont('times', 'N', 13);
 		$table = '<table>
 				<tr>
-					<td width="25"><b>' . $num2 . 'a)</b></td>
-					<td style="width:667px;">' . $pull_each->questionA . '<br>';
+					<td width="25"><b>' . $num2 . 'a)</b> </td>
+					<td style="width:667px;">&nbsp;' . $pull_each->questionA . '<br>';
 		if (!empty($pull_each->Ai)) {
 			$table .= '
 					<span><b>(i)&nbsp;</b>' . $pull_each->Ai . '</span>
@@ -236,7 +236,7 @@ EOD;
 			$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'b)</b></td>
-					<td style="width:667px;">' . $pull_each->questionB . '<br>';
+					<td style="width:667px;">&nbsp;' . $pull_each->questionB . '<br>';
 
 
 			if (!empty($pull_each->Bi)) {
@@ -276,7 +276,7 @@ EOD;
 
 			if (!empty($pull_each->Ci)) {
 				$table .= '
-					<span><b>(i)&nbsp;</b>' . $pull_each->Ci . '</span>
+					<span><b>(i)&nbsp;</b>&nbsp;' . $pull_each->Ci . '</span>
 						
 		';
 			}
@@ -301,7 +301,7 @@ EOD;
 			$table .= '<table>
 		<tr>
 					<td width="25"><b>' . $num2 . 'd)</b></td>
-					<td style="width:667px;">' . $pull_each->questionD . '</td>
+					<td style="width:667px;">&nbsp;' . $pull_each->questionD . '</td>
 		</tr>
 	</table';
 		}
