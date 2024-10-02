@@ -61,7 +61,7 @@
                 </div>
               </form>
               <div class="mt-3">
-                <a href="<?php echo URLROOT; ?>/output/<?php echo $data['paperID']; ?>"><i class="bi bi-download"></i> Download PDF</a>
+                <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
             <?php
             } else {
@@ -94,7 +94,7 @@
                     <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
                   </div>
                 <?php endif; ?>
-                <textarea class="form-control" name="question" required placeholder="<?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?>"></textarea>
+                <textarea class="form-control" name="question" required><p><?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></p></textarea>
                 <div class="row my-3">
                   <p class="col-2 d-lg-none">(A)</p>
                   <div class="col-10 col-lg-3">

@@ -83,6 +83,7 @@ class Posts extends Controller
     $params = $this->postModel->getParamsByPaperID($paper_id);
     $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
     $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+    // $hex = $this->postModel->getEntities();
     $data = [
       'paperID' => $paper_id,
       'num_rows' => $num_rows,
@@ -91,7 +92,7 @@ class Posts extends Controller
       'term' => $params->term,
       'section' => $params->section,
       'subject' => $params->subject,
-      'total_subject_num_rows' => $expected_num_rows->num_rows
+      'total_subject_num_rows' => $expected_num_rows->num_rows,
     ];
     $this->view('posts/add', $data);
   }

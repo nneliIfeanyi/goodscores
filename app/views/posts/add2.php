@@ -56,7 +56,7 @@
                   </div>
                 </form>
                 <div class="mt-3">
-                  <a href="<?php echo URLROOT; ?>/output/<?php echo $data['paperID']; ?>"><i class="bi bi-download"></i> Download PDF</a>
+                  <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 </div>
               </div>
               </form>
@@ -90,7 +90,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>a</p>
                       </div>
                       <div class="col-11"><!-- Numbering A input -->
-                        <textarea class="form-control" name="question-A" required></textarea>
+                        <textarea class="form-control" name="question-A" required><p></p></textarea>
                         <button class="accordion-button p-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                         </button><!-- Accordion toggle button -->
                         <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -100,7 +100,7 @@
                                 <p class="badge bg-secondary">i</p>
                               </div>
                               <div class="col-10"><!-- Numbering A-i input parent -->
-                                <textarea class="form-control" name="A-i"></textarea>
+                                <input class="form-control form-control-lg" name="A-i">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -108,7 +108,7 @@
                                 <p class="badge bg-secondary">ii</p>
                               </div>
                               <div class="col-10"><!-- Numbering A-ii input parent -->
-                                <textarea class="form-control" name="A-ii"></textarea>
+                                <input class="form-control form-control-lg" name="A-ii">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -116,15 +116,15 @@
                                 <p class="badge bg-secondary">iii</p>
                               </div>
                               <div class="col-10"><!-- Numbering A-iii input parent -->
-                                <textarea class="form-control" name="A-iii"></textarea>
+                                <input class="form-control form-control-lg" name="A-iii">
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-1"><!-- Numbering A-iv badge -->
                                 <p class="badge bg-secondary">iv</p>
                               </div>
-                              <div class="col-10"><!-- Numbering A-iv input parent-->
-                                <textarea class="form-control" name="A-iv"></textarea>
+                              <div class="col-10">
+                                <input class="form-control form-control-lg" name="A-iv">
                               </div>
                             </div>
                           </div>
@@ -149,7 +149,7 @@
                                 <p class="badge bg-secondary">i</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="B-i"></textarea>
+                                <input class="form-control form-control-lg" name="B-i">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -157,7 +157,7 @@
                                 <p class="badge bg-secondary">ii</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="B-ii"></textarea>
+                                <input class="form-control form-control-lg" name="B-ii">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -165,7 +165,7 @@
                                 <p class="badge bg-secondary">iii</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="B-iii"></textarea>
+                                <input class="form-control form-control-lg" name="B-iii">
                               </div>
                             </div>
                             <div class="row">
@@ -173,7 +173,7 @@
                                 <p class="badge bg-secondary">iv</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="B-iv"></textarea>
+                                <input class="form-control form-control-lg" name="B-iv">
                               </div>
                             </div>
                           </div>
@@ -197,7 +197,7 @@
                                 <p class="badge bg-secondary">i</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="C-i"></textarea>
+                                <input class="form-control form-control-lg" name="C-i">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -205,7 +205,7 @@
                                 <p class="badge bg-secondary">ii</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="C-ii"></textarea>
+                                <input class="form-control form-control-lg" name="C-ii">
                               </div>
                             </div>
                             <div class="row mb-2">
@@ -213,7 +213,7 @@
                                 <p class="badge bg-secondary">iii</p>
                               </div>
                               <div class="col-10">
-                                <textarea class="form-control" name="C-iii"></textarea>
+                                <input class="form-control form-control-lg" name="C-iii">
                               </div>
                             </div>
                           </div>
@@ -264,29 +264,3 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
-<!-- <script>
-  var course = document.querySelector('#setTheory');
-  $('#setTheory').on('submit', function(event) {
-    event.preventDefault();
-
-    $.ajax({
-      url: "<?php echo URLROOT; ?>/posts/add2",
-      method: "POST",
-      data: new FormData(this),
-      contentType: false,
-      processData: false,
-      beforeSend: function() {
-        $('#submit').attr('disabled', 'disabled');
-        $('#submit').val('Saving details, pls wait ......');
-
-      },
-      success: function(data) {
-        //course.reset();
-        $('#submit').attr('disabled', false);
-        $('#submit').val('Add course to UI');
-        $('#success-msg').html(data);
-      }
-    })
-
-  })
-</script> -->

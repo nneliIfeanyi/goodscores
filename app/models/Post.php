@@ -466,4 +466,17 @@ class Post
       return false;
     }
   }
+
+  //Get all Maths symbols
+  public function getEntities()
+  {
+    $this->db->query("SELECT * FROM entities;");
+    $this->db->resultset();
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $this->db->resultset();
+    } else {
+      return false;
+    }
+  }
 }
