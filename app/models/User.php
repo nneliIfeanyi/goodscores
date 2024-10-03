@@ -186,17 +186,17 @@ class User
   public function addClass($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO classes (sch_id, user_id, classname, num_rows, num_rows2, choice, duration) 
-      VALUES (:sch_id, :user_id, :classname, :obj_num_rows, :theory_num_rows, :choice, :duration)');
+    $this->db->query('INSERT INTO classes (sch_id, user_id, classname) 
+      VALUES (:sch_id, :user_id, :classname)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':classname', $data['classname']);
-    $this->db->bind(':obj_num_rows', $data['obj_num_rows']);
-    $this->db->bind(':theory_num_rows', $data['theory_num_rows']);
-    $this->db->bind(':choice', $data['choice']);
-    $this->db->bind(':duration', $data['duration']);
+    // $this->db->bind(':obj_num_rows', $data['obj_num_rows']);
+    // $this->db->bind(':theory_num_rows', $data['theory_num_rows']);
+    //$this->db->bind(':choice', $data['choice']);
+    //$this->db->bind(':duration', $data['duration']);
 
     //Execute
     if ($this->db->execute()) {

@@ -82,15 +82,13 @@
           <div class="col-12">
             <div class="d-flex gap-3">
               <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
-                <input type="hidden" name="question" value="">
-                <input type="hidden" name="opt1" value="">
-                <input type="hidden" name="opt2" value="">
-                <input type="hidden" name="opt3" value="">
-                <input type="hidden" name="opt4" value="">
                 <input type="hidden" name="class" value="<?= $data['class']; ?>">
                 <input type="hidden" name="subject" value="<?= $data['subject']; ?>">
                 <input type="hidden" name="term" value="<?= $data['term']; ?>">
                 <input type="hidden" name="year" value="<?= $data['year']; ?>">
+                <input type="hidden" name="num_rows" value="<?= $data['params']->num_rows; ?>">
+                <input type="hidden" name="duration" value="<?= $data['params']->duration; ?>">
+                <input type="hidden" name="instruction" value="<?= $data['params']->instruction; ?>">
                 <input type="submit" value="Continue" class="btn btn-outline-primary">
               </form>
             </div>
@@ -99,15 +97,13 @@
       <?php else : ?>
         <p class="fw-bold">No Data | No Questions Set
         <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
-          <input type="hidden" name="question" value="">
-          <input type="hidden" name="opt1" value="">
-          <input type="hidden" name="opt2" value="">
-          <input type="hidden" name="opt3" value="">
-          <input type="hidden" name="opt4" value="">
           <input type="hidden" name="class" value="<?= $data['class']; ?>">
           <input type="hidden" name="subject" value="<?= $data['subject']; ?>">
           <input type="hidden" name="term" value="<?= $data['term']; ?>">
           <input type="hidden" name="year" value="<?= $data['year']; ?>">
+          <input type="hidden" name="num_rows" value="<?= $data['params']->num_rows; ?>">
+          <input type="hidden" name="duration" value="<?= $data['params']->duration; ?>">
+          <input type="hidden" name="instruction" value="<?= $data['params']->instruction; ?>">
           <input type="submit" value="Begin Now" class="btn btn-outline-primary">
         </form>
         </p>

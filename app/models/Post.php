@@ -121,11 +121,12 @@ class Post
   }
 
   // Get params by paper id
-  public function getParamsByPaperID($paper_id)
+  public function getParamsByPaperID($paper_id, $section)
   {
-    $this->db->query("SELECT * FROM params WHERE paperID = :paperID;");
+    $this->db->query("SELECT * FROM params WHERE paperID = :paperID AND section = :section;");
     // Bind Values
     $this->db->bind(':paperID', $paper_id);
+    $this->db->bind(':section', $section);
 
     $row = $this->db->single();
 
@@ -141,8 +142,8 @@ class Post
   public function addExamParams($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, year) 
-      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :year)');
+    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, year, num_rows, instruction, duration) 
+      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :year, :num_rows, :instruction, :duration)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -153,6 +154,9 @@ class Post
     $this->db->bind(':term', $data['term']);
     $this->db->bind(':section', $data['section']);
     $this->db->bind(':year', $data['year']);
+    $this->db->bind(':num_rows', $data['num_rows']);
+    $this->db->bind(':instruction', $data['instruction']);
+    $this->db->bind(':duration', $data['duration']);
     //Execute
     if ($this->db->execute()) {
       return true;
@@ -258,24 +262,24 @@ class Post
 
 
 
-  //Check subject num_rows
-  public function checkSubjectNumRows($class, $user_id, $sch_id)
-  {
-    $this->db->query("SELECT * FROM classes WHERE sch_id = :sch_id AND user_id = :user_id AND classname = :class;");
+  // //Check subject num_rows
+  // public function checkSubjectNumRows($class, $user_id, $sch_id)
+  // {
+  //   $this->db->query("SELECT * FROM classes WHERE sch_id = :sch_id AND user_id = :user_id AND classname = :class;");
 
-    $this->db->bind(':sch_id', $sch_id);
-    $this->db->bind(':user_id', $user_id);
-    $this->db->bind(':class', $class);
+  //   $this->db->bind(':sch_id', $sch_id);
+  //   $this->db->bind(':user_id', $user_id);
+  //   $this->db->bind(':class', $class);
 
-    $num_rows = $this->db->single();
+  //   $num_rows = $this->db->single();
 
-    //Check Rows
-    if ($this->db->rowCount() > 0) {
-      return $num_rows;
-    } else {
-      return false;
-    }
-  }
+  //   //Check Rows
+  //   if ($this->db->rowCount() > 0) {
+  //     return $num_rows;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
 
   // // Get All Activities
@@ -425,6 +429,27 @@ class Post
     $this->db->bind(':opt3', $data['opt3']);
     $this->db->bind(':opt4', $data['opt4']);
     $this->db->bind(':img', $data['daigram']);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function updateParams($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE params SET subject = :subject, class = :class, duration = :duration, num_rows = :num_rows, instruction = :instruction WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':class', $data['class']);
+    $this->db->bind(':subject', $data['subject']);
+    $this->db->bind(':num_rows', $data['num_rows']);
+    $this->db->bind(':instruction', $data['instruction']);
+    $this->db->bind(':duration', $data['duration']);
 
     //Execute
     if ($this->db->execute()) {

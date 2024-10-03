@@ -22,12 +22,12 @@ class Submissions extends Controller
 
       $data = [
         'classname' => val_entry($_POST['classname']),
-        'obj_num_rows' => val_entry($_POST['obj_num_rows']),
-        'theory_num_rows' => val_entry($_POST['theory_num_rows']),
+        //'obj_num_rows' => val_entry($_POST['obj_num_rows']),
+        // 'theory_num_rows' => val_entry($_POST['theory_num_rows']),
         'user_id' => $_SESSION['user_id'],
         'sch_id' => $_COOKIE['sch_id'],
-        'choice' => val_entry($_POST['choice']),
-        'duration' => val_entry($_POST['duration'])
+        // 'choice' => val_entry($_POST['choice']),
+        // 'duration' => val_entry($_POST['duration'])
       ];
 
       //$data['classname'] = strtolower($data['classname']);
@@ -215,8 +215,6 @@ class Submissions extends Controller
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
       $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-      // Pull the set num_rows for the particular subject
-      //$expected_num_rows = $this->postModel->checkSubjectNumRows($_POST['class'], $_SESSION['user_id'], $_COOKIE['sch_id']);
 
       $data = [
         'paperID' => '',
@@ -227,7 +225,9 @@ class Submissions extends Controller
         'sch_id' => $_COOKIE['sch_id'],
         'user_id' => $_SESSION['user_id'],
         'year' => $_POST['year'],
-        //'total_subject_num_rows' => $expected_num_rows->num_rows
+        'num_rows' => $_POST['num_rows'],
+        'duration' => $_POST['duration'],
+        'instruction' => $_POST['instruction'],
       ];
 
       // For Theory Question
@@ -243,13 +243,15 @@ class Submissions extends Controller
           // Redirect to continue with set question 1
           redirect('posts/add2/' . $data['paperID']);
         } elseif ($exam_exits && !$exam_exits2) { // found objective in params but not theory
-          //Generate paperID
+          //Append existing paperID
           $data['paperID'] = $exam_exits->paperID;
           //Initiate exam question on the params table
           $this->postModel->addExamParams($data);
           // Redirect to continue with set question 1
           redirect('posts/add2/' . $data['paperID']);
         } elseif ($exam_exits && $exam_exits2) { // found both obj and theory in param
+          $data['id'] = $exam_exits2->id;
+          $this->postModel->updateParams($data);
           redirect('posts/add2/' . $exam_exits->paperID);
         }
       } elseif ($param == 'objectives_questions') {
@@ -258,6 +260,8 @@ class Submissions extends Controller
         $exam_exits2 = $this->postModel->checkExamParams2($data);
         if ($exam_exits && $exam_exits2) { // Objectives has been set
           // Exam has been set
+          $data['id'] = $exam_exits2->id;
+          $this->postModel->updateParams($data);
           redirect('posts/add/' . $exam_exits->paperID);
         } elseif ($exam_exits && !$exam_exits2) { // Only theory was been set
           // Insert Objedctive params with same paperID as theory

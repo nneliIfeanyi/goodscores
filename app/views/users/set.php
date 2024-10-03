@@ -29,11 +29,6 @@
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <form action="<?php echo URLROOT; ?>/submissions/set/<?php echo $data['param']; ?>" method="POST">
-              <input type="hidden" name="question" value="">
-              <input type="hidden" name="opt1" value="">
-              <input type="hidden" name="opt2" value="">
-              <input type="hidden" name="opt3" value="">
-              <input type="hidden" name="opt4" value="">
               <input type="hidden" name="term" value="<?= TERM; ?>">
               <input type="hidden" name="year" value="<?= SCH_SESSION; ?>">
               <div class="my-4">
@@ -60,6 +55,30 @@
                   <?php endif; ?>
                 </select>
               </div><!--===== Subject Ends =====-->
+              <?php if ($data['param'] == 'objectives_questions') : ?>
+                <div class="my-4">
+                  <label for="className">Number of objective questions</label>
+                  <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                </div><!--===== Objectives section Num_rows Ends =====-->
+                <div class="my-4">
+                  <label for="className">Exam instruction for objective section</label>
+                  <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                </div><!--===== Objectives section Instruction Ends =====-->
+              <?php elseif ($data['param'] == 'theory_questions') : ?>
+                <div class="my-4">
+                  <label for="className">Number of theory questions</label>
+                  <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                </div><!--===== Theory section Num_rows Ends =====-->
+                <div class="my-4">
+                  <label for="className">Exam instruction for theory section</label>
+                  <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                </div><!--===== Theory section Instruction Ends =====-->
+              <?php endif; ?>
+              <div class="my-4">
+                <label for="className">Exam Duration</label>
+                <input name="duration" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+
+              </div><!--===== Duration Ends =====-->
 
               <div class="d-grid">
                 <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">

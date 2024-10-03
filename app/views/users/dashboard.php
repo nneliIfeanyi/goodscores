@@ -126,7 +126,7 @@
                     <?php
                     if (!empty($data['recent'])) :
                       foreach ($data['recent'] as $recent) :
-                        $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+                        // $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
                         $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
                         $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
                     ?>
@@ -137,15 +137,15 @@
                           <td><?php echo $recent->term; ?></td>
                           <td><?php echo $recent->year; ?></td>
                           <?php if ($recent->section == 'objectives_questions') : ?>
-                            <?php if ($obj_num_rows != $status->num_rows) : ?>
+                            <?php if ($obj_num_rows < $recent->num_rows) : ?>
                               <td><span class="badge bg-warning">Pending</span></td>
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
                                 </a>
                               </td>
-                            <?php else : ?>
-                              <td><span class="badge bg-success">Completed</span></td>
+                            <?php elseif ($obj_num_rows >= $recent->num_rows) : ?>
+                              <td><span class="badge bg-success"><?php echo $obj_num_rows . 'questions'; ?>Completed</span></td>
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
@@ -157,7 +157,7 @@
                             <?php endif; ?>
 
                           <?php elseif ($recent->section == 'theory_questions') : ?>
-                            <?php if ($theory_num_rows != $status->num_rows2) : ?>
+                            <?php if ($theory_num_rows != $recent->num_rows) : ?>
                               <td><span class="badge bg-warning">Pending</span></td>
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">

@@ -98,19 +98,19 @@
                 <div class="row my-3">
                   <p class="col-2 d-lg-none">(A)</p>
                   <div class="col-10 col-lg-3">
-                    <input type="text" class="form-control" placeholder="Option A" required name="opt1">
+                    <input type="text" class="form-control form-control-lg" placeholder="Option A" required name="opt1">
                   </div>
                   <p class="col-2 d-lg-none">(B)</p>
                   <div class="col-10 col-lg-3">
-                    <input type="text" class="form-control" placeholder="Option B" required name="opt2">
+                    <input type="text" class="form-control form-control-lg" placeholder="Option B" required name="opt2">
                   </div>
                   <p class="col-2 d-lg-none">(C)</p>
                   <div class="col-10 col-lg-3">
-                    <input type="text" class="form-control" placeholder="Option C" name="opt3">
+                    <input type="text" class="form-control form-control-lg" placeholder="Option C" name="opt3">
                   </div>
                   <p class="col-2 d-lg-none">(D)</p>
                   <div class="col-10 col-lg-3">
-                    <input type="text" class="form-control" placeholder="Option D" name="opt4">
+                    <input type="text" class="form-control form-control-lg" placeholder="Option D" name="opt4">
                   </div>
                 </div>
                 <div class="row">

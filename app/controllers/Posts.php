@@ -30,16 +30,25 @@ class Posts extends Controller
 
     if ($_GET['class'] && $_GET['subject']) {
       $obj = $this->postModel->getObjectives($paperID);
-      $params = $this->postModel->getParamsByPaperID($paperID);
+      $params = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+      $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+      $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
       $data = [
+        'section' => 'objectives_questions',
         'class' => $_GET['class'],
         'subject' => $_GET['subject'],
         'term' => TERM,
         'year' => SCH_SESSION,
         'obj' => $obj,
         'params' => $params,
+        'subjects' => $subjects,
+        'classes' => $classes
       ];
-      $this->view('posts/show', $data);
+      if (empty($params->num_rows)) {
+        $this->view('users/review_params', $data);
+      } else {
+        $this->view('posts/show', $data);
+      }
     } // get request
     else {
       die('Something went wrong');
@@ -51,8 +60,10 @@ class Posts extends Controller
 
     if ($_GET['class'] && $_GET['subject']) {
       $theory = $this->postModel->getTheory($paperID);
-      $params = $this->postModel->getParamsByPaperID($paperID);
-      $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+      $params = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+      $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+      $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+      //$expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
       $data = [
         'class' => $_GET['class'],
         'subject' => $_GET['subject'],
@@ -60,9 +71,15 @@ class Posts extends Controller
         'year' => SCH_SESSION,
         'theory' => $theory,
         'params' => $params,
-        'expected_num_rows' => $expected_num_rows->num_rows2
+        'subjects' => $subjects,
+        'classes' => $classes,
+        'section' => 'theory_questions'
       ];
-      $this->view('posts/show2', $data);
+      if (empty($params->num_rows)) {
+        $this->view('users/review_params', $data);
+      } else {
+        $this->view('posts/show2', $data);
+      }
     } // get request
 
     else {
@@ -80,20 +97,21 @@ class Posts extends Controller
   // Add Post
   public function add($paper_id)
   {
-    $params = $this->postModel->getParamsByPaperID($paper_id);
+    $params = $this->postModel->getParamsByPaperID($paper_id, 'objectives_questions');
     $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
-    $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
     // $hex = $this->postModel->getEntities();
     $data = [
+      'sch_id' => $_COOKIE['sch_id'],
+      'section' => 'objectives_questions',
       'paperID' => $paper_id,
       'num_rows' => $num_rows,
       'year' => $params->year,
       'class' => $params->class,
       'term' => $params->term,
-      'section' => $params->section,
       'subject' => $params->subject,
-      'total_subject_num_rows' => $expected_num_rows->num_rows,
     ];
+    $exam_exits2 = $this->postModel->checkExamParams2($data);
+    $data['total_subject_num_rows'] = $exam_exits2->num_rows;
     $this->view('posts/add', $data);
   }
 
@@ -136,20 +154,21 @@ class Posts extends Controller
   // Add theory view
   public function add2($paper_id)
   {
-    $params = $this->postModel->getParamsByPaperID($paper_id);
+    $params = $this->postModel->getParamsByPaperID($paper_id, 'theory_questions');
     $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
-    $expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
     // Not post request method
     $data = [
+      'sch_id' => $_COOKIE['sch_id'],
+      'section' => 'theory_questions',
       'paperID' => $paper_id,
       'num_rows' => $num_rows,
       'year' => $params->year,
       'class' => $params->class,
       'term' => $params->term,
       'subject' => $params->subject,
-      'total_subject_num_rows' => $expected_num_rows->num_rows2
     ];
-
+    $exam_exits2 = $this->postModel->checkExamParams2($data);
+    $data['total_subject_num_rows'] = $exam_exits2->num_rows;
     $this->view('posts/add2', $data);
   }
 
@@ -190,7 +209,7 @@ class Posts extends Controller
     } else {
       // Get post from model
       $post = $this->postModel->getObjById($id);
-      $params = $this->postModel->getParamsByPaperID($post->paperID);
+      $params = $this->postModel->getParamsByPaperID($post->paperID, 'objectives_questions');
       $data = [
         'post' => $post,
         'params' => $params
@@ -210,7 +229,7 @@ class Posts extends Controller
   {
     // Get post from model
     $post = $this->postModel->getTheoryById($id);
-    $params = $this->postModel->getParamsByPaperID($post->paperID);
+    $params = $this->postModel->getParamsByPaperID($post->paperID, 'theory_questions');
     $data = [
       'post' => $post,
       'params' => $params

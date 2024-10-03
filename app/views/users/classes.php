@@ -39,7 +39,7 @@
                 <label for="className">Class Name</label>
                 <input type="text" id="className" name="classname" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
               </div>
-              <div class="my-4">
+              <!-- <div class="my-4">
                 <label for="className">Number of objective questions</label>
                 <input type="number" id="className" name="obj_num_rows" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
               </div>
@@ -57,7 +57,7 @@
               <div class="my-4">
                 <label for="className">Exam duration</label>
                 <input name="duration" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
-              </div>
+              </div> -->
 
               <div class="d-grid">
                 <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">
