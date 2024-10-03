@@ -106,7 +106,7 @@
               </div>
 
               <div class="card-body pb-0">
-                <h5 class="card-title">All <span>| Activities</span></h5>
+                <h5 class="card-title">All Activities <?= SCH_SESSION; ?></h5>
 
                 <table class="table table-borderless">
                   <thead>
@@ -116,9 +116,9 @@
                       <th scope="col">Section</th>
                       <th scope="col">Class</th>
                       <th scope="col">Term</th>
-                      <th scope="col">Year</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Action</th>
+                      <!-- <th scope="col">Year</th> -->
+                      <!-- <th scope="col">Status</th> -->
+                      <th scope="col">View</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -126,7 +126,6 @@
                     <?php
                     if (!empty($data['recent'])) :
                       foreach ($data['recent'] as $recent) :
-                        // $status = $this->postModel->checkSubjectNumRows($recent->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
                         $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
                         $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
                     ?>
@@ -135,37 +134,34 @@
                           <td class="text-primary"><?php echo $recent->section; ?></td>
                           <td><?php echo $recent->class; ?></td>
                           <td><?php echo $recent->term; ?></td>
-                          <td><?php echo $recent->year; ?></td>
+                          <!-- <td><?php echo $recent->year; ?></td> -->
                           <?php if ($recent->section == 'objectives_questions') : ?>
                             <?php if ($obj_num_rows < $recent->num_rows) : ?>
-                              <td><span class="badge bg-warning">Pending</span></td>
+                              <!-- <td><span class="badge bg-warning">Pending</span></td> -->
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
                                 </a>
                               </td>
                             <?php elseif ($obj_num_rows >= $recent->num_rows) : ?>
-                              <td><span class="badge bg-success"><?php echo $obj_num_rows . 'questions'; ?>Completed</span></td>
+                              <!-- <td><span class="badge bg-success"><?php echo $obj_num_rows . 'questions'; ?>Completed</span></td> -->
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
-                                </a>
-                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
                                 </a>
                               </td>
                             <?php endif; ?>
 
                           <?php elseif ($recent->section == 'theory_questions') : ?>
                             <?php if ($theory_num_rows != $recent->num_rows) : ?>
-                              <td><span class="badge bg-warning">Pending</span></td>
+                              <!-- <td><span class="badge bg-warning">Pending</span></td> -->
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
                                 </a>
                               </td>
                             <?php else : ?>
-                              <td><span class="badge bg-success">Completed</span></td>
+                              <!-- <td><span class="badge bg-success">Completed</span></td> -->
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
