@@ -43,10 +43,15 @@
                       </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12 position-relative">
                       <label for="yourPassword" class="form-label">Password</label>
-                      <input type="password" name="password" class="form-control <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['password'] ?>" id="yourPassword">
-                      <div class="invalid-feedback"><?php echo $data['password_err'] ?></div>
+                      <div class="position-relative">
+                        <i class="bi bi-eye password-visible-btn position-absolute top-50 translate-middle-y end-0 z-3  px-3"></i>
+                        <input type="password" name="password" class="form-control password pe-5" value="<?php echo $data['password'] ?>" id="yourPassword">
+                      </div>
+                      <?php if (!empty($data['password_err'])) : ?>
+                        <span class="text-danger small " style="margin-top: -5px;"><?php echo $data['password_err']; ?></span>
+                      <?php endif; ?>
                     </div>
 
                     <div class="col-12">
@@ -76,3 +81,21 @@
   </main><!-- End #main -->
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
+  <!-- Show and Hide Password -->
+  <script>
+    $(document).ready(function() {
+      $('.password-visible-btn').click(function() {
+        const passwordInputs = $('input.password');
+        $(this).toggleClass('bi-eye-slash');
+        if ($(this).hasClass('bi-eye-slash')) {
+          console.log('Hide Password')
+          passwordInputs.attr('type', 'text');
+          $(this).removeClass('bi-eye').addClass('bi-eye-slash');
+        } else {
+          console.log('Hide Pawssword')
+          passwordInputs.attr('type', 'password');
+          $(this).removeClass('bi-eye-slash').addClass('bi-eye');
+        }
+      });
+    });
+  </script>

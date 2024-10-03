@@ -56,16 +56,16 @@
                       </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12 position-relative">
                       <label for="yourPassword" class="form-label">Password</label>
-                      <input type="password" name="password" class="form-control  <?php echo (!empty($data['password_err'])) ? 'is-invalid' : ''; ?>" id="yourPassword" value="<?php echo $data['password']; ?>" required>
-                      <div class="invalid-feedback"><?php echo $data['password_err']; ?></div>
+                      <i class="bi bi-eye password-visible-btn position-absolute top-50 end-0 px-4 mt-1"></i>
+                      <input type="password" name="password" class="form-control password pe-5" id="yourPassword" value="<?php echo $data['password']; ?>">
                     </div>
-
+                    <span class="text-danger small" style="margin-top: -4px;"><?php echo $data['password_err']; ?></span>
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Comfirm Password</label>
-                      <input type="password" name="confirm_password" class="form-control <?php echo (!empty($data['confirm_password_err'])) ? 'is-invalid' : ''; ?>" id="yourPassword" value="<?php echo $data['confirm_password']; ?>" required>
-                      <div class="invalid-feedback"><?php echo $data['confirm_password_err']; ?></div>
+                      <input type="password" name="confirm_password" class="form-control password" id="yourPassword" value="<?php echo $data['confirm_password']; ?>" required>
+                      <span class="text-danger small"><?php echo $data['confirm_password_err']; ?></span>
                     </div>
 
                     <div class="col-12">
@@ -91,3 +91,21 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
+  <!-- Show and Hide Password -->
+  <script>
+    $(document).ready(function() {
+      $('.password-visible-btn').click(function() {
+        const passwordInputs = $('input.password');
+        $(this).toggleClass('bi-eye-slash');
+        if ($(this).hasClass('bi-eye-slash')) {
+          console.log('Hide Password')
+          passwordInputs.attr('type', 'text');
+          $(this).removeClass('bi-eye').addClass('bi-eye-slash');
+        } else {
+          console.log('Hide Pawssword')
+          passwordInputs.attr('type', 'password');
+          $(this).removeClass('bi-eye-slash').addClass('bi-eye');
+        }
+      });
+    });
+  </script>
