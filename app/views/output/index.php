@@ -1,9 +1,11 @@
 <?php
+
 define('SUBJECT', $data['params']->subject);
 define('KLASS', $data['params']->class);
+
 define('SCH_NAME', $data['sch']->name);
 define('MOTTO', $data['sch']->motto);
-define('E_TIME', $data['check']->duration);
+define('E_TIME', $data['params']->duration);
 // Include the main TCPDF library (search for installation path).
 require APPROOT . '/views/TCPDF-main/tcpdf.php';
 
@@ -20,7 +22,7 @@ class MYPDF extends TCPDF
 		$this->setFont('helvetica', 'I', 7);
 		// Page number
 		//$this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-		$this->Cell(0, 10, 'Powered by Stanvic Concepts', 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Powered by Goodscores', 0, false, 'C', 0, '', 0, false, 'T', 'M');
 	}
 }
 
@@ -70,20 +72,20 @@ $year = SCH_SESSION;
 $time = E_TIME;
 
 // Set font
-$pdf->setFont('helvetica', 'B', 18);
+$pdf->setFont('dejavusans', 'B', 18);
 // Title
 $pdf->Cell(0, 0, SCH_NAME, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf->Ln(6);
 // Set font
-$pdf->setFont('helvetica', 'I', 11);
+$pdf->setFont('dejavusans', 'I', 11);
 // Title
 $pdf->Cell(0, 15, MOTTO, 0, false, 'C', 0, '', 0, false, 'M', 'M');
 $pdf->Ln(6);
 // Set font
-$pdf->setFont('times', 'B', 11);
+$pdf->setFont('dejavusans', 'B', 11);
 // Title
-$pdf->Cell(0, 15, TERM . ' Examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
-$pdf->setFont('times', 'N', 12);
+$pdf->Cell(0, 15, TERM . ' examination', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+$pdf->setFont('dejavusans', 'N', 12);
 $html = "
               <div class='row'>
                  <div class='col-md-3'>
@@ -121,50 +123,59 @@ $pdf->WriteHtmlCell(60, 20, 156, 13, $html3);
 // -------------------------------------------------------------
 
 $pdf->Ln(15);
-$pdf->setFont('times', 'BI', 12);
-$txt = <<<EOD
+if (!empty($data['obj'])) {
+	$pdf->setFont('times', 'BI', 12);
+	$txt = <<<EOD
 Objectives Questions
 EOD;
-$pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
-// ----------------------------------------------------------
+	$pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
+	// ----------------------------------------------------------
 
 
-// set font
-$pdf->setFont('times', 'N', 11);
-// set some text to print
-$txt = <<<EOD
-Answer all questions in this section
+	// set font
+	$pdf->setFont('times', 'N', 11);
+	$amt = $data['params1']->instruction;
+	$txt = <<<EOD
+$amt
 --------------------------------------------------
+
+
 EOD;
-$pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
-// ----------------------------------------------------------
+	$pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);
+	// ----------------------------------------------------------
 
-// Loop through objectives questions
-$num = 0;
-foreach ($data['obj'] as $obj) {
-	$num++;
-	$pdf->setFont('times', 'N', 13);
-	if (empty($obj->opt3)) {
-		$obj->opt3 = '';
-	} else {
-		$obj->opt3 = '<b>(c)</b>  ' . $obj->opt3 . '&nbsp;';
-	}
+	// Loop through objectives questions
 
-	if (empty($obj->opt4)) {
-		$obj->opt4 = '';
-	} else {
-		$obj->opt4 = '<b>(d)</b>  ' . $obj->opt4;
-	}
-	$subtable = '<table>
+	$num = 0;
+	foreach ($data['obj'] as $obj) {
+		$num++;
+		$pdf->setFont('dejavusans', 'N', 12);
+		if (empty($obj->opt3)) {
+			$obj->opt3 = '';
+		} else {
+			$obj->opt3 = '<b>(c)</b>  ' . $obj->opt3 . '&nbsp;';
+		}
+
+		if (empty($obj->opt4)) {
+			$obj->opt4 = '';
+		} else {
+			$obj->opt4 = '<b>(d)</b>  ' . $obj->opt4;
+		}
+		$subtable = '
+		<style> 
+                p{line-height: 0;}
+             </style>
+	<table>
 				<tr>
-					<td width="21"><b>' . $num . ')</b></td>
-					<td style="width:667px;">' . $obj->question . '<br>
-					<span style="font-size:16px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
+					<td style="font-size:12px;" width="21"><p>' . $num . ')</p></td>
+					<td style="width:667px;">' . $obj->question . '
+					<span style="font-size:12px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
 					</span></td>
 				</tr>
 			</table>';
-	$pdf->writeHTML($subtable, true, false, true, false, '');
-} // End foreach loop
+		$pdf->writeHTML($subtable, true, false, true, false, '');
+	} // End foreach loop
+}
 if (!empty($data['theory'])) {
 	// ---------------------------------------------------------
 	// Output centered horizontal line
@@ -187,10 +198,12 @@ EOD;
 
 	// Output a centered text string with normal font 10 pixels size
 	$pdf->setFont('times', 'N', 10);
-	$amt = $data['check']->choice;
+	$instruction = $data['params2']->instruction;
 	$ins = <<<EOD
-Answer any $amt questions of your choice
+		$instruction
 -------------------------------------------------------
+
+
 EOD;
 	$pdf->Write(0, $ins, '', 0, 'C', true, 0, false, false, 0);
 	// Output a centered text string Ends..
@@ -201,109 +214,99 @@ EOD;
 	foreach ($data['theory'] as $theory) {
 		$num2++;
 		$pull_each = $this->postModel->pullEach($theory->questionID, $theory->paperID);
-		$pdf->setFont('times', 'N', 13);
-		$table = '<table>
-				<tr>
-					<td width="25"><b>' . $num2 . 'a)</b> </td>
-					<td style="width:667px;">&nbsp;' . $pull_each->questionA . '<br>';
+		$pdf->setFont('dejavusans', 'N', 13);
+
+		$table = '
+		<div style="">
+			<span  style="font-size:13px;">' . $num2 . 'a)</span>
+			<span  style="font-size:16px;">' . $pull_each->questionA . '</span><br>';
 		if (!empty($pull_each->Ai)) {
 			$table .= '
-					<span><b>(i)&nbsp;</b>' . $pull_each->Ai . '</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:14px;"><b>(i)</b>' . $pull_each->Ai . '</span>
 						
 		';
 		}
 		if (!empty($pull_each->Aii)) {
 			$table .= '
-					<span><b>(ii)&nbsp;</b>' . $pull_each->Aii . '</span>
+					<span style="font-size:14px;"> <b>(ii)</b>' . $pull_each->Aii . '</span>
 						
 		';
 		}
 		if (!empty($pull_each->Aiii)) {
 			$table .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Aiii . '</span>
+					<span style="font-size:14px;"> <b>(iii)</b>' . $pull_each->Aiii . '</span>
 						
 		';
 		}
 		if (!empty($pull_each->Aiv)) {
 			$table .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Aiv . '</span><br>';
+					<span style="font-size:14px;"> <b>(iv)</b>' . $pull_each->Aiv . '</span><br>';
 		}
-		$table .= '</td>
-	</tr>
-</table>';
+		$table .= '</div>'; /// A ends ===================
 
 		if (!empty($pull_each->questionB)) {
-			$table .= '<table>
-		<tr>
-					<td width="25"><b>' . $num2 . 'b)</b></td>
-					<td style="width:667px;">&nbsp;' . $pull_each->questionB . '<br>';
-
-
+			$table .=
+				'<div style="">
+			<span  style="font-size:13px;">' . $num2 . 'b)</span>
+			<span  style="font-size:16px;">' . $pull_each->questionB . '</span><br>';
 			if (!empty($pull_each->Bi)) {
 				$table .= '
-					<span><b>(i)&nbsp;</b>' . $pull_each->Bi . '</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:14px;"><b>(i)</b>' . $pull_each->Bi . '</span>
 						
 		';
 			}
 			if (!empty($pull_each->Bii)) {
 				$table .= '
-					<span><b>(ii)&nbsp;</b>' . $pull_each->Bii . '</span>
+					<span style="font-size:14px;"> <b>(ii)</b>' . $pull_each->Bii . '</span>
 						
 		';
 			}
 			if (!empty($pull_each->Biii)) {
 				$table .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Biii . '</span>
+					<span style="font-size:14px;"> <b>(iii)</b>' . $pull_each->Biii . '</span>
 						
 		';
 			}
 			if (!empty($pull_each->Biv)) {
 				$table .= '
-					<span><b>(iv)&nbsp;</b>' . $pull_each->Biv . '</span><br>';
+					<span style="font-size:14px;"> <b>(iv)</b>' . $pull_each->Biv . '</span><br>';
 			}
-			$table .= '</td>
-	</tr>
-</table>';
-		}
+			$table .= '</div>';
+		} //// End not empty B
 
 
 		if (!empty($pull_each->questionC)) {
-			$table .= '<table>
-		<tr>
-					<td width="25"><b>' . $num2 . 'c)</b></td>
-					<td style="width:667px;">' . $pull_each->questionC . '<br>';
-
-
+			$table .=
+				'<div style="">
+			<span  style="font-size:13px;">' . $num2 . 'c)</span>
+			<span  style="font-size:16px;">' . $pull_each->questionC . '</span><br>';
 			if (!empty($pull_each->Ci)) {
 				$table .= '
-					<span><b>(i)&nbsp;</b>&nbsp;' . $pull_each->Ci . '</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:14px;"><b>(i)</b>' . $pull_each->Ci . '</span>
 						
 		';
 			}
 			if (!empty($pull_each->Cii)) {
 				$table .= '
-					<span><b>(ii)&nbsp;</b>' . $pull_each->Cii . '</span>
+					<span style="font-size:14px;"> <b>(ii)</b>' . $pull_each->Cii . '</span>
 						
 		';
 			}
 			if (!empty($pull_each->Ciii)) {
 				$table .= '
-					<span><b>(iii)&nbsp;</b>' . $pull_each->Ciii . '</span><br>
+					<span style="font-size:14px;"> <b>(iii)</b>' . $pull_each->Ciii . '</span>
 						
 		';
 			}
-			$table .= '</td>
-	</tr>
-</table>';
-		}
+			$table .= '</div>';
+		} //// End not empty C
 
 		if (!empty($pull_each->questionD)) {
-			$table .= '<table>
-		<tr>
-					<td width="25"><b>' . $num2 . 'd)</b></td>
-					<td style="width:667px;">&nbsp;' . $pull_each->questionD . '</td>
-		</tr>
-	</table';
+			$table .=
+				'<div style="">
+			<span  style="font-size:13px;">' . $num2 . 'd)</span>
+			<span  style="font-size:16px;">' . $pull_each->questionD . '</span><br>';
+			$table .= '</div>';
 		}
 
 		$pdf->writeHTML($table, true, false, true, false, '');
