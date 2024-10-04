@@ -32,7 +32,7 @@ class Output extends Controller
     $params = $this->postModel->getParamsByPaperID2($paperID);
     $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
     $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($params2->sch_id);
+    $sch = $this->pageModel->getSchool($params->sch_id);
     $data = [
       'paperID' => $paperID,
       'params' => $params,
