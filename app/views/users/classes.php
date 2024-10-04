@@ -118,7 +118,8 @@
 
                         </div>
                       </div>
-                    </div>End Delete Modal
+                    </div>
+                    <!-- End Delete Modal -->
                   <?php $n++;
                   endforeach; ?>
                 <?php else : ?>
