@@ -138,7 +138,7 @@
                           <?php if ($recent->section == 'objectives_questions') : ?>
                             <?php if ($obj_num_rows < $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-warning">Pending</span></td> -->
-                              <td scope="row">
+                              <td scope="row" class="d-flex gap-2">
                                 <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye"></i>
                                 </a>
@@ -148,9 +148,12 @@
                               </td>
                             <?php elseif ($obj_num_rows >= $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-success"><?php echo $obj_num_rows . 'questions'; ?>Completed</span></td> -->
-                              <td scope="row">
+                              <td scope="row" class="d-flex gap-2">
                                 <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
+                                </a>
+                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
                                 </a>
                               </td>
                             <?php endif; ?>
@@ -158,7 +161,7 @@
                           <?php elseif ($recent->section == 'theory_questions') : ?>
                             <?php if ($theory_num_rows < $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-warning">Pending</span></td> -->
-                              <td scope="row">
+                              <td scope="row" class="d-flex gap-2">
                                 <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye"></i>
                                 </a>
@@ -168,7 +171,7 @@
                               </td>
                             <?php elseif ($theory_num_rows >= $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-success">Completed</span></td> -->
-                              <td scope="row">
+                              <td scope="row" class="d-flex gap-2">
                                 <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
                                   <i class="bi bi-eye fs-3"></i>
                                 </a>
