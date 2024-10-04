@@ -27,8 +27,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <form action="<?php echo URLROOT; ?>/submissions/set/<?php echo $data['section']; ?>" method="POST">
-                            <input type="hidden" name="term" value="<?= TERM; ?>">
-                            <input type="hidden" name="year" value="<?= SCH_SESSION; ?>">
+                            <input type="hidden" name="term" value="<?= $data['term']; ?>">
+                            <input type="hidden" name="year" value="<?= $data['year']; ?>">
                             <div class="my-4">
                                 <select class="form-control form-control-lg" name="class" required>
                                     <option value="<?php echo $data['params']->class; ?>"><?php echo $data['params']->class; ?></option>
@@ -56,27 +56,27 @@
                             <?php if ($data['section'] == 'objectives_questions') : ?>
                                 <div class="my-4">
                                     <label for="className">Number of objective questions</label>
-                                    <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                    <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Objectives section Num_rows Ends =====-->
                                 <div class="my-4">
                                     <label for="className">Exam instruction for objective section</label>
-                                    <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                    <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Objectives section Instruction Ends =====-->
+                                <div class="my-4">
+                                    <label for="className">Exam Duration</label>
+                                    <input name="duration" value="<?= $data['params']->duration; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+
+                                </div><!--===== Duration Ends =====-->
                             <?php elseif ($data['section'] == 'theory_questions') : ?>
                                 <div class="my-4">
                                     <label for="className">Number of theory questions</label>
-                                    <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                    <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Theory section Num_rows Ends =====-->
                                 <div class="my-4">
                                     <label for="className">Exam instruction for theory section</label>
-                                    <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                    <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Theory section Instruction Ends =====-->
                             <?php endif; ?>
-                            <div class="my-4">
-                                <label for="className">Exam Duration</label>
-                                <input name="duration" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-
-                            </div><!--===== Duration Ends =====-->
 
                             <div class="d-grid">
                                 <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">

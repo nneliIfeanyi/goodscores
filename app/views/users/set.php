@@ -61,24 +61,25 @@
                   <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                 </div><!--===== Objectives section Num_rows Ends =====-->
                 <div class="my-4">
-                  <label for="className">Exam instruction for objective section</label>
+                  <label for="className">Exam instruction for objective section <span style="font-size: small;">(eg. Answer all questions in this section)</span></label>
                   <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                 </div><!--===== Objectives section Instruction Ends =====-->
+                <div class="my-4">
+                  <label for="className">Exam Duration</label>
+                  <input name="duration" value="" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+
+                </div><!--===== Duration Ends =====-->
               <?php elseif ($data['param'] == 'theory_questions') : ?>
+                <input type="hidden" name="duration" value="">
                 <div class="my-4">
                   <label for="className">Number of theory questions</label>
                   <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                 </div><!--===== Theory section Num_rows Ends =====-->
                 <div class="my-4">
-                  <label for="className">Exam instruction for theory section</label>
+                  <label for="className">Exam instruction for theory section <span style="font-size: small;">(eg. Answer only 1 question in this section)</span></label>
                   <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                 </div><!--===== Theory section Instruction Ends =====-->
               <?php endif; ?>
-              <div class="my-4">
-                <label for="className">Exam Duration</label>
-                <input name="duration" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-
-              </div><!--===== Duration Ends =====-->
 
               <div class="d-grid">
                 <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">

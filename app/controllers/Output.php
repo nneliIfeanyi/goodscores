@@ -14,15 +14,17 @@ class Output extends Controller
   {
     $obj = $this->postModel->getObjectives($paperID);
     $theory = $this->postModel->getTheory($paperID);
-    $params = $this->postModel->getParamsByPaperID($paperID);
-    $sch = $this->pageModel->getSchool($params->sch_id);
-    $check = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
+    $params = $this->postModel->getParamsByPaperID2($paperID);
+    $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $sch = $this->pageModel->getSchool($params2->sch_id);
     $data = [
       'obj' => $obj,
+      'params1' => $params1,
+      'params2' => $params2,
       'params' => $params,
       'theory' => $theory,
-      'sch' => $sch,
-      'check' => $check
+      'sch' => $sch
     ];
     $this->view('output/index', $data);
   }

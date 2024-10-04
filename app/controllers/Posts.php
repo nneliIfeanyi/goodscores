@@ -63,7 +63,6 @@ class Posts extends Controller
       $params = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
       $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
       $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
-      //$expected_num_rows = $this->postModel->checkSubjectNumRows($params->class, $_SESSION['user_id'], $_COOKIE['sch_id']);
       $data = [
         'class' => $_GET['class'],
         'subject' => $_GET['subject'],

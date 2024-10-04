@@ -137,6 +137,22 @@ class Post
       return false;
     }
   }
+  // Get params by paper id
+  public function getParamsByPaperID2($paper_id)
+  {
+    $this->db->query("SELECT * FROM params WHERE paperID = :paperID;");
+    // Bind Values
+    $this->db->bind(':paperID', $paper_id);
+
+    $row = $this->db->single();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $row;
+    } else {
+      return false;
+    }
+  }
 
   // Add Exam Params
   public function addExamParams($data)

@@ -139,8 +139,11 @@
                             <?php if ($obj_num_rows < $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-warning">Pending</span></td> -->
                               <td scope="row">
-                                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye fs-3"></i>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
+                                  <i class="bi bi-pen"></i>
                                 </a>
                               </td>
                             <?php elseif ($obj_num_rows >= $recent->num_rows) : ?>
@@ -153,14 +156,17 @@
                             <?php endif; ?>
 
                           <?php elseif ($recent->section == 'theory_questions') : ?>
-                            <?php if ($theory_num_rows != $recent->num_rows) : ?>
+                            <?php if ($theory_num_rows < $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-warning">Pending</span></td> -->
                               <td scope="row">
-                                <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye fs-3"></i>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
+                                  <i class="bi bi-eye"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
+                                  <i class="bi bi-pen"></i>
                                 </a>
                               </td>
-                            <?php else : ?>
+                            <?php elseif ($theory_num_rows >= $recent->num_rows) : ?>
                               <!-- <td><span class="badge bg-success">Completed</span></td> -->
                               <td scope="row">
                                 <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">

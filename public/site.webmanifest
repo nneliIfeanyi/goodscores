@@ -1,6 +1,6 @@
 {
-  "name": "Good Scores",
-  "short_name": "GoodScores",
+  "name": "Goodscores",
+  "short_name": "Goodscores",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f6f9ff",

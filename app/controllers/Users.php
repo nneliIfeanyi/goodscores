@@ -73,6 +73,27 @@ class Users extends Controller
     $this->view('users/classes', $data);
   }
 
+  public function review_params()
+  {
+    if ($_GET['paperID'] && $_GET['section']) {
+      $params = $this->postModel->getParamsByPaperID($_GET['paperID'], $_GET['section']);
+      $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+      $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+      $data = [
+        'classes' => $classes,
+        'subjects' => $subjects,
+        'params' => $params,
+        'term' => $params->term,
+        'year' => $params->year,
+        'section' => $params->section
+      ];
+
+      $this->view('users/review_params', $data);
+    } else {
+      redirect('users/dashboard');
+    }
+  }
+
   public function edit_class($id)
   {
     $class = $this->userModel->getSingleClass($id);
