@@ -68,6 +68,7 @@
 
                                 </div><!--===== Duration Ends =====-->
                             <?php elseif ($data['section'] == 'theory_questions') : ?>
+                                <input type="hidden" name="duration" value="">
                                 <div class="my-4">
                                     <label for="className">Number of theory questions</label>
                                     <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />

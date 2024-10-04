@@ -284,6 +284,42 @@ class Submissions extends Controller
     }
   } // End set question method
 
+  public function review($param)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'paperID' => $_POST['paperID'],
+        'class' => $_POST['class'],
+        'subject' => $_POST['subject'],
+        'term' => $_POST['term'],
+        'section' => $param,
+        'sch_id' => $_COOKIE['sch_id'],
+        'user_id' => $_SESSION['user_id'],
+        'year' => $_POST['year'],
+        'num_rows' => $_POST['num_rows'],
+        'duration' => $_POST['duration'],
+        'instruction' => $_POST['instruction'],
+      ];
+      if ($param == 'objectives_questions') {
+        $params1 = $this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions');
+        $data['id'] = $params1->id;
+        $this->postModel->updateParams($data);
+        flash('msg', 'Successful');
+        redirect('output/review_params/' . $data['paperID']);
+      } elseif ($param == 'theory_questions') {
+        $params2 = $this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions');
+        $data['id'] = $params2->id;
+        $this->postModel->updateParams($data);
+        flash('msg', 'Successful');
+        redirect('output/review_params/' . $data['paperID']);
+      }
+    } else {
+      die('Something went wrong');
+    }
+  }
 
 
   // Edit Theory question
