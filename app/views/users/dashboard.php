@@ -133,7 +133,7 @@
                           <td><?php echo $recent->subject; ?></td>
                           <td class="text-primary"><?php echo $recent->section; ?></td>
                           <td><?php echo $recent->class; ?></td>
-                          <td><?php echo $recent->term; ?>bases</td>
+                          <td><?php echo $recent->term; ?></td>
                           <!-- <td><?php echo $recent->year; ?></td> -->
                           <?php if ($recent->section == 'objectives_questions') : ?>
                             <?php if ($obj_num_rows < $recent->num_rows) : ?>
