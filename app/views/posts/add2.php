@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <?php
-            if ($data['num_rows'] == $data['total_subject_num_rows']) {
+            if ($data['num_rows'] >= $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>theory_questions</strong>
@@ -51,6 +51,9 @@
                   <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
                   <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
                   <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
+                  <input type="hidden" name="num-rows" value="num_rows">
+                  <input type="hidden" name="duration" value="duration">
+                  <input type="hidden" name="instruction" value="instruction">
                   <div class="d-grid">
                     <input type="submit" name="set" value="Go to Objectives Questions" class="btn btn-outline-primary">
                   </div>

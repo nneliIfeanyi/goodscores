@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <?php
-            if ($data['num_rows'] == $data['total_subject_num_rows']) {
+            if ($data['num_rows'] >= $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>objectives_questions</strong>
@@ -46,16 +46,13 @@
                 </div>
               </div>
               <form action="<?php echo URLROOT; ?>/submissions/set/theory_questions" method="POST">
-                <input type="hidden" name="question" value="">
-                <input type="hidden" name="opt1" value="">
-                <input type="hidden" name="opt2" value="">
-                <input type="hidden" name="opt3" value="">
-                <input type="hidden" name="opt4" value="">
                 <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
                 <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
                 <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
                 <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
-                <input type="hidden" name="section" value="theory_questions">
+                <input type="hidden" name="num-rows" value="num_rows">
+                <input type="hidden" name="duration" value="duration">
+                <input type="hidden" name="instruction" value="instruction">
                 <div class="d-grid">
                   <input type="submit" name="set" value="Go to Theory Questions" class="btn btn-outline-primary">
                 </div>
