@@ -149,6 +149,7 @@ EOD;
 	$num = 0;
 	foreach ($data['obj'] as $obj) {
 		$num++;
+		$img = URLROOT . '/' . $obj->img;
 		$pdf->setFont('dejavusans', 'N', 12);
 		if (empty($obj->opt3)) {
 			$obj->opt3 = '';
@@ -165,10 +166,15 @@ EOD;
 		<style> 
                 p{line-height: 0;}
              </style>
-	<table>
+			<table>
 				<tr>
 					<td style="font-size:12px;" width="21"><p>' . $num . ')</p></td>
-					<td style="width:667px;">' . $obj->question . '
+					<td style="width:667px;">';
+		if (!empty($obj->img)) {
+			$subtable .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="' . $img . '" border="0" height="91" width="181" align="center" /><br>';
+		}
+
+		$subtable .= '	' . $obj->question . '
 					<span style="font-size:12px;"><b>(a)</b> ' . $obj->opt1 . '&nbsp;<b>(b)</b> ' . $obj->opt2 . '&nbsp;' . $obj->opt3 . $obj->opt4 . '
 					</span></td>
 				</tr>

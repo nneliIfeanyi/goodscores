@@ -108,6 +108,7 @@ class Posts extends Controller
       'class' => $params->class,
       'term' => $params->term,
       'subject' => $params->subject,
+      'params' => $params
     ];
     $exam_exits2 = $this->postModel->checkExamParams2($data);
     $data['total_subject_num_rows'] = $exam_exits2->num_rows;
@@ -165,6 +166,7 @@ class Posts extends Controller
       'class' => $params->class,
       'term' => $params->term,
       'subject' => $params->subject,
+      'params' => $params
     ];
     $exam_exits2 = $this->postModel->checkExamParams2($data);
     $data['total_subject_num_rows'] = $exam_exits2->num_rows;

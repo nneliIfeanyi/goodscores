@@ -46,21 +46,14 @@
                 </div>
               </div>
               <div class="d-grid">
-                <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
-                  <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
-                  <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
-                  <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
-                  <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
-                  <input type="hidden" name="num-rows" value="num_rows">
-                  <input type="hidden" name="duration" value="duration">
-                  <input type="hidden" name="instruction" value="instruction">
-                  <div class="d-grid">
-                    <input type="submit" name="set" value="Go to Objectives Questions" class="btn btn-outline-primary">
-                  </div>
-                </form>
-                <div class="mt-3">
-                  <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
-                </div>
+                <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions')) : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
+                <?php else : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/set/objectives_questions">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
+                <?php endif; ?>
+              </div>
+              <div class="mt-3">
+                <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
               </form>
             <?php

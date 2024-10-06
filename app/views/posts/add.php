@@ -45,18 +45,13 @@
                   <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <form action="<?php echo URLROOT; ?>/submissions/set/theory_questions" method="POST">
-                <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
-                <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
-                <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
-                <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
-                <input type="hidden" name="num-rows" value="num_rows">
-                <input type="hidden" name="duration" value="duration">
-                <input type="hidden" name="instruction" value="instruction">
-                <div class="d-grid">
-                  <input type="submit" name="set" value="Go to Theory Questions" class="btn btn-outline-primary">
-                </div>
-              </form>
+              <div class="d-grid">
+                <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                <?php else : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/set/theory_questions">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                <?php endif; ?>
+              </div>
               <div class="mt-3">
                 <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
