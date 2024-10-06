@@ -164,7 +164,7 @@ EOD;
 		}
 		$subtable = '
 		<style> 
-                p{line-height: 0;}
+               
              </style>
 			<table>
 				<tr>
