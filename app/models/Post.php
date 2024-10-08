@@ -27,6 +27,24 @@ class Post
     }
   }
 
+
+// Delete single obj
+  public function deleteCustomObj($id)
+  {
+    // Prepare Query
+    $this->db->query('DELETE FROM custom_obj WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $id);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Delete single obj
   public function deleteTheory($id)
   {
@@ -79,12 +97,13 @@ class Post
   }
 
 
-  //Check if Exam obj Params Already Exit
-  public function checkExamParams($data)
+  //Check if Exam Paper exist
+  public function checkIfPaperExist($data)
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND class = :class AND subject = :subject AND term = :term AND year = :year");
+    $this->db->query("SELECT * FROM core WHERE sch_id = :sch_id AND user_id = :user_id AND class = :class AND subject = :subject AND term = :term AND year = :year");
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
+    $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':class', $data['class']);
     $this->db->bind(':subject', $data['subject']);
     $this->db->bind(':term', $data['term']);
@@ -100,11 +119,12 @@ class Post
   }
 
   //Check if Exam obj Params Already Exit
-  public function checkExamParams2($data)
+  public function checkIfSectionExist($data)
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND class = :class AND subject = :subject AND term = :term AND year = :year AND section = :section");
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :user_id AND class = :class AND subject = :subject AND term = :term AND year = :year AND section = :section");
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
+    $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':class', $data['class']);
     $this->db->bind(':subject', $data['subject']);
     $this->db->bind(':term', $data['term']);
@@ -138,9 +158,9 @@ class Post
     }
   }
   // Get params by paper id
-  public function getParamsByPaperID2($paper_id)
+  public function getParamsFromCore($paper_id)
   {
-    $this->db->query("SELECT * FROM params WHERE paperID = :paperID;");
+    $this->db->query("SELECT * FROM core WHERE paperID = :paperID;");
     // Bind Values
     $this->db->bind(':paperID', $paper_id);
 
@@ -158,8 +178,8 @@ class Post
   public function addExamParams($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, year, num_rows, instruction, duration) 
-      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :year, :num_rows, :instruction, :duration)');
+    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, section_alt, year, num_rows, instruction, tag) 
+      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :section_alt, :year, :num_rows, :instruction, :tag)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -169,10 +189,34 @@ class Post
     $this->db->bind(':subject', $data['subject']);
     $this->db->bind(':term', $data['term']);
     $this->db->bind(':section', $data['section']);
+    $this->db->bind(':section_alt', $data['section_alt']);
     $this->db->bind(':year', $data['year']);
     $this->db->bind(':num_rows', $data['num_rows']);
     $this->db->bind(':instruction', $data['instruction']);
-    $this->db->bind(':duration', $data['duration']);
+    $this->db->bind(':tag', $data['tag']);
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Add Exam Params
+  public function addExamCore($data)
+  {
+    // Prepare Query
+    $this->db->query('INSERT INTO core (sch_id, user_id, paperID, class, subject, term, year) 
+      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :year)');
+
+    // Bind Values
+    $this->db->bind(':sch_id', $data['sch_id']);
+    $this->db->bind(':user_id', $data['user_id']);
+    $this->db->bind(':paperID', $data['paperID']);
+    $this->db->bind(':class', $data['class']);
+    $this->db->bind(':subject', $data['subject']);
+    $this->db->bind(':term', $data['term']);
+    $this->db->bind(':year', $data['year']);
     //Execute
     if ($this->db->execute()) {
       return true;
@@ -185,6 +229,24 @@ class Post
   public function checkObjectivesNumRows($paper_id, $sch_id)
   {
     $this->db->query("SELECT * FROM objectives WHERE sch_id = :sch_id AND paperID = :paperID;");
+
+    $this->db->bind(':sch_id', $sch_id);
+    $this->db->bind(':paperID', $paper_id);
+
+    $this->db->resultset();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $this->db->rowCount();
+    } else {
+      return false;
+    }
+  }
+
+  //Check Objective Questions RowCount
+  public function checkCustomObjNumRows($paper_id, $sch_id)
+  {
+    $this->db->query("SELECT * FROM custom_obj WHERE sch_id = :sch_id AND paperID = :paperID;");
 
     $this->db->bind(':sch_id', $sch_id);
     $this->db->bind(':paperID', $paper_id);
@@ -231,6 +293,44 @@ class Post
     //Check Rows
     if ($this->db->rowCount() > 0) {
       return $this->db->resultset();
+    } else {
+      return false;
+    }
+  }
+
+  //Get Objective Questions
+  public function getCustomObj($paper_id)
+  {
+    $this->db->query("SELECT * FROM custom_obj WHERE sch_id = :sch_id AND paperID = :paperID;");
+
+    //$this->db->bind(':sch_id', $sch_id);
+    $this->db->bind(':paperID', $paper_id);
+    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+
+    $this->db->resultset();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $this->db->resultset();
+    } else {
+      return false;
+    }
+  }
+
+  //Get custom Questions
+  public function getCustomContent($paper_id)
+  {
+    $this->db->query("SELECT * FROM custom WHERE sch_id = :sch_id AND paperID = :paperID AND user_id = :user_id;");
+
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->bind(':paperID', $paper_id);
+    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+
+    $this->db->single();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return $this->db->single();
     } else {
       return false;
     }
@@ -341,6 +441,31 @@ class Post
     }
   }
 
+  // Insert objective questions to objectives table
+  public function setObjQuestion($data)
+  {
+    // Prepare Query
+    $this->db->query('INSERT INTO custom_obj (sch_id, user_id, paperID, question, opt1, opt2, opt3, opt4, img) 
+      VALUES (:sch_id, :user_id, :paperID, :question, :opt1, :opt2, :opt3, :opt4, :img)');
+
+    // Bind Values
+    $this->db->bind(':sch_id', $data['sch_id']);
+    $this->db->bind(':user_id', $data['user_id']);
+    $this->db->bind(':paperID', $data['paperID']);
+    $this->db->bind(':question', $data['question']);
+    $this->db->bind(':opt1', $data['opt1']);
+    $this->db->bind(':opt2', $data['opt2']);
+    $this->db->bind(':opt3', $data['opt3']);
+    $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':img', $data['daigram']);
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   // Insert theory questions to theory table
   public function setQuestions2($data)
@@ -419,6 +544,18 @@ class Post
   }
 
   // Get Post By ID
+  public function getCustomObjById($id)
+  {
+    $this->db->query("SELECT * FROM custom_obj WHERE id = :id");
+
+    $this->db->bind(':id', $id);
+
+    $row = $this->db->single();
+
+    return $row;
+  }
+
+  // Get Post By ID
   public function getTheoryById($id)
   {
     $this->db->query("SELECT * FROM theory WHERE id = :id");
@@ -454,10 +591,44 @@ class Post
     }
   }
 
+  public function updateCustom($data){
+    $this->db->query('UPDATE custom SET content = :content WHERE paperID = :paperID');
+    $this->db->bind(':content', $data['content']);
+    $this->db->bind(':paperID', $data['paperID']);
+    if ($this->db->execute()) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  // Update Post
+  public function updateCustomObj($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE custom_obj SET question = :question, opt1 = :opt1, opt2 = :opt2, opt3 = :opt3, opt4 = :opt4, img = :img WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':question', $data['question']);
+    $this->db->bind(':opt1', $data['opt1']);
+    $this->db->bind(':opt2', $data['opt2']);
+    $this->db->bind(':opt3', $data['opt3']);
+    $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':img', $data['daigram']);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public function updateParams($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE params SET subject = :subject, class = :class, duration = :duration, num_rows = :num_rows, instruction = :instruction WHERE id = :id');
+    $this->db->query('UPDATE params SET subject = :subject, class = :class, tag = :tag, section = :section, num_rows = :num_rows, instruction = :instruction, section_alt = :section_alt WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
@@ -465,7 +636,9 @@ class Post
     $this->db->bind(':subject', $data['subject']);
     $this->db->bind(':num_rows', $data['num_rows']);
     $this->db->bind(':instruction', $data['instruction']);
-    $this->db->bind(':duration', $data['duration']);
+    $this->db->bind(':tag', $data['tag']);
+    $this->db->bind(':section', $data['section']);
+    $this->db->bind(':section_alt', $data['section_alt']);
 
     //Execute
     if ($this->db->execute()) {
@@ -508,14 +681,21 @@ class Post
     }
   }
 
-  //Get all Maths symbols
-  public function getEntities()
+  // Add Comprehension
+  public function setCustom($data)
   {
-    $this->db->query("SELECT * FROM entities;");
-    $this->db->resultset();
-    //Check Rows
-    if ($this->db->rowCount() > 0) {
-      return $this->db->resultset();
+    // Prepare Query
+    $this->db->query('INSERT INTO custom (sch_id, user_id, paperID, content) 
+      VALUES (:sch_id, :user_id, :paperID, :content)');
+
+    // Bind Values
+    $this->db->bind(':sch_id', $data['sch_id']);
+    $this->db->bind(':user_id', $data['user_id']);
+    $this->db->bind(':paperID', $data['paperID']);
+    $this->db->bind(':content', $data['content']);
+    //Execute
+    if ($this->db->execute()) {
+      return true;
     } else {
       return false;
     }

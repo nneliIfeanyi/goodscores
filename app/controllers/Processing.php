@@ -56,6 +56,48 @@ class Processing extends Controller
     }
 
 
+    // Add Obj
+    public function add4($paper_id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $num_rows = $this->postModel->checkCustomObjNumRows($paper_id, $_COOKIE['sch_id']);
+            $data = [
+                'paperID' => $paper_id,
+                'question' => trim($_POST['question']),
+                'opt1' => trim($_POST['opt1']),
+                'opt2' => trim($_POST['opt2']),
+                'opt3' => trim($_POST['opt3']),
+                'opt4' => trim($_POST['opt4']),
+                'sch_id' => $_COOKIE['sch_id'],
+                'user_id' => $_SESSION['user_id'],
+                'num_rows' => $num_rows,
+            ];
+
+            if (empty($_SESSION['daigram'])) { // Question has no daigram
+                $data['daigram'] = '';
+                if ($this->postModel->setObjQuestion($data)) {
+                    $num_rows = $num_rows + 1;
+                    flash("msg", "Question $num_rows  is set successfully");
+                    redirect('posts/add4/' . $paper_id);
+                } else {
+                    die('Something went wrong..');
+                }
+            } else { // Question has daigram
+                $data['daigram'] = $_SESSION['daigram'];
+                if ($this->postModel->setObjQuestion($data)) {
+                    // Unset question diAGRAM
+                    unset($_SESSION['daigram']);
+                    $num_rows = $num_rows + 1;
+                    flash("msg", "Question $num_rows  is set successfully");
+                    redirect('posts/add4/' . $paper_id);
+                }
+            }
+        } else {
+            die('Something went wrong');
+        }
+    }
+
+
     // Add Post
     public function add2($paper_id)
     {
@@ -112,6 +154,26 @@ class Processing extends Controller
                 }
             }
         } else {
+            die('Something went wrong');
+        }
+    }
+
+    // Add comprehension
+    public function custom($paper_id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'content' => val_entry($_POST['content']),
+                'paperID' => $paper_id
+            ];
+             
+            if ($this->postModel->updateCustom($data)) {
+                flash("msg", "Saved!");
+                redirect('posts/custom/' . $paper_id);
+            }
+           
+               
+        } else { // Not post request
             die('Something went wrong');
         }
     }

@@ -116,8 +116,6 @@
                       <th scope="col">Section</th>
                       <th scope="col">Class</th>
                       <th scope="col">Term</th>
-                      <!-- <th scope="col">Year</th> -->
-                      <!-- <th scope="col">Status</th> -->
                       <th scope="col">View</th>
                     </tr>
                   </thead>
@@ -131,57 +129,48 @@
                     ?>
                         <tr>
                           <td><?php echo $recent->subject; ?></td>
-                          <td class="text-primary"><?php echo $recent->section; ?></td>
+                          <td class="text-primary">
+                            <?php if (empty($recent->section_alt)) : ?>
+                              <?php echo $recent->section; ?>
+                            <?php else:?>
+                              <?php echo $recent->section_alt; ?>
+                            <?php endif;?>
+                          </td>
                           <td><?php echo $recent->class; ?></td>
                           <td><?php echo $recent->term; ?></td>
-                          <!-- <td><?php echo $recent->year; ?></td> -->
+                          <td scope="row" class="d-flex gap-2">
                           <?php if ($recent->section == 'objectives_questions') : ?>
-                            <?php if ($obj_num_rows < $recent->num_rows) : ?>
-                              <!-- <td><span class="badge bg-warning">Pending</span></td> -->
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye"></i>
+                           <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-chevron-right"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
                                   <i class="bi bi-pen"></i>
                                 </a>
-                              </td>
-                            <?php elseif ($obj_num_rows >= $recent->num_rows) : ?>
-                              <!-- <td><span class="badge bg-success"><?php echo $obj_num_rows . 'questions'; ?>Completed</span></td> -->
-                              <td scope="row" class="d-flex gap-2">
-                                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye fs-3"></i>
-                                </a>
-                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
-                                </a>
-                              </td>
-                            <?php endif; ?>
-
                           <?php elseif ($recent->section == 'theory_questions') : ?>
-                            <?php if ($theory_num_rows < $recent->num_rows) : ?>
-                              <!-- <td><span class="badge bg-warning">Pending</span></td> -->
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye"></i>
+                            <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-chevron-right"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
                                   <i class="bi bi-pen"></i>
                                 </a>
-                              </td>
-                            <?php elseif ($theory_num_rows >= $recent->num_rows) : ?>
-                              <!-- <td><span class="badge bg-success">Completed</span></td> -->
-                              <td scope="row" class="d-flex gap-2">
-                                <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>">
-                                  <i class="bi bi-eye fs-3"></i>
+                          <?php elseif ($recent->section == 'comprehension') : ?>
+                            
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/comprehension/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-chevron-right"></i>
                                 </a>
-                                <a href="<?php echo URLROOT; ?>/output/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-download p-1 rounded-3 text-bg-success fs-5"></i>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
+                                  <i class="bi bi-pen"></i>
                                 </a>
-                              </td>
-                            <?php endif; ?>
-
+                              <?php elseif ($recent->section == 'others') : ?>
+                            
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add4/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-chevron-right"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
+                                  <i class="bi bi-pen"></i>
+                                </a>
                           <?php endif; ?>
+                        </td>
                         </tr>
 
                       <?php endforeach;

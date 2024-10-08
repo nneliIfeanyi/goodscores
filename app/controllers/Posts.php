@@ -44,12 +44,31 @@ class Posts extends Controller
         'subjects' => $subjects,
         'classes' => $classes
       ];
-      if (empty($params->num_rows)) {
-        $this->view('users/review_params', $data);
-      } else {
         $this->view('posts/show', $data);
-      }
-    } // get request
+    } // get request ends
+    else {
+      die('Something went wrong');
+    }
+  }
+
+  // Show Single Post
+  public function show4($paperID)
+  {
+
+    if ($_GET['class'] && $_GET['subject']) {
+      $obj = $this->postModel->getCustomObj($paperID);
+      $params = $this->postModel->getParamsByPaperID($paperID, 'others');
+      $data = [
+        'section' => 'others',
+        'class' => $_GET['class'],
+        'subject' => $_GET['subject'],
+        'term' => TERM,
+        'year' => SCH_SESSION,
+        'obj' => $obj,
+        'params' => $params
+      ];
+        $this->view('posts/show4', $data);
+    } // get request ends
     else {
       die('Something went wrong');
     }
@@ -86,6 +105,22 @@ class Posts extends Controller
     }
   }
 
+ // Add Comprehension 
+  public function custom($paper_id)
+  {
+    $params = $this->postModel->getParamsFromCore($paper_id);
+    $content = $this->postModel->getCustomContent($paper_id);
+    $data = [
+      'sch_id' => $_COOKIE['sch_id'],
+      'paperID' => $paper_id,
+      'year' => $params->year,
+      'class' => $params->class,
+      'term' => $params->term,
+      'subject' => $params->subject,
+      'content' => $content
+    ];
+    $this->view('posts/custom', $data);
+  }
 
 
 
@@ -93,12 +128,12 @@ class Posts extends Controller
 
 
 
-  // Add Post
+  // Add Objectives Question
   public function add($paper_id)
   {
     $params = $this->postModel->getParamsByPaperID($paper_id, 'objectives_questions');
     $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
-    // $hex = $this->postModel->getEntities();
+
     $data = [
       'sch_id' => $_COOKIE['sch_id'],
       'section' => 'objectives_questions',
@@ -108,11 +143,31 @@ class Posts extends Controller
       'class' => $params->class,
       'term' => $params->term,
       'subject' => $params->subject,
-      'params' => $params
+      'params' => $params,
+      'total_subject_num_rows' => $params->num_rows
     ];
-    $exam_exits2 = $this->postModel->checkExamParams2($data);
-    $data['total_subject_num_rows'] = $exam_exits2->num_rows;
     $this->view('posts/add', $data);
+  }
+
+  // Add Objectives Question
+  public function add4($paper_id)
+  {
+    $params = $this->postModel->getParamsByPaperID($paper_id, 'others');
+    $num_rows = $this->postModel->checkCustomObjNumRows($params->paperID, $_COOKIE['sch_id']);
+
+    $data = [
+      'sch_id' => $_COOKIE['sch_id'],
+      'section' => 'objectives_questions',
+      'paperID' => $paper_id,
+      'num_rows' => $num_rows,
+      'year' => $params->year,
+      'class' => $params->class,
+      'term' => $params->term,
+      'subject' => $params->subject,
+      'params' => $params,
+      'total_subject_num_rows' => $params->num_rows
+    ];
+    $this->view('posts/add4', $data);
   }
 
   public function daigram($paperID)
@@ -166,10 +221,9 @@ class Posts extends Controller
       'class' => $params->class,
       'term' => $params->term,
       'subject' => $params->subject,
-      'params' => $params
+      'params' => $params,
+      'total_subject_num_rows' => $params->num_rows
     ];
-    $exam_exits2 = $this->postModel->checkExamParams2($data);
-    $data['total_subject_num_rows'] = $exam_exits2->num_rows;
     $this->view('posts/add2', $data);
   }
 
@@ -215,12 +269,53 @@ class Posts extends Controller
         'post' => $post,
         'params' => $params
       ];
-      // if ($params->subject == 'Maths' || $params->subject == 'Mathematics' || $params->subject == 'Physics' || $params->subject == 'Financial Accounting') {
-      //   $this->view('posts/edit_custom', $data);
-      // } else {
-      //   $this->view('posts/edit', $data);
-      // }
       $this->view('posts/edit', $data);
+    }
+  }
+
+  // Edit Post
+  public function edit4($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $data = [
+        'id' => $id,
+        'question' => trim($_POST['question']),
+        'opt1' => trim($_POST['opt1']),
+        'opt4' => trim($_POST['opt4']),
+        'opt2' => trim($_POST['opt2']),
+        'opt3' => trim($_POST['opt3'])
+      ];
+
+      if (empty($_SESSION['daigram'])) { // Update has no diagram
+        $data['daigram'] = $_POST['daigram'];
+        if ($this->postModel->updateCustomObj($data)) {
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit4/' . $id);
+        } else {
+          die('Something went wrong');
+        }
+      } else {
+        $data['daigram'] = $_SESSION['daigram'];
+        if ($this->postModel->updateCustomObj($data)) {
+          unset($_SESSION['daigram']);
+          flash('msg', 'Question is Updated');
+          redirect('posts/edit4/' . $id);
+        } else {
+          die('Something went wrong');
+        }
+      }
+    } else {
+      // Get post from model
+      $post = $this->postModel->getCustomObjById($id);
+      $params = $this->postModel->getParamsByPaperID($post->paperID, 'others');
+      $data = [
+        'post' => $post,
+        'params' => $params
+      ];
+      $this->view('posts/edit4', $data);
     }
   }
 
@@ -250,6 +345,23 @@ class Posts extends Controller
         // Redirect to login
         flash('msg', 'Question Removed', 'alert alert-danger');
         redirect('posts/show/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
+      } else {
+        die('Something went wrong');
+      }
+    } else {
+      redirect('posts');
+    }
+  }
+
+   // Delete single obj question
+  public function delete_custom($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      //Execute
+      if ($this->postModel->deleteCustomObj($id)) {
+        // Redirect to login
+        flash('msg', 'Question Removed', 'alert alert-danger');
+        redirect('posts/show4/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
       } else {
         die('Something went wrong');
       }

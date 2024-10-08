@@ -64,8 +64,8 @@
                   <?php endif; ?>
 
                   <div class="d-flex justify-content-center">
-                    <a href="<?php echo URLROOT; ?>/posts/edit/<?php echo $obj->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
-                    <form action="<?php echo URLROOT; ?>/posts/delete/<?php echo $obj->id; ?>" method="POST">
+                    <a href="<?php echo URLROOT; ?>/posts/edit4/<?php echo $obj->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
+                    <form action="<?php echo URLROOT; ?>/posts/delete_custom/<?php echo $obj->id; ?>" method="POST">
                       <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                       <input type="hidden" name="class" value="<?= $data['params']->class; ?>">
                       <input type="hidden" name="subject" value="<?= $data['params']->subject; ?>">
@@ -81,13 +81,13 @@
         <div class="row mt-3">
           <div class="col-12">
             <div class="d-flex gap-3">
-              <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue</a>
+              <a href="<?= URLROOT;?>/posts/add4/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue</a>
             </div>
           </div>
         </div>
       <?php else : ?>
         <p class="fw-bold">No Data | No Questions Set<br>
-        <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
+        <a href="<?= URLROOT;?>/posts/add4/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
         </p>
       <?php endif; ?>
     </div>

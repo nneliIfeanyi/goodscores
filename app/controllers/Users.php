@@ -83,8 +83,6 @@ class Users extends Controller
         'classes' => $classes,
         'subjects' => $subjects,
         'params' => $params,
-        'term' => $params->term,
-        'year' => $params->year,
         'section' => $params->section
       ];
 

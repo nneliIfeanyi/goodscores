@@ -26,31 +26,31 @@
                             <strong>Review Examination Parameters!</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <form action="<?php echo URLROOT; ?>/submissions/set/<?php echo $data['section']; ?>" method="POST">
-                            <input type="hidden" name="term" value="<?= $data['term']; ?>">
-                            <input type="hidden" name="year" value="<?= $data['year']; ?>">
+                        <form action="<?php echo URLROOT; ?>/submissions/review/<?= $data['section'];?>" method="POST">
+                            <input type="hidden" name="paperID" value="<?= $data['params']->paperID ;?>">
                             <div class="my-4">
-                                <select class="form-control form-control-lg" name="class" required>
+                              <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
+                              <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                            </div>
+                        <?php if ($data['section'] == 'others') : ?>
+                            <div class="my-4">
+                              <label for="className">Section name</label>
+                              <input type="text" name="section_alt" class="form-control form-control-lg" value="<?= $data['params']->section_alt;?>" />
+                            </div>
+                        <?php else:?>
+                            <div class="my-4">
+                              <label for="className">Section name</label>
+                              <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section'];?>" />
+                            </div>
+                        <?php endif;?>
+                            <div class="my-4">
+                                <select class="form-control form-control-lg" name="class">
                                     <option value="<?php echo $data['params']->class; ?>"><?php echo $data['params']->class; ?></option>
-                                    <?php if (empty($data['classes'])) : ?>
-                                        <option value="">No added class</option>
-                                    <?php else : ?>
-                                        <?php foreach ($data['classes'] as $class) : ?>
-                                            <option value="<?php echo $class->classname; ?>"><?php echo $class->classname; ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
                                 </select>
                             </div><!--===== Class Ends =====-->
                             <div class="my-4">
-                                <select class="form-control form-control-lg" name="subject" required>
+                                <select class="form-control form-control-lg" name="subject">
                                     <option value="<?php echo $data['params']->subject; ?>"><?php echo $data['params']->subject; ?></option>
-                                    <?php if (empty($data['subjects'])) : ?>
-                                        <option value="">No added subject</option>
-                                    <?php else : ?>
-                                        <?php foreach ($data['subjects'] as $subject) : ?>
-                                            <option value="<?php echo $subject->subject; ?>"><?php echo $subject->subject; ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
                                 </select>
                             </div><!--===== Subject Ends =====-->
                             <?php if ($data['section'] == 'objectives_questions') : ?>
@@ -61,26 +61,29 @@
                                 <div class="my-4">
                                     <label for="className">Exam instruction for objective section</label>
                                     <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                                </div><!--===== Objectives section Instruction Ends =====-->
-                                <div class="my-4">
-                                    <label for="className">Exam Duration</label>
-                                    <input name="duration" value="<?= $data['params']->duration; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-
-                                </div><!--===== Duration Ends =====-->
+                                </div>
                             <?php elseif ($data['section'] == 'theory_questions') : ?>
-                                <input type="hidden" name="duration" value="">
                                 <div class="my-4">
                                     <label for="className">Number of theory questions</label>
                                     <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Theory section Num_rows Ends =====-->
                                 <div class="my-4">
-                                    <label for="className">Exam instruction for theory section</label>
+                                    <label for="className">Exam instruction for this section</label>
+                                    <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                </div><!--===== Theory section Instruction Ends =====-->
+                            <?php elseif ($data['section'] == 'others') : ?>
+                                <div class="my-4">
+                                    <label for="className">Number of questions</label>
+                                    <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                </div>
+                                <div class="my-4">
+                                    <label for="className">Exam instruction for this section</label>
                                     <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Theory section Instruction Ends =====-->
                             <?php endif; ?>
 
                             <div class="d-grid">
-                                <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">
+                                <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
                             </div><!--===== Submit Button Ends =====-->
                         </form><!--===== Set Question Form Ends =====-->
 

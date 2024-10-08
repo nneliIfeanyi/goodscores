@@ -214,71 +214,105 @@ class Submissions extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'paperID' => '',
-        'class' => $_POST['class'],
-        'subject' => $_POST['subject'],
-        'term' => $_POST['term'],
+        'class' => val_entry($_POST['class']),
+        'subject' => val_entry($_POST['subject']),
+        'term' => val_entry($_POST['term']),
         'section' => $param,
         'sch_id' => $_COOKIE['sch_id'],
         'user_id' => $_SESSION['user_id'],
-        'year' => $_POST['year'],
-        'num_rows' => $_POST['num_rows'],
-        'duration' => $_POST['duration'],
-        'instruction' => $_POST['instruction'],
+        'year' => val_entry($_POST['year']),
+        'num_rows' => val_entry($_POST['num_rows']),
+        'tag' => val_entry($_POST['section_tag']),
+        'instruction' => val_entry($_POST['instruction']),
       ];
-
+      $paper_exist = $this->postModel->checkIfPaperExist($data);
+      $section_exist = $this->postModel->checkIfSectionExist($data);
       // For Theory Question
       if ($param == 'theory_questions') {
-        // check if exam theory exists 
-        $exam_exits = $this->postModel->checkExamParams($data); // checks for objectives initiated
-        $exam_exits2 = $this->postModel->checkExamParams2($data); // checks if theory exist
-        if (!$exam_exits) { // Exam param did not exist both as obj and as theory
-          //Generate paperID
-          $data['paperID'] = substr(md5(time()), 22);
-          //Initiate exam question on the params table
-          $this->postModel->addExamParams($data);
-          // Redirect to continue with set question 1
-          redirect('posts/add2/' . $data['paperID']);
-        } elseif ($exam_exits && !$exam_exits2) { // found objective in params but not theory
-          //Append existing paperID
-          $data['paperID'] = $exam_exits->paperID;
-          //Initiate exam question on the params table
-          $this->postModel->addExamParams($data);
-          // Redirect to continue with set question 1
-          redirect('posts/add2/' . $data['paperID']);
-        } elseif ($exam_exits && $exam_exits2) { // found both obj and theory in param
-          $data['id'] = $exam_exits2->id;
-          $this->postModel->updateParams($data);
-          redirect('posts/add2/' . $exam_exits->paperID);
-        }
-      } elseif ($param == 'objectives_questions') {
-        // Coming from users/set_question
-        $exam_exits = $this->postModel->checkExamParams($data);
-        $exam_exits2 = $this->postModel->checkExamParams2($data);
-        if ($exam_exits && $exam_exits2) { // Objectives has been set
-          // Exam has been set
-          $data['id'] = $exam_exits2->id;
-          $this->postModel->updateParams($data);
-          redirect('posts/add/' . $exam_exits->paperID);
-        } elseif ($exam_exits && !$exam_exits2) { // Only theory was been set
-          // Insert Objedctive params with same paperID as theory
-          $data['paperID'] = $exam_exits->paperID;
+        if ($paper_exist && $section_exits) {
+          redirect('posts/add2/' . $section_exist->paperID);
+        } elseif ($paper_exist && !$section_exist) { // Other section exist
+          // Insert theory section with same paperID as theory
+          $data['paperID'] = $paper_exist->paperID;
+          $data['section_alt'] = '';
           $this->postModel->addExamParams($data);
           // Redirect to continue with set question
-          redirect('posts/add/' . $exam_exits->paperID);
+          redirect('posts/add2/' . $paper_exist->paperID);
         } else {
           // Exam questions has not been initiated
           //Generate paperID
           $data['paperID'] = substr(md5(time()), 22);
+          $data['section_alt'] = '';
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
+          //Initiate exam question on the params table
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question 1
+          redirect('posts/add2/' . $data['paperID']);
+        }
+      } elseif ($param == 'objectives_questions') {
+       
+        if ($paper_exist && $section_exits) {
+          redirect('posts/add/' . $section_exist->paperID);
+        } elseif ($paper_exist && !$section_exist) { // Only theory was set
+          // Insert Objedctive params with same paperID as theory
+          $data['paperID'] = $paper_exist->paperID;
+          $data['section_alt'] = '';
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question
+          redirect('posts/add/' . $paper_exist->paperID);
+        } else {
+          // Exam questions has not been initiated
+          //Generate paperID
+          $data['paperID'] = substr(md5(time()), 22);
+          $data['section_alt'] = '';
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
           //Initiate exam question on the params table
           $this->postModel->addExamParams($data);
           // Redirect to continue with set question 1
           redirect('posts/add/' . $data['paperID']);
         }
-      } // Coming from users/set_question ends
+      }elseif ($param == 'custom') {
+       
+        if ($paper_exist) {
+          redirect('posts/custom/' . $paper_exist->paperID);
+        } else {
+          // Exam questions has not been initiated
+          //Generate paperID
+          $data['paperID'] = substr(md5(time()), 22);
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
+          //
+          $data['content'] = '';
+          $this->postModel->setCustom($data);
+          redirect('posts/custom/' . $data['paperID']);
+        }
+      } elseif ($param == 'others'){
+        if ($paper_exist && $section_exits) {
+          redirect('posts/add4/' . $section_exist->paperID);
+        } elseif ($paper_exist && !$section_exist) {
+          $data['paperID'] = $paper_exist->paperID;
+          $data['section_alt'] = val_entry($_POST['section_alt']);
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question
+          redirect('posts/add4/' . $paper_exist->paperID);
+        } else {
+          // Exam questions has not been initiated
+          //Generate paperID
+          $data['paperID'] = substr(md5(time()), 22);
+          $data['section_alt'] = val_entry($_POST['section_alt']);
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
+          //Initiate exam question on the params table
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question 1
+          redirect('posts/add4/' . $data['paperID']);
+        }
+      }
     } else { // Not a post request
       redirect('users/set_questions');
     }
@@ -294,27 +328,32 @@ class Submissions extends Controller
         'paperID' => $_POST['paperID'],
         'class' => $_POST['class'],
         'subject' => $_POST['subject'],
-        'term' => $_POST['term'],
+        'tag' => $_POST['section_tag'],
         'section' => $param,
-        'sch_id' => $_COOKIE['sch_id'],
-        'user_id' => $_SESSION['user_id'],
-        'year' => $_POST['year'],
         'num_rows' => $_POST['num_rows'],
-        'duration' => $_POST['duration'],
         'instruction' => $_POST['instruction'],
       ];
       if ($param == 'objectives_questions') {
-        $params1 = $this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions');
-        $data['id'] = $params1->id;
+        $paramsID = $this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions');
+        $data['id'] = $paramsID->id;
+        $data['section_alt'] = '';
         $this->postModel->updateParams($data);
-        flash('msg', 'Successful');
-        redirect('output/review_params/' . $data['paperID']);
+        flash('msg', 'Update successful');
+        redirect('posts/add/' . $data['paperID']);
       } elseif ($param == 'theory_questions') {
-        $params2 = $this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions');
-        $data['id'] = $params2->id;
+        $paramsID = $this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions');
+        $data['id'] = $paramsID->id;
+        $data['section_alt'] = '';
         $this->postModel->updateParams($data);
-        flash('msg', 'Successful');
-        redirect('output/review_params/' . $data['paperID']);
+        flash('msg', 'Update successful');
+        redirect('posts/add2/' . $data['paperID']);
+      } elseif ($param == 'others') {
+        $paramsID = $this->postModel->getParamsByPaperID($data['paperID'], 'others');
+        $data['id'] = $paramsID->id;
+        $data['section_alt'] = val_entry($_POST['section_alt']);
+        $this->postModel->updateParams($data);
+        flash('msg', 'Update successful');
+        redirect('posts/add4/' . $data['paperID']);
       }
     } else {
       die('Something went wrong');
