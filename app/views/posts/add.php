@@ -140,6 +140,23 @@
 <script>
     tinymce.init({
         selector: 'textarea',
+        height: 180,
+        plugins: '',
+        menubar: '',
+        toolbar: 'dash',
+        setup: (editor) => {
+
+            editor.ui.registry.addButton('dash', {
+                text: '__________',
+                onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+            });
+
+        },
+  });
+      </script>
+<!-- <script>
+    tinymce.init({
+        selector: 'textarea',
         extended_valid_elements: 'mycustominline',
         custom_elements: '~mycustominline',
         height: 180,
@@ -196,4 +213,4 @@
         ]
     
     });
-</script>
+</script> -->
