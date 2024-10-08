@@ -112,6 +112,18 @@ class Users extends Controller
     $this->view('users/subjects', $data);
   }
 
+
+  // Edit Subject included
+    public function edit_subject($id)
+  {
+    $subject = $this->userModel->getSingleSubject($id);
+    $data = [
+      'subject' => $subject
+    ];
+
+    $this->view('users/edit_subject', $data);
+  }
+
   public function profile($id)
   {
     $user = $this->userModel->findTeacherById($id);
@@ -201,22 +213,40 @@ class Users extends Controller
 
       // Register Form Validation
       if ($this->userModel->findTeacherByUsername($data['username'])) {
-        $data['username_err'] = 'Username is already taken.';
-        $this->view('users/register', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Username is already taken.
+          </p>
+        ";
+        // $data['username_err'] = 'Username is already taken.';
+        // $this->view('users/register', $data);
       } elseif (strlen($data['password']) < 6) {
-        $data['password_err'] = 'Password must have at least 6 characters.';
-        $this->view('users/register', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Password must have at least 6 characters.
+          </p>
+        ";
+        // $data['password_err'] = 'Password must have at least 6 characters.';
+        // $this->view('users/register', $data);
       } elseif ($data['password'] != $data['confirm_password']) {
-        $data['confirm_password_err'] = 'Password do not match.';
-        $this->view('users/register', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Password does not match.
+          </p>
+        ";
+        // $data['confirm_password_err'] = 'Password do not match.';
+        // $this->view('users/register', $data);
       } else {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
         //Execute
         if ($this->userModel->registerTeacher($data)) {
           // Redirect to login
+          // Redirect to verify email page
+          $redirect = URLROOT . '/users/login';
+          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Registration Successfull!
+          </p><meta http-equiv='refresh' content='3; $redirect'>
+        ";
           flash('msg', 'You are now registered and can log in');
-          redirect('users/login');
+          //redirect('users/login');
         } else {
           die('Something went wrong');
         }
@@ -266,15 +296,27 @@ class Users extends Controller
 
       // User Login Validation
       if (empty($data['username'])) {
-        $data['username_err'] = 'Please enter your username.';
-        $this->view('users/login', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Please enter your username!
+          </p>
+        ";
+        // $data['username_err'] = 'Please enter your username.';
+        // $this->view('users/login', $data);
       } elseif (empty($data['password'])) {
-        $data['password_err'] = 'Please enter your password.';
-        $this->view('users/login', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Please enter your password!
+          </p>
+        ";
+        // $data['password_err'] = 'Please enter your password.';
+        // $this->view('users/login', $data);
       } elseif (!$this->userModel->findTeacher($data['username'])) {
         // User Not Found
-        $data['username_err'] = 'User Not Found.';
-        $this->view('users/login', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;User not found!
+          </p>
+        ";
+        // $data['username_err'] = 'User Not Found.';
+        // $this->view('users/login', $data);
       } else {
 
         $loggedInUser = $this->userModel->login($data['username'], $data['sch_id'], $data['password']);
@@ -282,12 +324,20 @@ class Users extends Controller
         if ($loggedInUser) {
           // User Authenticated!
           $this->createUserSession($loggedInUser);
+          // Redirect to verify email page
+          $redirect = URLROOT . '/users/dashboard';
+          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Login Successfull!
+          </p><meta http-equiv='refresh' content='3; $redirect'>
+        ";
           flash('msg', 'Login Successfull!');
-          redirect('users/dashboard');
+          // redirect('users/dashboard');
         } else {
-          $data['password_err'] = 'Password incorrect.';
-          // Load View
-          $this->view('users/login', $data);
+          echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Password incorrect!
+          </p>
+        ";
+          
         }
       }
     } else {

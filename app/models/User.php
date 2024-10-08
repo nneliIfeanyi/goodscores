@@ -160,6 +160,48 @@ class User
     return $results;
   }
 
+  // Get subject by ID
+  public function getSingleSubject($id)
+  {
+    $this->db->query("SELECT * FROM subjects WHERE id = :id;");
+    $this->db->bind(':id', $id);
+    $results = $this->db->single();
+
+    return $results;
+  }
+
+  public function checkIfClassExist($classname)
+  {
+    $this->db->query("SELECT * FROM classes WHERE classname = :classname AND user_id = :user_id AND sch_id = :sch_id;");
+    $this->db->bind(':classname', $classname);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+    $row = $this->db->single();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function checkIfSubjectExist($subject)
+  {
+    $this->db->query("SELECT * FROM subjects WHERE subject = :subject AND user_id = :user_id AND sch_id = :sch_id;");
+    $this->db->bind(':subject', $subject);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+    $row = $this->db->single();
+
+    //Check Rows
+    if ($this->db->rowCount() > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   // Get All Subjects Per User
   public function getUserSubjectsRowCount($id)
@@ -268,15 +310,28 @@ class User
   public function editClass($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE classes SET classname = :classname, num_rows = :num_rows, num_rows2 = :num_rows2, choice = :choice, duration = :duration WHERE id = :id');
+    $this->db->query('UPDATE classes SET classname = :classname WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
     $this->db->bind(':classname', $data['classname']);
-    $this->db->bind(':num_rows', $data['num_rows']);
-    $this->db->bind(':num_rows2', $data['num_rows2']);
-    $this->db->bind(':choice', $data['choice']);
-    $this->db->bind(':duration', $data['duration']);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function editSubject($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE subjects SET subject = :subject WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':subject', $data['subject']);
 
     //Execute
     if ($this->db->execute()) {

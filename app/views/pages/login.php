@@ -1,10 +1,18 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
+  <!-- PAGE LOADER -->
+  <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
+    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
+      <span class="spinner-border text-primary"> </span>
+    </div>
+  </div>
     <?php echo flash('msg'); ?>
     <main>
         <div class="container">
-
+    <!-- Ajax Response -->
+    <div id="ajax-msg"></div>
+    <!-- End Ajax Response -->
             <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
                     <div class="row justify-content-center">
@@ -25,7 +33,7 @@
                                         <p class="text-center small">Enter your Organization/Institution username or email to login</p>
                                     </div>
 
-                                    <form class="row g-3 needs-validation" method="POST" action="<?php echo URLROOT; ?>/pages/login">
+                                    <form class="row g-3">
 
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username | Email</label>
@@ -48,7 +56,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
+                                            <input class="btn btn-primary w-100" type="submit" id="submit" value="Login">
                                         </div>
                                         <div class="col-12">
                                             <p class="small mb-0">Don't have account? <a href="<?php echo URLROOT; ?>/pages/register">Create one</a></p>
@@ -68,3 +76,26 @@
     </main><!-- End #main -->
 
     <?php require APPROOT . '/views/inc/footer.php'; ?>
+    <script>
+        $('form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/pages/login",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#submit').attr('disabled', false);
+                    $('#submit').val('Login');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>

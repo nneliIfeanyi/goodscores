@@ -22,24 +22,28 @@ class Submissions extends Controller
 
       $data = [
         'classname' => val_entry($_POST['classname']),
-        //'obj_num_rows' => val_entry($_POST['obj_num_rows']),
-        // 'theory_num_rows' => val_entry($_POST['theory_num_rows']),
         'user_id' => $_SESSION['user_id'],
-        'sch_id' => $_COOKIE['sch_id'],
-        // 'choice' => val_entry($_POST['choice']),
-        // 'duration' => val_entry($_POST['duration'])
+        'sch_id' => $_COOKIE['sch_id']
       ];
 
       //$data['classname'] = strtolower($data['classname']);
       //$data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
 
-      if ($this->userModel->addClass($data)) {
-        // Redirect to login
+      if ($this->userModel->checkIfClassExist($data['classname'])) {
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Class is already added!
+          </p>
+        ";
+      }else {
+        if ($this->userModel->addClass($data)) {
         flash('msg', 'Class is added successfully');
-        redirect('users/classes');
-      } else {
-        die('Something went wrong');
+        $redirect = URLROOT . '/users/classes';
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
+      }else{
+        die('Something went wrong!');
       }
+    }
     } else { // Not a post request
       die('Something went wrong');
     }
@@ -52,11 +56,7 @@ class Submissions extends Controller
 
       $data = [
         'classname' => val_entry($_POST['classname']),
-        'num_rows' => val_entry($_POST['obj_num_rows']),
-        'num_rows2' => val_entry($_POST['theory_num_rows']),
         'id' => $id,
-        'choice' => val_entry($_POST['choice']),
-        'duration' => val_entry($_POST['duration'])
       ];
 
       //$data['classname'] = strtolower($data['classname']);
@@ -65,7 +65,33 @@ class Submissions extends Controller
       if ($this->userModel->editClass($data)) {
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
-        redirect('users/classes');
+        $redirect = URLROOT . '/users/classes';
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
+      } else {
+        die('Something went wrong');
+      }
+    } else { // Not a post request
+      die('Something went wrong');
+    }
+  }
+
+  public function edit_subject($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+
+      $data = [
+        'subject' => val_entry($_POST['subject']),
+        'id' => $id,
+      ];
+
+      if ($this->userModel->editSubject($data)) {
+        // Redirect to classes
+        flash('msg', 'Changes saved successfully');
+        $redirect = URLROOT . '/users/subjects';
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
       } else {
         die('Something went wrong');
       }
@@ -91,7 +117,9 @@ class Submissions extends Controller
       if ($this->userModel->editProfile($data)) {
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
-        redirect('users/profile/' . $id);
+         $redirect = URLROOT . '/users/profile/' . $id;
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
       } else {
         die('Something went wrong');
       }
@@ -134,13 +162,18 @@ class Submissions extends Controller
         if ($this->userModel->changePass($data)) {
           // Redirect to login
           flash('msg', 'Password reset is successfull..');
-          redirect('users/profile/' . $id);
+          $redirect = URLROOT . '/users/profile/' . $id;
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
         } else {
           die('Something went wrong');
         }
       } else {
         flash('msg', 'The current password entered is incorrect..', 'alert alert-danger bg-danger text-light border-0 alert-dismissible');
-        redirect('users/profile/' . $id);
+        
+          $redirect = URLROOT . '/users/profile/' . $id;
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
       }
     } else {
       die('Something went wrong');
@@ -155,17 +188,25 @@ class Submissions extends Controller
       $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
-        'subject' => trim($_POST['subject']),
+        'subject' => val_entry($_POST['subject']),
         'user_id' => $_SESSION['user_id'],
         'sch_id' => $_COOKIE['sch_id']
       ];
 
-      if ($this->userModel->addSubject($data)) {
-        // Redirect to login
-        flash('msg', 'Subject Added Successfully');
-        redirect('users/subjects');
-      } else {
-        die('Something went wrong');
+      if ($this->userModel->checkIfSubjectExist($data['subject'])) {
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;You already added this subject!
+          </p>
+        ";
+      }else {
+        if ($this->userModel->addSubject($data)) {
+        flash('msg', 'Subject is added successfully');
+        $redirect = URLROOT . '/users/subjects';
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
+        }else{
+          die('Something went wrong!');
+        }
       }
     } else {
       die('Something went wrong');
@@ -196,7 +237,6 @@ class Submissions extends Controller
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       //Execute
       if ($this->userModel->deleteClass($id)) {
-        // Redirect to login
         flash('msg', 'Class is deleted successfully', 'alert alert-danger');
         redirect('users/classes');
       } else {

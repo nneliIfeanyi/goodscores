@@ -15,14 +15,14 @@
                             <strong>Upload Profile Photo</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <form action="<?php echo URLROOT; ?>/users/upload/<?= $data['user']->id; ?>" method="post" enctype="multipart/form-data">
+                        <form enctype="multipart/form-data">
                             <div class="form-group mb-3">
                                 <input type="file" name="photo" accept="image*/" required class="form-control form-control-lg">
                             </div>
 
                             <div class="d-flex justify-content-around mt-4">
                                 <div class="">
-                                    <input type="submit" name="upload" class="btn btn-primary" value="Upload">
+                                    <input id="submit" type="submit" name="upload" class="btn btn-primary" value="Upload">
                                 </div>
                         </form>
                         <div>
@@ -42,3 +42,25 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+
+<script>
+        $('form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/users/upload/<?= $data['user']->id; ?>",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Uploading, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>

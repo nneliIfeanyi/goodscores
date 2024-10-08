@@ -1,7 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
-    <meta http-equiv="refresh" content="7; <?php echo URLROOT; ?>/pages/welcome">
   <!-- PAGE LOADER -->
   <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
     <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">

@@ -35,13 +35,13 @@
 </script>
 
 <!-- Page loader fade in on form submit -->
-<script>
+<!-- <script>
     $(':submit').each(function() {
         $(this).click(function() {
             $('#loader').fadeIn();
         });
     });
-</script>
+</script> -->
 <script>
     function goTop() {
         window.location.assign('#');

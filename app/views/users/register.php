@@ -9,7 +9,9 @@
   </div>
   <main>
     <div class="container">
-
+    <!-- Ajax Response -->
+    <div id="ajax-msg"></div>
+    <!-- End Ajax Response -->
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
@@ -31,7 +33,7 @@
                     <p class="text-center small">Enter your personal details to create account</p>
                   </div>
 
-                  <form class="row g-3" method="POST" action="<?php echo URLROOT; ?>/users/register">
+                  <form class="row g-3">
                     <div class="col-12">
                       <label for="yourName" class="form-label">Your Name</label>
                       <input type="text" name="name" class="form-control" id="yourName" value="<?php echo $data['name']; ?>" required>
@@ -69,7 +71,7 @@
                     </div>
 
                     <div class="col-12">
-                      <button class="btn btn-primary w-100" type="submit">Create Account</button>
+                      <input id="submit" class="btn btn-primary w-100" type="submit" value="Create Account">
                     </div>
                     <div class="col-12">
                       <p class="small mb-0">Already have an account? <a href="<?php echo URLROOT; ?>/users/login">Log in</a></p>
@@ -91,6 +93,29 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
+  <script>
+        $('form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/users/register",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#submit').attr('disabled', false);
+                    $('#submit').val('Create Account');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>
   <!-- Show and Hide Password -->
   <script>
     $(document).ready(function() {

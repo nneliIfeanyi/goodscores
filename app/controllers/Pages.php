@@ -21,6 +21,18 @@ class Pages extends Controller
     $this->view('pages/index', $data);
   }
 
+  // Load Homepage
+  public function welcome()
+  {
+    if (isset($_COOKIE['sch_id'])) {
+      redirect('users/login');
+    }
+    $data = [];
+
+    // Load about view
+    $this->view('pages/welcome', $data);
+  }
+
 
   public function login()
   {
@@ -34,17 +46,31 @@ class Pages extends Controller
         'username_err' => ''
       ];
       if (empty($data['username'])) {
-        $data['username_err'] = 'Kindly enter your school username';
-        $this->view('pages/login', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Kindly enter your school username
+          </p>
+        ";
+        //$data['username_err'] = 'Kindly enter your school username';
+        //$this->view('pages/login', $data);
       } elseif (!$this->pageModel->findSch($data['username'])) {
-        $data['username_err'] = 'User not found | Username or email incorrect!';
-        $this->view('pages/login', $data);
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;User not found | Username or email incorrect!
+          </p>
+        ";
+        // $data['username_err'] = 'User not found | Username or email incorrect!';
+        // $this->view('pages/login', $data);
       } elseif ($sch = $this->pageModel->findSch($data['username'])) {
         setcookie('sch_id', $sch->id, time() + (86400 * 365), '/');
         setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
         setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
-        flash('msg', 'School authentication approved');
-        redirect('users/login');
+        // Redirect to Teachers section
+          $redirect = URLROOT . '/users/login/';
+          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;School authentication approved! Redirecting to teachers section
+          </p><meta http-equiv='refresh' content='5; $redirect'>
+        ";
+         flash('msg', 'School authentication approved');
+        // redirect('users/login');
       }
     } // End Post Request
     else {
@@ -98,9 +124,7 @@ class Pages extends Controller
           flash('msg', 'Registration successful, you can now login');
           // Redirect to verify email page
           $redirect = URLROOT . '/pages/verify_email/' . $data['email'];
-          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
-            <i class='bi bi-check-circle'></i>  &nbsp;Pls verify your email
-          </p><meta http-equiv='refresh' content='0; $redirect'>
+          echo "<meta http-equiv='refresh' content='0; $redirect'>
         ";
         } else {
           die('Something went wrong!');

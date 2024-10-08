@@ -5,6 +5,9 @@
       <span class="spinner-border text-primary"> </span>
     </div>
   </div>
+      <!-- Ajax Response -->
+    <div id="ajax-msg"></div>
+    <!-- End Ajax Response -->
   <!-- ======= Flash Message ======= -->
   <?php echo flash('msg'); ?>
   <!-- ======= Header ======= -->

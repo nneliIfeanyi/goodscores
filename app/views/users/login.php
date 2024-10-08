@@ -10,7 +10,9 @@
   </div>
   <main>
     <div class="container">
-
+          <!-- Ajax Response -->
+    <div id="ajax-msg"></div>
+    <!-- End Ajax Response -->
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
@@ -32,14 +34,13 @@
                     <p class="text-center small">Enter your username & password to login</p>
                   </div>
 
-                  <form class="row g-3 needs-validation" method="POST" action="<?php echo URLROOT; ?>/users/login">
+                  <form class="row g-3">
 
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username | Email</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="text" name="username" class="form-control  <?php echo (!empty($data['username_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['username'] ?>" id="yourUsername">
-                        <div class="invalid-feedback"><?php echo $data['username_err'] ?></div>
+                        <input type="text" name="username" class="form-control" value="" id="yourUsername">
                       </div>
                     </div>
 
@@ -47,11 +48,9 @@
                       <label for="yourPassword" class="form-label">Password</label>
                       <div class="position-relative">
                         <i class="bi bi-eye password-visible-btn position-absolute top-50 translate-middle-y end-0 z-3  px-3"></i>
-                        <input type="password" name="password" class="form-control password pe-5" value="<?php echo $data['password'] ?>" id="yourPassword">
+                        <input type="password" name="password" class="form-control password pe-5" value="" id="yourPassword">
                       </div>
-                      <?php if (!empty($data['password_err'])) : ?>
-                        <span class="text-danger small " style="margin-top: -5px;"><?php echo $data['password_err']; ?></span>
-                      <?php endif; ?>
+                      
                     </div>
 
                     <div class="col-12">
@@ -61,7 +60,7 @@
                       </div>
                     </div>
                     <div class="col-12">
-                      <button class="btn btn-primary w-100" type="submit">Login</button>
+                      <input value="Login" id="submit" class="btn btn-primary w-100" type="submit">
                     </div>
                     <div class="col-12">
                       <p class="small mb-0">Don't have account? <a href="<?php echo URLROOT; ?>/users/register">Create teacher's account</a></p>
@@ -81,6 +80,29 @@
   </main><!-- End #main -->
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
+  <script>
+        $('form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/users/login",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#submit').attr('disabled', false);
+                    $('#submit').val('Login');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>
   <!-- Show and Hide Password -->
   <script>
     $(document).ready(function() {
