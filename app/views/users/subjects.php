@@ -66,7 +66,7 @@
                     <tr>
                       <th scope="row"><?php echo $n; ?></th>
                       <td><?php echo $subject->subject; ?></td>
-                      <td>
+                      <td class="d-flex gap-2">
                         <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/edit_subject/<?php echo $subject->id; ?>"><i class="bi bi-pen"></i></a>
                         <span class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#subject<?php echo $subject->id; ?>"><i class="bi bi-trash"></i></span>
                       </td>
