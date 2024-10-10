@@ -34,16 +34,16 @@ class Submissions extends Controller
             <i class='bi bi-check-circle'></i>  &nbsp;Class is already added!
           </p>
         ";
-      }else {
+      } else {
         if ($this->userModel->addClass($data)) {
-        flash('msg', 'Class is added successfully');
-        $redirect = URLROOT . '/users/classes';
+          flash('msg', 'Class is added successfully');
+          $redirect = URLROOT . '/users/classes';
           echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
-      }else{
-        die('Something went wrong!');
+        } else {
+          die('Something went wrong!');
+        }
       }
-    }
     } else { // Not a post request
       die('Something went wrong');
     }
@@ -66,7 +66,7 @@ class Submissions extends Controller
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
         $redirect = URLROOT . '/users/classes';
-          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
       } else {
         die('Something went wrong');
@@ -90,7 +90,7 @@ class Submissions extends Controller
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
         $redirect = URLROOT . '/users/subjects';
-          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
       } else {
         die('Something went wrong');
@@ -117,8 +117,8 @@ class Submissions extends Controller
       if ($this->userModel->editProfile($data)) {
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
-         $redirect = URLROOT . '/users/profile/' . $id;
-          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        $redirect = URLROOT . '/users/profile/' . $id;
+        echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
       } else {
         die('Something went wrong');
@@ -170,9 +170,9 @@ class Submissions extends Controller
         }
       } else {
         flash('msg', 'The current password entered is incorrect..', 'alert alert-danger bg-danger text-light border-0 alert-dismissible');
-        
-          $redirect = URLROOT . '/users/profile/' . $id;
-          echo "><meta http-equiv='refresh' content='0; $redirect'>
+
+        $redirect = URLROOT . '/users/profile/' . $id;
+        echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
       }
     } else {
@@ -198,13 +198,13 @@ class Submissions extends Controller
             <i class='bi bi-check-circle'></i>  &nbsp;You already added this subject!
           </p>
         ";
-      }else {
+      } else {
         if ($this->userModel->addSubject($data)) {
-        flash('msg', 'Subject is added successfully');
-        $redirect = URLROOT . '/users/subjects';
+          flash('msg', 'Subject is added successfully');
+          $redirect = URLROOT . '/users/subjects';
           echo "><meta http-equiv='refresh' content='0; $redirect'>
         ";
-        }else{
+        } else {
           die('Something went wrong!');
         }
       }
@@ -272,7 +272,7 @@ class Submissions extends Controller
       $section_exist = $this->postModel->checkIfSectionExist($data);
       // For Theory Question
       if ($param == 'theory_questions') {
-        if ($paper_exist && $section_exits) {
+        if ($paper_exist && $section_exist) {
           redirect('posts/add2/' . $section_exist->paperID);
         } elseif ($paper_exist && !$section_exist) { // Other section exist
           // Insert theory section with same paperID as theory
@@ -294,8 +294,8 @@ class Submissions extends Controller
           redirect('posts/add2/' . $data['paperID']);
         }
       } elseif ($param == 'objectives_questions') {
-       
-        if ($paper_exist && $section_exits) {
+
+        if ($paper_exist && $section_exist) {
           redirect('posts/add/' . $section_exist->paperID);
         } elseif ($paper_exist && !$section_exist) { // Only theory was set
           // Insert Objedctive params with same paperID as theory
@@ -316,8 +316,8 @@ class Submissions extends Controller
           // Redirect to continue with set question 1
           redirect('posts/add/' . $data['paperID']);
         }
-      }elseif ($param == 'custom') {
-       
+      } elseif ($param == 'custom') {
+
         if ($paper_exist) {
           redirect('posts/custom/' . $paper_exist->paperID);
         } else {
@@ -326,13 +326,15 @@ class Submissions extends Controller
           $data['paperID'] = substr(md5(time()), 22);
           //Initiate exam paper on the core table
           $this->postModel->addExamCore($data);
-          //
+          // Add to params 
+          $data['section_alt'] = '';
+          $this->postModel->addExamParams($data);
           $data['content'] = '';
           $this->postModel->setCustom($data);
           redirect('posts/custom/' . $data['paperID']);
         }
-      } elseif ($param == 'others'){
-        if ($paper_exist && $section_exits) {
+      } elseif ($param == 'others') {
+        if ($paper_exist && $section_exist) {
           redirect('posts/add4/' . $section_exist->paperID);
         } elseif ($paper_exist && !$section_exist) {
           $data['paperID'] = $paper_exist->paperID;

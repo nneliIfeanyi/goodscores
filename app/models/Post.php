@@ -243,6 +243,8 @@ class Post
     }
   }
 
+  
+
   //Check Objective Questions RowCount
   public function checkCustomObjNumRows($paper_id, $sch_id)
   {
@@ -517,14 +519,27 @@ class Post
     return $this->db->rowCount();
   }
 
-  // Get All Initiated Exam setting activity
+  // Get All Exam params ie. Archives 
   // 
-  public function getParams()
+  public function getArchive()
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :id ORDER BY id DESC;");
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :user_id ORDER BY id DESC;");
+    //$this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->resultset();
+
+    return $this->db->resultset();
+  }
+
+  // Get exam params for current term
+  public function getRecentParams()
+  {
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :user_id AND term = :term AND year = :year ORDER BY id DESC;");
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-    $this->db->bind(':id', $_SESSION['user_id']);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->bind(':term', TERM);
+    $this->db->bind(':year', SCH_SESSION);
     $this->db->resultset();
 
     return $this->db->resultset();

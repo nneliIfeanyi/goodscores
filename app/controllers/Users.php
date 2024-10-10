@@ -28,13 +28,15 @@ class Users extends Controller
 
     $subjects = $this->userModel->getUserSubjectsRowCount($_SESSION['user_id']);
     $classes = $this->userModel->getUserClassesRowCount($_SESSION['user_id']);
-    $params = $this->postModel->getParams();
+    $archive = $this->postModel->getArchive();
+    $params = $this->postModel->getRecentParams();
+
     //$all = $this->postModel->getParamsRowCount();
     $data = [
       'subjects' => $subjects,
       'classes' => $classes,
       'recent' => $params,
-      // 'all' => $all,
+      'archive' => $archive,
     ];
 
     $this->view('users/dashboard', $data);
