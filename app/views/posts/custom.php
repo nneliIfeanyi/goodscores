@@ -21,16 +21,13 @@
     <div class="row">
       <div class="col-md-10 col-lg-8">
 
-        <div class="card">
-          <div class="card-body">
-
-            <!-- <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
+        <!-- <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>__</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div> -->
-            <?php if (empty($data['content']->content)) : ?>
-              <form action="<?php echo URLROOT; ?>/processing/custom/<?= $data['paperID']; ?>" method="POST">
-                <textarea class="form-control" name="content">
+        <?php if (empty($data['content']->content)) : ?>
+          <form action="<?php echo URLROOT; ?>/processing/custom/<?= $data['paperID']; ?>" method="POST">
+            <textarea class="form-control" name="content">
                   <?php if ($data['subject'] == 'English' || $data['subject'] == 'English Language' || $data['subject'] == 'English language' || $data['subject'] == 'english language' || $data['subject'] == 'english') : ?>
                     <div style="text-align: center;"><span style="font-size: large;font-weight:700;">Section A Comprehension</span><br/>
                     <span style="font-weight: bold;">Instruction: </span><span>Read the following passage carefully and ...</span><br/>
@@ -67,29 +64,26 @@
                     <b>5)</b>&nbsp;<br/>
                   </div><br/>
               </textarea>
-                <div class="row">
-                  <div class="col-8 mx-auto">
-                    <div class="d-grid">
-                      <input type="submit" name="submit" value="Save" class="btn btn-outline-primary my-3">
-                    </div>
-                  </div>
+            <div class="row">
+              <div class="col-8 mx-auto">
+                <div class="d-grid">
+                  <input type="submit" name="submit" value="Save" class="btn btn-outline-primary my-3">
                 </div>
-              </form>
-            <?php else : ?>
-              <form action="<?php echo URLROOT; ?>/processing/custom/<?= $data['paperID']; ?>" method="POST">
-                <textarea class="form-control" name="content"><?= $data['content']->content; ?></textarea>
-                <div class="row">
-                  <div class="col-8 mx-auto">
-                    <div class="d-grid">
-                      <input type="submit" name="submit" value="Save" class="btn btn-outline-primary my-3">
-                    </div>
-                  </div>
+              </div>
+            </div>
+          </form>
+        <?php else : ?>
+          <form action="<?php echo URLROOT; ?>/processing/custom/<?= $data['paperID']; ?>" method="POST">
+            <textarea class="form-control" name="content"><?= $data['content']->content; ?></textarea>
+            <div class="row">
+              <div class="col-8 mx-auto">
+                <div class="d-grid">
+                  <input type="submit" name="submit" value="Save" class="btn btn-outline-primary my-3">
                 </div>
-              </form>
-            <?php endif; ?>
-          </div>
-        </div>
-
+              </div>
+            </div>
+          </form>
+        <?php endif; ?>
       </div>
     </div>
   </section>
