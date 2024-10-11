@@ -260,20 +260,28 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<!-- Page loader fade in on form submit -->
 <script>
-    tinymce.init({
-        selector: 'textarea',
-        height: 180,
-        plugins: '',
-        menubar: '',
-        toolbar: 'dash',
-        setup: (editor) => {
-
-            editor.ui.registry.addButton('dash', {
-                text: '__________',
-                onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-            });
-
-        },
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
   });
-      </script>
+</script>
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    height: 180,
+    plugins: '',
+    menubar: '',
+    toolbar: 'dash',
+    setup: (editor) => {
+
+      editor.ui.registry.addButton('dash', {
+        text: '__________',
+        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+      });
+
+    },
+  });
+</script>

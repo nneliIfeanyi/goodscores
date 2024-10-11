@@ -91,10 +91,18 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<!-- Page loader fade in on form submit -->
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
 <script>
   tinymce.init({
     selector: 'textarea',
-    height: 580,
+    height: 600,
     //plugins: 'charmap',
     // menubar: '',
     //toolbar: 'dash charmap equa',
