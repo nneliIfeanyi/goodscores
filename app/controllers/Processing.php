@@ -166,13 +166,11 @@ class Processing extends Controller
                 'content' => val_entry($_POST['content']),
                 'paperID' => $paper_id
             ];
-             
+
             if ($this->postModel->updateCustom($data)) {
                 flash("msg", "Saved!");
                 redirect('posts/custom/' . $paper_id);
             }
-           
-               
         } else { // Not post request
             die('Something went wrong');
         }
