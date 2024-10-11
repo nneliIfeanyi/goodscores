@@ -52,7 +52,7 @@
     .flash-msg {
       margin: 0;
       position: fixed;
-      top: 0;
+      top: 62;
       right: 0;
       width: auto;
       text-align: center;

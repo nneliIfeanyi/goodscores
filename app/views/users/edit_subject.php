@@ -7,12 +7,12 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1><?= $data['class']->classname; ?> </h1>
+        <h1><?= $data['subject']->subject; ?> </h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/dashboard">Home</a></li>
                 <li class="breadcrumb-item">Users</li>
-                <li class="breadcrumb-item active">Classes</li>
+                <li class="breadcrumb-item active">Subjects</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -24,14 +24,14 @@
                     <div class="card-body">
 
                         <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                            <strong>Edit Class</strong>
+                            <strong>Edit Subject</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <form>
 
                             <div class="my-4">
-                                <label for="className">Class Name</label>
-                                <input type="text" id="className" name="classname" required class="form-control form-control-lg" value="<?= $data['class']->classname; ?>" data-parsley-trigger=" keyup" />
+                                <label for="className">Subject</label>
+                                <input type="text" id="className" name="subject" required class="form-control form-control-lg" value="<?= $data['subject']->subject; ?>" data-parsley-trigger=" keyup" />
                             </div>
                             <div class="d-flex gap-4">
                                 <input type="submit" id="submit" value="Save changes" class="btn btn-primary">
@@ -54,7 +54,7 @@
         $('form').on('submit', function(event) {
             event.preventDefault();
             $.ajax({
-                url: "<?php echo URLROOT; ?>/submissions/edit_class/<?= $data['class']->id; ?>",
+                url: "<?php echo URLROOT; ?>/submissions/edit_subject/<?= $data['subject']->id; ?>",
                 method: "POST",
                 data: new FormData(this),
                 contentType: false,

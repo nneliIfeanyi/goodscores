@@ -24,7 +24,7 @@
         <div class="card">
           <div class="card-body">
             <?php
-            if ($data['num_rows'] == $data['total_subject_num_rows']) {
+            if ($data['num_rows'] >= $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>theory_questions</strong>
@@ -46,18 +46,14 @@
                 </div>
               </div>
               <div class="d-grid">
-                <form action="<?php echo URLROOT; ?>/submissions/set/objectives_questions" method="POST">
-                  <input type="hidden" name="class" value="<?php echo $data['class']; ?>">
-                  <input type="hidden" name="subject" value="<?php echo $data['subject']; ?>">
-                  <input type="hidden" name="year" value="<?php echo $data['year']; ?>">
-                  <input type="hidden" name="term" value="<?php echo $data['term']; ?>">
-                  <div class="d-grid">
-                    <input type="submit" name="set" value="Go to Objectives Questions" class="btn btn-outline-primary">
-                  </div>
-                </form>
-                <div class="mt-3">
-                  <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
-                </div>
+                <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions')) : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
+                <?php else : ?>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/set/objectives_questions">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
+                <?php endif; ?>
+              </div>
+              <div class="mt-3">
+                <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
               </form>
             <?php
@@ -264,3 +260,28 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<!-- Page loader fade in on form submit -->
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    height: 180,
+    plugins: '',
+    menubar: '',
+    toolbar: 'dash',
+    setup: (editor) => {
+
+      editor.ui.registry.addButton('dash', {
+        text: '__________',
+        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+      });
+
+    },
+  });
+</script>

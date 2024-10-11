@@ -49,7 +49,7 @@
               <label style="font-size: x-small;">To append a diagram | click camera icon.</label>
 
             <?php endif; ?>
-            <form action="<?php echo URLROOT; ?>/posts/edit/<?php echo $data['post']->id; ?>" method="POST">
+            <form action="<?php echo URLROOT; ?>/posts/edit4/<?php echo $data['post']->id; ?>" method="POST">
               <input type="hidden" name="paperID" value="<?php echo $data['post']->paperID; ?>">
               <input type="hidden" name="daigram" value="<?= $data['post']->img; ?>">
               <textarea class="form-control" name="question" required placeholder="Reset Question"><?php echo $data['post']->question; ?></textarea>
@@ -72,7 +72,7 @@
                   <i class="bi bi-camera"></i>
                 </a>
                 <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
-                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
+                <a href="<?php echo URLROOT; ?>/posts/show4/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
                   <i class="bi bi-chevron-left"></i> Back
                 </a>
               </div>
@@ -88,20 +88,3 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
-<script>
-    tinymce.init({
-        selector: 'textarea',
-        height: 180,
-        plugins: '',
-        menubar: '',
-        toolbar: 'dash',
-        setup: (editor) => {
-
-            editor.ui.registry.addButton('dash', {
-                text: '__________',
-                onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-            });
-
-        },
-  });
-      </script>

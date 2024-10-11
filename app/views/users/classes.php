@@ -33,34 +33,14 @@
               <strong>Add New Class</strong>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <form action="<?php echo URLROOT; ?>/submissions/add_class" method="POST">
+            <form id="add-class">
 
               <div class="my-4">
                 <label for="className">Class Name</label>
                 <input type="text" id="className" name="classname" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
               </div>
-              <!-- <div class="my-4">
-                <label for="className">Number of objective questions</label>
-                <input type="number" id="className" name="obj_num_rows" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
-              </div>
-
-              <div class="my-4">
-                <label for="className">Number of theory questions</label>
-                <input type="number" id="className" name="theory_num_rows" class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
-              </div>
-
-              <div class="my-4">
-                <label for="className">How many theory questions to answer</label>
-                <input type="number" name="choice" class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
-              </div>
-
-              <div class="my-4">
-                <label for="className">Exam duration</label>
-                <input name="duration" required class="form-control form-control-lg" placeholder="" data-parsley-trigger="keyup" />
-              </div> -->
-
               <div class="d-grid">
-                <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">
+                <input type="submit" id="submit" value="Continue" class="btn btn-outline-primary">
               </div>
             </form>
 
@@ -110,8 +90,8 @@
                           <div class="modal-footer">
                             <div class="d-flex gap-4">
                               <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                              <form action="<?php echo URLROOT; ?>/submissions/delete_class/<?php echo $class->id; ?>" method="POST">
-                                <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
+                              <form method="POST" action="<?php echo URLROOT; ?>/submissions/delete_class/<?= $class->id; ?>">
+                                <input class="btn btn-danger" id="submit2" type="submit" value="Yes Continue">
                               </form>
                             </div>
                           </div>
@@ -143,3 +123,28 @@
 
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+        $('#add-class').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/submissions/add_class",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                   $('#submit').attr('disabled', false);
+                    $('#submit').val('Continue');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>
+
+    

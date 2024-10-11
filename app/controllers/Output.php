@@ -25,6 +25,33 @@ class Output extends Controller
     redirect('output/review_params/' . $paperID);
   }
 
+
+  public function pdf($paperID)
+  {
+    //$params = $this->postModel->getParamsByPaperID2($paperID);
+    //$params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    //$params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $data = [
+      //  'params1' => $params1,
+      // 'params2' => $params2,
+      // 'params' => $params
+    ];
+    $this->view('output/pdf', $data);
+  }
+
+  public function print($paperID)
+  {
+    //$params = $this->postModel->getParamsByPaperID2($paperID);
+    //$params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    //$params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $data = [
+      //  'params1' => $params1,
+      // 'params2' => $params2,
+      // 'params' => $params
+    ];
+    $this->view('output/print', $data);
+  }
+
   public function review_params($paperID)
   {
     $obj = $this->postModel->getObjectives($paperID);

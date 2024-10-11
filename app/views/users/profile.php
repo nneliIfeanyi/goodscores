@@ -67,7 +67,7 @@
                                 <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p> -->
 
                                 <h5 class="card-title">Profile Details</h5>
-                                <form action="<?= URLROOT; ?>/submissions/profile/<?= $data['user']->id; ?>" method="POST">
+                                <form id="profile-form">
                                     <div class="row mb-3">
                                         <label for="name" class="col-md-4 col-lg-3 col-form-label">Fullname</label>
                                         <div class="col-md-8 col-lg-9">
@@ -104,7 +104,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <input id="submit" value="Save Changes" type="submit" class="btn btn-primary">
                                     </div>
                                 </form><!-- End Profile Edit Form -->
                             </div>
@@ -131,7 +131,7 @@
 
                             <div class="tab-pane fade pt-3" id="profile-change-password">
                                 <!-- Change Password Form -->
-                                <form id="resetPass" action="<?= URLROOT; ?>/submissions/password/<?= $data['user']->id; ?>" method="POST">
+                                <form id="resetPass">
 
                                     <div class="row mb-3">
                                         <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
@@ -155,7 +155,7 @@
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                        <input id="submit2" value="Change Password" type="submit" class="btn btn-primary">
                                     </div>
                                 </form><!-- End Change Password Form -->
 
@@ -173,5 +173,45 @@
 </main><!-- End #main -->
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 <script>
-    $('#resetPass').parsley();
-</script>
+        $('#profile-form').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?= URLROOT; ?>/submissions/profile/<?= $data['user']->id; ?>",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>
+
+    <script>
+        $('#resetPass').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?= URLROOT; ?>/submissions/password/<?= $data['user']->id; ?>",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit2').attr('disabled', 'disabled');
+                    $('#submit2').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>

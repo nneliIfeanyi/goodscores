@@ -40,6 +40,17 @@
              <i class="bi bi-circle"></i><span>Theory Questions</span>
            </a>
          </li>
+         <li>
+           <a href="<?php echo URLROOT; ?>/users/set/custom">
+             <i class="bi bi-circle"></i><span>Custom</span>
+           </a>
+         </li>
+
+         <!-- <li>
+           <a href="<?php echo URLROOT; ?>/users/set/others">
+             <i class="bi bi-circle"></i><span>Others</span>
+           </a>
+         </li> -->
 
        </ul>
      </li><!-- End Set Questions Nav -->

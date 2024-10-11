@@ -20,11 +20,6 @@
   <section class="section">
     <div class="row">
       <div class="col-lg-6">
-        <!-- <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                <i class="bi bi-star me-1 text-warning"></i>
-                Class name should follow your school's pattern | Either Year-1 to Year-12 or Basic-1 to Basic-6 or Jss-1 to Sss-3
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div> -->
         <div class="card">
           <div class="card-body">
 
@@ -32,7 +27,7 @@
               <strong>Add Subjects You Teach</strong>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <form action="<?php echo URLROOT; ?>/submissions/add_subject" method="POST">
+            <form id="add-subject">
 
               <div class="my-4">
                 <label for="subject">Enter Subject Name</label>
@@ -40,7 +35,7 @@
               </div>
 
               <div class="d-grid">
-                <input type="submit" name="set" value="Continue" class="btn btn-outline-primary">
+                <input type="submit" id="submit" value="Continue" class="btn btn-outline-primary">
               </div>
             </form>
 
@@ -71,7 +66,8 @@
                     <tr>
                       <th scope="row"><?php echo $n; ?></th>
                       <td><?php echo $subject->subject; ?></td>
-                      <td>
+                      <td class="d-flex gap-2">
+                        <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/edit_subject/<?php echo $subject->id; ?>"><i class="bi bi-pen"></i></a>
                         <span class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#subject<?php echo $subject->id; ?>"><i class="bi bi-trash"></i></span>
                       </td>
                     </tr>
@@ -120,3 +116,26 @@
 
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+        $('#add-subject').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "<?php echo URLROOT; ?>/submissions/add_subject",
+                method: "POST",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#submit').attr('disabled', 'disabled');
+                    $('#submit').val('Processing, Pls Wait ....');
+
+                },
+                success: function(data) {
+                   $('#submit').attr('disabled', false);
+                    $('#submit').val('Continue');
+                    $('#ajax-msg').html(data);
+                }
+            });
+
+        });
+    </script>

@@ -1,7 +1,13 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
-    <meta http-equiv="refresh" content="90; <?php echo URLROOT; ?>/pages/login">
+  <!-- PAGE LOADER -->
+  <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
+    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
+      <span class="spinner-border text-primary"> </span>
+    </div>
+  </div>
+    <meta http-equiv="refresh" content="11; <?php echo URLROOT; ?>/pages/login">
 
     <main>
         <div class="container">
@@ -26,6 +32,8 @@
                                         <h5 class="card-title text-center pb-0 fs-4">Verify Email</h5>
                                         <p class="text-center small">A verification link has been sent to <strong><?php echo $data['email']; ?></strong> kindly use the link to Login to your account.</address>
                                         </p>
+
+                                        <p id="countDown"></p>
                                     </div>
 
 
