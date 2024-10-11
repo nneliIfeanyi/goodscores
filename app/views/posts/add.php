@@ -183,24 +183,6 @@
         });
 
       },
-    });
-  </script>
-<?php else : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea',
-      height: 180,
-      plugins: '',
-      menubar: '',
-      toolbar: 'dash',
-      setup: (editor) => {
-
-        editor.ui.registry.addButton('dash', {
-          text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-        });
-
-      },
       charmap: [
         [0xb0, 'degree sign'],
         [0xb9, 'superscript one'],
@@ -236,6 +218,24 @@
         [0x2211, 'summation'],
         [0x2044, 'fraction slash'],
       ]
+    });
+  </script>
+<?php else : ?>
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      height: 180,
+      plugins: '',
+      menubar: '',
+      toolbar: 'dash',
+      setup: (editor) => {
+
+        editor.ui.registry.addButton('dash', {
+          text: '__________',
+          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+        });
+
+      },
     });
   </script>
 <?php endif; ?>
@@ -294,64 +294,3 @@
     });
   </script>
 <?php endif; ?>
-
-<!-- <script>
-  tinymce.init({
-  selector: 'textarea',
-  extended_valid_elements: 'mycustominline',
-  custom_elements: '~mycustominline',
-  height: 180,
-  plugins: 'charmap',
-  menubar: '',
-  toolbar: 'dash charmap equa',
-  setup: (editor) => {
-
-  editor.ui.registry.addButton('dash', {
-  text: '__________',
-  onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-  });
-
-  editor.ui.registry.addButton('equa', {
-  text: '=',
-  onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
-  });
-  },
-
-  charmap: [
-  [0xb0, 'degree sign'],
-  [0xb9, 'superscript one'],
-  [0xb2, 'superscript two'],
-  [0xb3, 'superscript three'],
-  [0x221A, 'square root'],
-  [0x3C0, 'pi'],
-  [0xBD, 'one half'],
-  [0xBC, 'one quarter'],
-  [0xBE, 'three quarter'],
-  [0x2153, 'two third'],
-  [0x2154, 'one third'],
-  [0x2208, 'element of'],
-  [0x220B, 'member'],
-  [0x2209, 'not element of'],
-  [0x2203, 'there exist'],
-  [0x2205, 'empty set'],
-  [0x2207, 'nabla'],
-  [0x221D, 'proportional to'],
-  [0x221E, 'infinity'],
-  [0x2220, 'angle'],
-  [0x2229, 'intersection'],
-  [0x222A, 'union'],
-  [0x2264, 'less or equal to'],
-  [0x2265, 'greater or equal to'],
-  [0x2282, 'subset of'],
-  [0x2283, 'superset of'],
-  [0x2284, 'not a subset of'],
-  [0x2286, 'subset of or equal to'],
-  [0x2287, 'superset of or equal to'],
-  [0x2260, 'not equal to'],
-  [0x222B, 'integral'],
-  [0x2211, 'summation'],
-  [0x2044, 'fraction slash'],
-  ]
-
-  });
-  </script> -->
