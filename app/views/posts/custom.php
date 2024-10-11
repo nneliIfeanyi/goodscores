@@ -103,9 +103,9 @@
   tinymce.init({
     selector: 'textarea',
     height: 600,
-    //plugins: 'charmap',
-    // menubar: '',
-    //toolbar: 'dash charmap equa',
+    plugins: 'charmap emoticon wordcount pagebreak',
+    menubar: 'edit insert format tools table',
+    toolbar: 'dash blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | lineheight outdent indent | charmap emoticons pagebreak',
 
   });
 </script>
