@@ -39,7 +39,7 @@
                 </div>
                 <div class="my-4">
                   <label for="className">Section name</label>
-                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param'];?>" />
+                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
                 </div>
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="class" required>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="my-4">
                   <label for="className">Section name</label>
-                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param'];?>" />
+                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
                 </div>
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="class" required>
@@ -145,7 +145,7 @@
                   </select>
                 </div><!--===== Subject Ends =====-->
 
-                <?php elseif ($data['param'] == 'others') : ?>
+              <?php elseif ($data['param'] == 'others') : ?>
                 <div class="my-4">
                   <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
                   <input type="text" name="section_tag" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
@@ -220,3 +220,11 @@
 
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<!-- Page loader fade in on form submit -->
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>

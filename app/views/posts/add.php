@@ -2,6 +2,7 @@
 <?php require APPROOT . '/views/inc/navbar.php';
 ?>
 <?php require APPROOT . '/views/inc/sidebar.php';
+$mathsObj = '';
 ?>
 
 <main id="main" class="main">
@@ -45,15 +46,15 @@
                   <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <div class="d-grid">
+              <div class="d-flex gap-3 ">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 <?php else : ?>
-                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/set/theory_questions">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 <?php endif; ?>
-              </div>
-              <div class="mt-3">
-                <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
             <?php
             } else {

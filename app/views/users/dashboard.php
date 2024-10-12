@@ -222,7 +222,7 @@
                           <td><?php echo $recent->term; ?></td>
                           <!-- Document status cell -->
                           <?php if ($recent->section == 'objectives_questions') : ?>
-                            <?php if ($recent->num_rows < $obj_num_rows) : ?>
+                            <?php if ($recent->num_rows > $obj_num_rows) : ?>
 
                               <td><span class="badge bg-warning">Pending</span></td>
                               <td scope="row" class="d-flex gap-2">
