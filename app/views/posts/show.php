@@ -78,16 +78,20 @@
           </div>
         <?php $n++;
         endforeach; ?>
-        <div class="row mt-3">
+        <div class="row mt-4">
           <div class="col-12">
             <div class="d-flex gap-3">
-              <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue</a>
+              <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
+              <?php if ($_SESSION['role'] == 'Admin') : ?>
+                <a href="<?= URLROOT; ?>/output/print/<?= $data['params']->paperID; ?>" class="btn btn-outline-secondary">Print <i class="bi bi-printer"></i></a>
+                <a href="<?= URLROOT; ?>/output/pdf/<?= $data['params']->paperID; ?>" class="btn btn-outline-success">Download <i class="bi bi-download"></i></a>
+              <?php endif; ?>
             </div>
           </div>
         </div>
       <?php else : ?>
         <p class="fw-bold">No Data | No Questions Set<br>
-        <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
+          <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
         </p>
       <?php endif; ?>
     </div>

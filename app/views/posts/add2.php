@@ -85,7 +85,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>a</p>
                       </div>
                       <div class="col-11"><!-- Numbering A input -->
-                        <textarea class="form-control" name="question-A" required><p></p></textarea>
+                        <textarea class="tiny" name="question-A" required><p></p></textarea>
                         <button class="accordion-button p-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                         </button><!-- Accordion toggle button -->
                         <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -134,7 +134,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>b</p>
                       </div>
                       <div class="col-11"><!-- Numbering B input -->
-                        <textarea class="form-control" name="question-B"></textarea>
+                        <textarea class="tiny" name="question-B"></textarea>
                         <button class="accordion-button p-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?= $data['num_rows']; ?>b" aria-expanded="false" aria-controls="flush-collapseOne">
                         </button><!-- Numbering B toggle button -->
                         <div id="<?= $data['num_rows']; ?>b" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -182,7 +182,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>c</p>
                       </div>
                       <div class="col-11">
-                        <textarea class="form-control" name="question-C"></textarea>
+                        <textarea class="tiny" name="question-C"></textarea>
                         <button class="accordion-button p-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#<?= $data['num_rows']; ?>c" aria-expanded="false" aria-controls="flush-collapseOne">
                         </button>
                         <div id="<?= $data['num_rows']; ?>c" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -222,7 +222,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>d</p>
                       </div>
                       <div class="col-11">
-                        <textarea class="form-control" name="question-D"></textarea>
+                        <textarea class="tiny" name="question-D"></textarea>
                       </div>
                     </div>
                   </div><!-- Question D div ends here -->
@@ -267,20 +267,68 @@
     });
   });
 </script>
-<script>
-  tinymce.init({
-    selector: 'textarea',
-    height: 180,
-    plugins: '',
-    menubar: '',
-    toolbar: 'dash',
-    setup: (editor) => {
+<?php if ($data['subject'] == 'Maths' || $data['subject'] == 'maths' || $data['subject'] == 'Mathematics' || $data['subject'] == 'mathematics' || $data['subject'] == 'Further Maths' || $data['subject'] == 'further maths' || $data['subject'] == 'Further Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'further mathematics' || $data['subject'] == 'Physics' || $data['subject'] == 'physics') : ?>
+  <script>
+    tinymce.init({
+      selector: 'textarea.tiny',
+      height: 180,
+      plugins: 'charmap',
+      menubar: '',
+      toolbar: 'charmap',
 
-      editor.ui.registry.addButton('dash', {
-        text: '__________',
-        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-      });
+      charmap: [
+        [0xb0, 'degree sign'],
+        [0xb9, 'superscript one'],
+        [0xb2, 'superscript two'],
+        [0xb3, 'superscript three'],
+        [0x221A, 'square root'],
+        [0x3C0, 'pi'],
+        [0xBD, 'one half'],
+        [0xBC, 'one quarter'],
+        [0xBE, 'three quarter'],
+        [0x2153, 'two third'],
+        [0x2154, 'one third'],
+        [0x2208, 'element of'],
+        [0x220B, 'member'],
+        [0x2209, 'not element of'],
+        [0x2203, 'there exist'],
+        [0x2205, 'empty set'],
+        [0x2207, 'nabla'],
+        [0x221D, 'proportional to'],
+        [0x221E, 'infinity'],
+        [0x2220, 'angle'],
+        [0x2229, 'intersection'],
+        [0x222A, 'union'],
+        [0x2264, 'less or equal to'],
+        [0x2265, 'greater or equal to'],
+        [0x2282, 'subset of'],
+        [0x2283, 'superset of'],
+        [0x2284, 'not a subset of'],
+        [0x2286, 'subset of or equal to'],
+        [0x2287, 'superset of or equal to'],
+        [0x2260, 'not equal to'],
+        [0x222B, 'integral'],
+        [0x2211, 'summation'],
+        [0x2044, 'fraction slash'],
+      ]
+    });
+  </script>
+<?php else : ?>
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      height: 180,
+      plugins: '',
+      menubar: '',
+      toolbar: 'dash',
+      setup: (editor) => {
 
-    },
-  });
-</script>
+        editor.ui.registry.addButton('dash', {
+          text: '__________',
+          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+        });
+
+      },
+    });
+  </script>
+<?php endif; ?>
