@@ -26,23 +26,23 @@
                             <strong>Review Examination Parameters!</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <form action="<?php echo URLROOT; ?>/submissions/review/<?= $data['section'];?>" method="POST">
-                            <input type="hidden" name="paperID" value="<?= $data['params']->paperID ;?>">
+                        <form action="<?php echo URLROOT; ?>/submissions/review/<?= $data['section']; ?>" method="POST">
+                            <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                             <div class="my-4">
-                              <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
-                              <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
+                                <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                             </div>
-                        <?php if ($data['section'] == 'others') : ?>
-                            <div class="my-4">
-                              <label for="className">Section name</label>
-                              <input type="text" name="section_alt" class="form-control form-control-lg" value="<?= $data['params']->section_alt;?>" />
-                            </div>
-                        <?php else:?>
-                            <div class="my-4">
-                              <label for="className">Section name</label>
-                              <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section'];?>" />
-                            </div>
-                        <?php endif;?>
+                            <?php if ($data['section'] == 'others') : ?>
+                                <div class="my-4">
+                                    <label for="className">Section name</label>
+                                    <input type="text" name="section_alt" class="form-control form-control-lg" value="<?= $data['params']->section_alt; ?>" />
+                                </div>
+                            <?php else : ?>
+                                <div class="my-4">
+                                    <label for="className">Section name</label>
+                                    <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section']; ?>" />
+                                </div>
+                            <?php endif; ?>
                             <div class="my-4">
                                 <select class="form-control form-control-lg" name="class">
                                     <option value="<?php echo $data['params']->class; ?>"><?php echo $data['params']->class; ?></option>
@@ -86,7 +86,37 @@
                                 <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
                             </div><!--===== Submit Button Ends =====-->
                         </form><!--===== Set Question Form Ends =====-->
+                        <div class="d-grid mt-3">
+                            <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <span data-bs-toggle="modal" data-bs-target="#section<?= $data['params']->paperID; ?>" class="btn btn-danger">Delete this section</span>
+                        </div>
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="section<?= $data['params']->paperID; ?>" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Are you sure to delete <span class="text-primary"> <?php echo $data['params']->class; ?> <?php echo $data['params']->subject; ?> <?php echo $data['params']->section; ?>?</span></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        This action cannot be reversed!
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="d-flex gap-4">
+                                            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                            <form action="<?php echo URLROOT; ?>/posts/delete_section/<?= $data['params']->paperID; ?>" method="POST">
+                                                <input type="hidden" name="section" value="<?= $data['params']->section; ?>">
+                                                <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
+                                                <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
+                                            </form>
+                                        </div>
+                                    </div>
 
+                                </div>
+                            </div>
+                        </div><!-- End Delete Modal-->
                     </div>
                 </div>
 

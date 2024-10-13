@@ -49,11 +49,14 @@ $mathsObj = '';
               <div class="d-flex gap-3 ">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
-                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
                   <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 <?php else : ?>
-                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
                   <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
+
+                  <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
+
                 <?php endif; ?>
               </div>
             <?php
@@ -65,10 +68,11 @@ $mathsObj = '';
               }
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong>Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
+                <strong><?= $data['tag']; ?> | Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
+                <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
                     <div class="mt-2 mb-4">
@@ -140,7 +144,7 @@ $mathsObj = '';
                     </div>
                   </div>
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                       <i class="bi bi-eye"></i>
                     </a>
                   </div>
@@ -185,12 +189,23 @@ $mathsObj = '';
 
       },
       charmap: [
+        [0x3d, 'equal sign'],
+        [0x2b, 'Plus sign'],
+        [0x2212, 'Minus sign'],
+        [0xd7, 'Multiplication sign'],
+        [0xf7, 'division sign'],
+        [0xb1, 'plus  or minus'],
+        [0x25, 'percent sign'],
+        [0x89, 'per mile sign'],
         [0xb0, 'degree sign'],
         [0xb9, 'superscript one'],
         [0xb2, 'superscript two'],
         [0xb3, 'superscript three'],
         [0x221A, 'square root'],
+        [0x221B, 'cube root'],
+        [0x221C, 'fourth root'],
         [0x3C0, 'pi'],
+        [0x2217, 'asterisk operator'],
         [0xBD, 'one half'],
         [0xBC, 'one quarter'],
         [0xBE, 'three quarter'],
@@ -258,12 +273,23 @@ $mathsObj = '';
 
       },
       charmap: [
+        [0x3d, 'equal sign'],
+        [0x2b, 'Plus sign'],
+        [0x2212, 'Minus sign'],
+        [0xd7, 'Multiplication sign'],
+        [0xf7, 'division sign'],
+        [0xb1, 'plus  or minus'],
+        [0x25, 'percent sign'],
+        [0x89, 'per mile sign'],
         [0xb0, 'degree sign'],
         [0xb9, 'superscript one'],
         [0xb2, 'superscript two'],
         [0xb3, 'superscript three'],
         [0x221A, 'square root'],
+        [0x221B, 'cube root'],
+        [0x221C, 'fourth root'],
         [0x3C0, 'pi'],
+        [0x2217, 'asterisk operator'],
         [0xBD, 'one half'],
         [0xBC, 'one quarter'],
         [0xBE, 'three quarter'],

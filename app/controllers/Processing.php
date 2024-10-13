@@ -18,7 +18,7 @@ class Processing extends Controller
     public function add($paper_id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $num_rows = $this->postModel->checkObjectivesNumRows($paper_id, $_COOKIE['sch_id']);
+            $num_rows = $this->postModel->checkObjectivesNumRows($paper_id, $_POST['section_alt'], $_COOKIE['sch_id']);
             $data = [
                 'paperID' => $paper_id,
                 'question' => trim($_POST['question']),
@@ -29,6 +29,7 @@ class Processing extends Controller
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
                 'num_rows' => $num_rows,
+                'section_alt' => $_POST['section_alt']
             ];
 
             if (empty($_SESSION['daigram'])) { // Question has no daigram
@@ -36,7 +37,7 @@ class Processing extends Controller
                 if ($this->postModel->setQuestions($data)) {
                     $num_rows = $num_rows + 1;
                     flash("msg", "Question $num_rows  is set successfully");
-                    redirect('posts/add/' . $paper_id);
+                    redirect('posts/add/' . $paper_id . '?section_alt=' . $_POST['section_alt']);
                 } else {
                     die('Something went wrong..');
                 }
@@ -47,7 +48,7 @@ class Processing extends Controller
                     unset($_SESSION['daigram']);
                     $num_rows = $num_rows + 1;
                     flash("msg", "Question $num_rows  is set successfully");
-                    redirect('posts/add/' . $paper_id);
+                    redirect('posts/add/' . $paper_id . '?section_alt=' . $_POST['section_alt']);
                 }
             }
         } else {

@@ -135,7 +135,7 @@
                           <!-- <td><?php echo $recent->term; ?></td> -->
                           <td scope="row" class="d-flex gap-2">
                             <?php if ($recent->section == 'objectives_questions') : ?>
-                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?php echo $recent->paperID; ?>">
+                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?php echo $recent->paperID; ?>?section_alt=<?= $recent->section_alt; ?>">
                                 <i class="bi bi-chevron-right"></i>
                               </a>
                               <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
@@ -158,7 +158,7 @@
                               </a>
                             <?php elseif ($recent->section == 'others') : ?>
 
-                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add4/<?php echo $recent->paperID; ?>">
+                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?php echo $recent->paperID; ?>?section_alt=<?= $recent->section_alt; ?>">
                                 <i class="bi bi-chevron-right"></i>
                               </a>
                               <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/users/review_params?paperID=<?= $recent->paperID; ?>&section=<?= $recent->section; ?>">
@@ -186,7 +186,7 @@
           <div class="col-12">
             <div class="card top-selling overflow-auto">
               <div class="card-body pb-0">
-                <h5 class="card-title">Archives</h5>
+                <h5 class="card-title">Archives | Output</h5>
 
                 <table class="table table-borderless">
                   <thead>
@@ -205,9 +205,9 @@
                     <?php
                     if (!empty($data['archive'])) :
                       foreach ($data['archive'] as $recent) :
-                        $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
+                        $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
                         $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
-                        $other_num_rows = $this->postModel->checkCustomObjNumRows($recent->paperID, $_COOKIE['sch_id']);
+                        $other_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
                     ?>
                         <tr>
                           <td><?php echo $recent->subject; ?></td>

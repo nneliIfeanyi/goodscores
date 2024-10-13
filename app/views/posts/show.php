@@ -15,7 +15,7 @@
   </div><!-- End Page Title -->
   <section class="row">
     <div class="col-lg-8">
-      <h5 class="fw-bold text-primary">objectives_questions</h5>
+      <h5 class="fw-bold text-primary"><?= $data['section_alt']; ?> </h5>
       <?php if (!empty($data['obj'])) : ?>
         <?php $n = 1;
         foreach ($data['obj'] as $obj) : ?>
@@ -64,7 +64,7 @@
                   <?php endif; ?>
 
                   <div class="d-flex justify-content-center">
-                    <a href="<?php echo URLROOT; ?>/posts/edit/<?php echo $obj->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
+                    <a href="<?php echo URLROOT; ?>/posts/edit/<?php echo $obj->id; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
                     <form action="<?php echo URLROOT; ?>/posts/delete/<?php echo $obj->id; ?>" method="POST">
                       <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                       <input type="hidden" name="class" value="<?= $data['params']->class; ?>">
@@ -81,7 +81,7 @@
         <div class="row mt-4">
           <div class="col-12">
             <div class="d-flex gap-3">
-              <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
+              <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
               <?php if ($_SESSION['role'] == 'Admin') : ?>
                 <a href="<?= URLROOT; ?>/output/print/<?= $data['params']->paperID; ?>" class="btn btn-outline-secondary">Print <i class="bi bi-printer"></i></a>
                 <a href="<?= URLROOT; ?>/output/pdf/<?= $data['params']->paperID; ?>" class="btn btn-outline-success">Download <i class="bi bi-download"></i></a>
@@ -91,7 +91,7 @@
         </div>
       <?php else : ?>
         <p class="fw-bold">No Data | No Questions Set<br>
-          <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
+          <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-primary">Begin now</a>
         </p>
       <?php endif; ?>
     </div>

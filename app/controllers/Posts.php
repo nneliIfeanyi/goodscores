@@ -29,45 +29,42 @@ class Posts extends Controller
   {
 
     if ($_GET['class'] && $_GET['subject']) {
-      $obj = $this->postModel->getObjectives($paperID);
-      $params = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
-      $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
-      $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
-      $data = [
-        'section' => 'objectives_questions',
-        'class' => $_GET['class'],
-        'subject' => $_GET['subject'],
-        'term' => TERM,
-        'year' => SCH_SESSION,
-        'obj' => $obj,
-        'params' => $params,
-        'subjects' => $subjects,
-        'classes' => $classes
-      ];
-        $this->view('posts/show', $data);
-    } // get request ends
-    else {
-      die('Something went wrong');
-    }
-  }
-
-  // Show Single Post
-  public function show4($paperID)
-  {
-
-    if ($_GET['class'] && $_GET['subject']) {
-      $obj = $this->postModel->getCustomObj($paperID);
-      $params = $this->postModel->getParamsByPaperID($paperID, 'others');
-      $data = [
-        'section' => 'others',
-        'class' => $_GET['class'],
-        'subject' => $_GET['subject'],
-        'term' => TERM,
-        'year' => SCH_SESSION,
-        'obj' => $obj,
-        'params' => $params
-      ];
-        $this->view('posts/show4', $data);
+      if (empty($_GET['section_alt'])) {
+        $obj = $this->postModel->getObjectives($paperID, $_GET['section_alt']);
+        $params = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+        $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+        $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+        $data = [
+          'section' => 'objectives_questions',
+          'class' => $_GET['class'],
+          'subject' => $_GET['subject'],
+          'term' => TERM,
+          'year' => SCH_SESSION,
+          'obj' => $obj,
+          'params' => $params,
+          'subjects' => $subjects,
+          'classes' => $classes,
+          'section_alt' => $params->section_alt
+        ];
+      } else {
+        $obj = $this->postModel->getObjectives($paperID, $_GET['section_alt']);
+        $params = $this->postModel->getParamsByPaperID($paperID, 'others');
+        $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+        $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+        $data = [
+          'section' => 'objectives_questions',
+          'class' => $_GET['class'],
+          'subject' => $_GET['subject'],
+          'term' => TERM,
+          'year' => SCH_SESSION,
+          'obj' => $obj,
+          'params' => $params,
+          'subjects' => $subjects,
+          'classes' => $classes,
+          'section_alt' => $params->section_alt
+        ];
+      }
+      $this->view('posts/show', $data);
     } // get request ends
     else {
       die('Something went wrong');
@@ -105,7 +102,7 @@ class Posts extends Controller
     }
   }
 
- // Add Comprehension 
+  // Add Comprehension 
   public function custom($paper_id)
   {
     $params = $this->postModel->getParamsFromCore($paper_id);
@@ -131,44 +128,46 @@ class Posts extends Controller
   // Add Objectives Question
   public function add($paper_id)
   {
-    $params = $this->postModel->getParamsByPaperID($paper_id, 'objectives_questions');
-    $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
+    if (empty($_GET['section_alt'])) {
+      $params = $this->postModel->getParamsByPaperID($paper_id, 'objectives_questions');
+      $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_GET['section_alt'], $_COOKIE['sch_id']);
 
-    $data = [
-      'sch_id' => $_COOKIE['sch_id'],
-      'section' => 'objectives_questions',
-      'paperID' => $paper_id,
-      'num_rows' => $num_rows,
-      'year' => $params->year,
-      'class' => $params->class,
-      'term' => $params->term,
-      'subject' => $params->subject,
-      'params' => $params,
-      'total_subject_num_rows' => $params->num_rows
-    ];
+      $data = [
+        'params' => $params,
+        'sch_id' => $_COOKIE['sch_id'],
+        'section' => 'objectives_questions',
+        'paperID' => $paper_id,
+        'num_rows' => $num_rows,
+        'year' => $params->year,
+        'class' => $params->class,
+        'term' => $params->term,
+        'subject' => $params->subject,
+        'section_alt' => $params->section_alt,
+        'total_subject_num_rows' => $params->num_rows,
+        'tag' => $params->tag
+      ];
+    } else {
+      $params = $this->postModel->getParamsByPaperID($paper_id, 'others');
+      $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_GET['section_alt'], $_COOKIE['sch_id']);
+
+      $data = [
+        'params' => $params,
+        'sch_id' => $_COOKIE['sch_id'],
+        'section' => 'objectives_questions',
+        'paperID' => $paper_id,
+        'num_rows' => $num_rows,
+        'year' => $params->year,
+        'class' => $params->class,
+        'term' => $params->term,
+        'subject' => $params->subject,
+        'section_alt' => $params->section_alt,
+        'total_subject_num_rows' => $params->num_rows,
+        'tag' => $params->tag
+      ];
+    }
     $this->view('posts/add', $data);
   }
 
-  // Add Objectives Question
-  public function add4($paper_id)
-  {
-    $params = $this->postModel->getParamsByPaperID($paper_id, 'others');
-    $num_rows = $this->postModel->checkCustomObjNumRows($params->paperID, $_COOKIE['sch_id']);
-
-    $data = [
-      'sch_id' => $_COOKIE['sch_id'],
-      'section' => 'objectives_questions',
-      'paperID' => $paper_id,
-      'num_rows' => $num_rows,
-      'year' => $params->year,
-      'class' => $params->class,
-      'term' => $params->term,
-      'subject' => $params->subject,
-      'params' => $params,
-      'total_subject_num_rows' => $params->num_rows
-    ];
-    $this->view('posts/add4', $data);
-  }
 
   public function daigram($paperID)
   {
@@ -247,7 +246,7 @@ class Posts extends Controller
         $data['daigram'] = $_POST['daigram'];
         if ($this->postModel->updateObj($data)) {
           flash('msg', 'Question is Updated');
-          redirect('posts/edit/' . $id);
+          redirect('posts/edit/' . $id . '?section_alt=' . $_POST['section_alt']);
         } else {
           die('Something went wrong');
         }
@@ -256,69 +255,31 @@ class Posts extends Controller
         if ($this->postModel->updateObj($data)) {
           unset($_SESSION['daigram']);
           flash('msg', 'Question is Updated');
-          redirect('posts/edit/' . $id);
+          redirect('posts/edit/' . $id . '?section_alt=' . $_POST['section_alt']);
         } else {
           die('Something went wrong');
         }
       }
     } else {
       // Get post from model
-      $post = $this->postModel->getObjById($id);
-      $params = $this->postModel->getParamsByPaperID($post->paperID, 'objectives_questions');
-      $data = [
-        'post' => $post,
-        'params' => $params
-      ];
+      if (empty($_GET['section_alt'])) {
+        $post = $this->postModel->getObjById($id);
+        $params = $this->postModel->getParamsByPaperID($post->paperID, 'objectives_questions');
+        $data = [
+          'post' => $post,
+          'params' => $params
+        ];
+      } else {
+        $post = $this->postModel->getObjById($id);
+        $params = $this->postModel->getParamsByPaperID($post->paperID, 'others');
+        $data = [
+          'post' => $post,
+          'params' => $params
+        ];
+      }
       $this->view('posts/edit', $data);
     }
   }
-
-  // Edit Post
-  public function edit4($id)
-  {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-      $data = [
-        'id' => $id,
-        'question' => trim($_POST['question']),
-        'opt1' => trim($_POST['opt1']),
-        'opt4' => trim($_POST['opt4']),
-        'opt2' => trim($_POST['opt2']),
-        'opt3' => trim($_POST['opt3'])
-      ];
-
-      if (empty($_SESSION['daigram'])) { // Update has no diagram
-        $data['daigram'] = $_POST['daigram'];
-        if ($this->postModel->updateCustomObj($data)) {
-          flash('msg', 'Question is Updated');
-          redirect('posts/edit4/' . $id);
-        } else {
-          die('Something went wrong');
-        }
-      } else {
-        $data['daigram'] = $_SESSION['daigram'];
-        if ($this->postModel->updateCustomObj($data)) {
-          unset($_SESSION['daigram']);
-          flash('msg', 'Question is Updated');
-          redirect('posts/edit4/' . $id);
-        } else {
-          die('Something went wrong');
-        }
-      }
-    } else {
-      // Get post from model
-      $post = $this->postModel->getCustomObjById($id);
-      $params = $this->postModel->getParamsByPaperID($post->paperID, 'others');
-      $data = [
-        'post' => $post,
-        'params' => $params
-      ];
-      $this->view('posts/edit4', $data);
-    }
-  }
-
 
   // Edit Post
   public function edit2($id)
@@ -353,7 +314,7 @@ class Posts extends Controller
     }
   }
 
-   // Delete single obj question
+  // Delete single obj question
   public function delete_custom($id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -388,17 +349,45 @@ class Posts extends Controller
   }
 
   // Delete all  obj question
-  public function delete_obj_all($id)
+  public function delete_section($id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      //Execute
-      if ($this->postModel->deleteObjall($id)) {
-        // Delete Params aswell
-        $this->postModel->deleteParamsData($id);
-        flash('msg', 'Questions Removed', 'alert alert-danger');
-        redirect('users/dashboard');
-      } else {
-        die('Something went wrong');
+      if ($_POST['section'] == 'objectives_questions') {
+        if ($this->postModel->deleteObjAll($id, '')) {
+          // Delete Params aswell
+          $this->postModel->deleteParamsData($id, $_POST['section']);
+          flash('msg', 'Section Removed Successfully', 'alert alert-danger');
+          redirect('users/dashboard');
+        } else {
+          die('Something went wrong');
+        }
+      } elseif ($_POST['section'] == 'theory_questions') {
+        if ($this->postModel->deleteTheoryAll($id)) {
+          // Delete Params aswell
+          $this->postModel->deleteParamsData($id, $_POST['section']);
+          flash('msg', 'Section Removed Successfully', 'alert alert-danger');
+          redirect('users/dashboard');
+        } else {
+          die('Something went wrong');
+        }
+      } elseif ($_POST['section'] == 'custom') {
+        if ($this->postModel->deleteCustomAll($id)) {
+          // Delete Params aswell
+          $this->postModel->deleteParamsData($id, $_POST['section']);
+          flash('msg', 'Section Removed Successfully', 'alert alert-danger');
+          redirect('users/dashboard');
+        } else {
+          die('Something went wrong');
+        }
+      } elseif ($_POST['section'] == 'others') {
+        if ($this->postModel->deleteObjAll($id, $_POST['section_alt'])) {
+          // Delete Params aswell
+          $this->postModel->deleteParamsData($id, $_POST['section']);
+          flash('msg', 'Section Removed Successfully', 'alert alert-danger');
+          redirect('users/dashboard');
+        } else {
+          die('Something went wrong');
+        }
       }
     } else {
       redirect('posts');
