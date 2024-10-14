@@ -25,9 +25,9 @@
             <div class="accordion-item bg-light px-1">
               <h2 class="accordion-header" id="flush-headingOne">
                 <?php if (!empty($obj->img)) : ?>
-                  <div class="d-flex justify-content-center">
-                    <div class="mt-2">
-                      <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded-3" height="90px" alt="daigram">
+                  <div class="">
+                    <div class="mt-2 me-5">
+                      <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
                     </div>
                   </div>
                 <?php endif; ?>
@@ -69,6 +69,7 @@
                       <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                       <input type="hidden" name="class" value="<?= $data['params']->class; ?>">
                       <input type="hidden" name="subject" value="<?= $data['params']->subject; ?>">
+                      <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
                       <input type="submit" name="" value="Delete" class="btn btn-danger btn-sm mt-3 rounded-0">
                     </form>
                   </div>

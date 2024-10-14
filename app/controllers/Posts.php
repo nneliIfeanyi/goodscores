@@ -305,7 +305,7 @@ class Posts extends Controller
       if ($this->postModel->deleteObj($id)) {
         // Redirect to login
         flash('msg', 'Question Removed', 'alert alert-danger');
-        redirect('posts/show/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
+        redirect('posts/show/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject'] . '&section_alt=' . $_POST['section_alt']);
       } else {
         die('Something went wrong');
       }
@@ -314,22 +314,6 @@ class Posts extends Controller
     }
   }
 
-  // Delete single obj question
-  public function delete_custom($id)
-  {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      //Execute
-      if ($this->postModel->deleteCustomObj($id)) {
-        // Redirect to login
-        flash('msg', 'Question Removed', 'alert alert-danger');
-        redirect('posts/show4/' . $_POST['paperID'] . '?class=' . $_POST['class'] . '&subject=' . $_POST['subject']);
-      } else {
-        die('Something went wrong');
-      }
-    } else {
-      redirect('posts');
-    }
-  }
 
   // Delete single theory question
   public function delete2($id)

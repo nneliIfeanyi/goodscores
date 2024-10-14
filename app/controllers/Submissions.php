@@ -134,6 +134,7 @@ class Submissions extends Controller
     $user = $this->userModel->findTeacherById($id);
     if ($this->userModel->removePhoto($id)) {
       unlink($user->img);
+      setcookie('photo', $user->img, time() - (3), '/');
       unset($_SESSION['photo']);
       flash('msg', 'Profile photo removed..', 'alert alert-danger bg-danger text-light border-0 alert-dismissible');
       echo "<script>

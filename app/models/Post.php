@@ -540,12 +540,11 @@ class Post
   // 
   public function getArchive()
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :user_id ORDER BY id DESC;");
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id ORDER BY id DESC;");
     //$this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-    $this->db->bind(':user_id', $_SESSION['user_id']);
+    //$this->db->bind(':user_id', $_SESSION['user_id']);
     $this->db->resultset();
-
     return $this->db->resultset();
   }
 

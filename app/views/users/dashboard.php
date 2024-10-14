@@ -86,7 +86,6 @@
 
             </div>
           </div><!-- End Classes Card -->
-
           <!-- Recent Activity -->
           <div class="col-12">
             <div class="card top-selling overflow-auto">
@@ -181,145 +180,145 @@
 
             </div>
           </div><!-- End Recent Activity -->
+          <?php if ($_SESSION['role'] == 'Admin') : ?>
+            <!-- Archive Table -->
+            <div class="col-12">
+              <div class="card top-selling overflow-auto">
+                <div class="card-body pb-0">
+                  <h5 class="card-title">Archives | Output</h5>
 
-          <!-- Archive Table -->
-          <div class="col-12">
-            <div class="card top-selling overflow-auto">
-              <div class="card-body pb-0">
-                <h5 class="card-title">Archives | Output</h5>
-
-                <table class="table table-borderless">
-                  <thead>
-                    <tr>
-
-                      <th scope="col">Subject</th>
-                      <th scope="col">Section</th>
-                      <th scope="col">Class</th>
-                      <th scope="col">Term</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-
-                    <?php
-                    if (!empty($data['archive'])) :
-                      foreach ($data['archive'] as $recent) :
-                        $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
-                        $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
-                        $other_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
-                    ?>
-                        <tr>
-                          <td><?php echo $recent->subject; ?></td>
-                          <td class="text-primary">
-                            <?php if (empty($recent->section_alt)) : ?>
-                              <?php echo $recent->section; ?>
-                            <?php else : ?>
-                              <?php echo $recent->section_alt; ?>
-                            <?php endif; ?>
-                          </td>
-                          <td><?php echo $recent->class; ?></td>
-                          <td><?php echo $recent->term; ?></td>
-                          <!-- Document status cell -->
-                          <?php if ($recent->section == 'objectives_questions') : ?>
-                            <?php if ($recent->num_rows > $obj_num_rows) : ?>
-
-                              <td><span class="badge bg-warning">Pending</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php else : ?>
-                              <td><span class="badge bg-success">Completed</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php endif; ?>
-                          <?php elseif ($recent->section == 'theory_questions') : ?>
-                            <?php if ($recent->num_rows > $theory_num_rows) : ?>
-                              <td><span class="badge bg-warning">Pending</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php else : ?>
-                              <td><span class="badge bg-success">Completed</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php endif; ?>
-                          <?php elseif ($recent->section == 'custom') : ?>
-
-                            <td><span class="badge bg-success"></span></td>
-                            <td scope="row" class="d-flex gap-2">
-                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                <i class="bi bi-printer"></i>
-                              </a>
-                              <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                <i class="bi bi-file-pdf"></i>
-                              </a>
-                            </td>
-
-                          <?php elseif ($recent->section == 'others') : ?>
-
-                            <?php if ($recent->num_rows > $other_num_rows) : ?>
-                              <td><span class="badge bg-warning">Pending</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php else : ?>
-                              <td><span class="badge bg-success">Completed</span></td>
-                              <td scope="row" class="d-flex gap-2">
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-printer"></i>
-                                </a>
-                                <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                  <i class="bi bi-file-pdf"></i>
-                                </a>
-                              </td>
-                            <?php endif; ?>
-
-                          <?php endif; ?>
-                          <!-- Document status cell ends -->
-                        </tr>
-
-                      <?php endforeach;
-                    else : ?>
+                  <table class="table table-borderless">
+                    <thead>
                       <tr>
-                        <td class="text-danger">No data set</td>
+
+                        <th scope="col">Subject</th>
+                        <th scope="col">Section</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Term</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                       </tr>
-                    <?php endif; ?>
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+
+                      <?php
+                      if (!empty($data['archive'])) :
+                        foreach ($data['archive'] as $recent) :
+                          $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
+                          $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);
+                          $other_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $recent->section_alt, $_COOKIE['sch_id']);
+                      ?>
+                          <tr>
+                            <td><?php echo $recent->subject; ?></td>
+                            <td class="text-primary">
+                              <?php if (empty($recent->section_alt)) : ?>
+                                <?php echo $recent->section; ?>
+                              <?php else : ?>
+                                <?php echo $recent->section_alt; ?>
+                              <?php endif; ?>
+                            </td>
+                            <td><?php echo $recent->class; ?></td>
+                            <td><?php echo $recent->term; ?></td>
+                            <!-- Document status cell -->
+                            <?php if ($recent->section == 'objectives_questions') : ?>
+                              <?php if ($recent->num_rows > $obj_num_rows) : ?>
+
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php else : ?>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php endif; ?>
+                            <?php elseif ($recent->section == 'theory_questions') : ?>
+                              <?php if ($recent->num_rows > $theory_num_rows) : ?>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php else : ?>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php endif; ?>
+                            <?php elseif ($recent->section == 'custom') : ?>
+
+                              <td><span class="badge bg-success"></span></td>
+                              <td scope="row" class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-printer"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                  <i class="bi bi-file-pdf"></i>
+                                </a>
+                              </td>
+
+                            <?php elseif ($recent->section == 'others') : ?>
+
+                              <?php if ($recent->num_rows > $other_num_rows) : ?>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php else : ?>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td scope="row" class="d-flex gap-2">
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-printer"></i>
+                                  </a>
+                                  <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
+                                    <i class="bi bi-file-pdf"></i>
+                                  </a>
+                                </td>
+                              <?php endif; ?>
+
+                            <?php endif; ?>
+                            <!-- Document status cell ends -->
+                          </tr>
+
+                        <?php endforeach;
+                      else : ?>
+                        <tr>
+                          <td class="text-danger">No data set</td>
+                        </tr>
+                      <?php endif; ?>
+                    </tbody>
+                  </table>
+
+                </div>
 
               </div>
-
-            </div>
-          </div><!-- End Archive -->
-
+            </div><!-- End Archive -->
+          <?php endif; ?>
         </div>
       </div>
     </div>
