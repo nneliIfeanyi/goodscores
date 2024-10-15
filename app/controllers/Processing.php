@@ -64,7 +64,7 @@ class Processing extends Controller
 
         $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+            $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
                 'paperID' => $paper_id,
                 'questionID' => $_POST['questionID'],
@@ -118,8 +118,9 @@ class Processing extends Controller
     public function custom($paper_id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
-                'content' => val_entry($_POST['content']),
+                'content' => $_POST['content'],
                 'paperID' => $paper_id
             ];
 
