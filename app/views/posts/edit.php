@@ -192,8 +192,8 @@
       selector: 'textarea',
       height: 180,
       plugins: '',
-      menubar: '',
-      toolbar: 'dash',
+      menubar: 'charmap',
+      toolbar: 'dash charmap',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {

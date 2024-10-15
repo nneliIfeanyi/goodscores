@@ -226,19 +226,19 @@
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 <script>
-    tinymce.init({
-        selector: 'textarea',
-        height: 180,
-        plugins: '',
-        menubar: '',
-        toolbar: 'dash',
-        setup: (editor) => {
+  tinymce.init({
+    selector: 'textarea',
+    height: 180,
+    plugins: 'charmap',
+    menubar: '',
+    toolbar: 'dash charmap',
+    setup: (editor) => {
 
-            editor.ui.registry.addButton('dash', {
-                text: '__________',
-                onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-            });
+      editor.ui.registry.addButton('dash', {
+        text: '__________',
+        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+      });
 
-        },
+    },
   });
-      </script>
+</script>

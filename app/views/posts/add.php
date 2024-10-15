@@ -241,9 +241,9 @@ $mathsObj = '';
     tinymce.init({
       selector: 'textarea',
       height: 180,
-      plugins: '',
+      plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash',
+      toolbar: 'dash charmap',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {

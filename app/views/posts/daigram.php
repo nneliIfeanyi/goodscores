@@ -42,3 +42,10 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+    $(':submit').each(function() {
+        $(this).click(function() {
+            $('#loader').fadeIn();
+        });
+    });
+</script>
