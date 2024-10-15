@@ -61,6 +61,7 @@ class Processing extends Controller
     // Add Post
     public function add2($paper_id)
     {
+
         $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -71,20 +72,20 @@ class Processing extends Controller
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
                 'question-A' => val_entry($_POST['question-A']),
-                'A-i' => val_entry($_POST['A-i']),
-                'A-ii' => val_entry($_POST['A-ii']),
-                'A-iii' => val_entry($_POST['A-iii']),
-                'A-iv' => val_entry($_POST['A-iv']),
-                'question-B' => val_entry($_POST['question-B']),
-                'B-i' => val_entry($_POST['B-i']),
-                'B-ii' => val_entry($_POST['B-ii']),
-                'B-iii' => val_entry($_POST['B-iii']),
-                'B-iv' => val_entry($_POST['B-iv']),
-                'question-C' => val_entry($_POST['question-C']),
-                'C-i' => val_entry($_POST['C-i']),
-                'C-ii' => val_entry($_POST['C-ii']),
-                'C-iii' => val_entry($_POST['C-iii']),
-                'question-D' => val_entry($_POST['question-D']),
+                'A-i' => trim($_POST['A-i']),
+                'A-ii' => trim($_POST['A-ii']),
+                'A-iii' => trim($_POST['A-iii']),
+                'A-iv' => trim($_POST['A-iv']),
+                'question-B' => trim($_POST['question-B']),
+                'B-i' => trim($_POST['B-i']),
+                'B-ii' => trim($_POST['B-ii']),
+                'B-iii' => trim($_POST['B-iii']),
+                'B-iv' => trim($_POST['B-iv']),
+                'question-C' => trim($_POST['question-C']),
+                'C-i' => trim($_POST['C-i']),
+                'C-ii' => trim($_POST['C-ii']),
+                'C-iii' => trim($_POST['C-iii']),
+                'question-D' => trim($_POST['question-D'])
             ];
 
             if (empty($_SESSION['daigram'])) { // Question has no daigram
