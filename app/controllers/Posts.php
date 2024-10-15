@@ -230,16 +230,13 @@ class Posts extends Controller
   public function edit($id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
       $data = [
         'id' => $id,
-        'question' => trim($_POST['question']),
-        'opt1' => trim($_POST['opt1']),
-        'opt4' => trim($_POST['opt4']),
-        'opt2' => trim($_POST['opt2']),
-        'opt3' => trim($_POST['opt3'])
+        'question' => val_entry($_POST['question']),
+        'opt1' => val_entry($_POST['opt1']),
+        'opt4' => val_entry($_POST['opt4']),
+        'opt2' => val_entry($_POST['opt2']),
+        'opt3' => val_entry($_POST['opt3'])
       ];
 
       if (empty($_SESSION['daigram'])) { // Update has no diagram

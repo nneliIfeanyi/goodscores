@@ -205,8 +205,6 @@ class Users extends Controller
 
     // Check if POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'name' => val_entry($_POST['name']),

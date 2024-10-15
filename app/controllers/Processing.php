@@ -57,57 +57,12 @@ class Processing extends Controller
     }
 
 
-    // Add Obj
-    public function add4($paper_id)
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $num_rows = $this->postModel->checkCustomObjNumRows($paper_id, $_COOKIE['sch_id']);
-            $data = [
-                'paperID' => $paper_id,
-                'question' => trim($_POST['question']),
-                'opt1' => trim($_POST['opt1']),
-                'opt2' => trim($_POST['opt2']),
-                'opt3' => trim($_POST['opt3']),
-                'opt4' => trim($_POST['opt4']),
-                'sch_id' => $_COOKIE['sch_id'],
-                'user_id' => $_SESSION['user_id'],
-                'num_rows' => $num_rows,
-            ];
-
-            if (empty($_SESSION['daigram'])) { // Question has no daigram
-                $data['daigram'] = '';
-                if ($this->postModel->setObjQuestion($data)) {
-                    $num_rows = $num_rows + 1;
-                    flash("msg", "Question $num_rows  is set successfully");
-                    redirect('posts/add4/' . $paper_id);
-                } else {
-                    die('Something went wrong..');
-                }
-            } else { // Question has daigram
-                $data['daigram'] = $_SESSION['daigram'];
-                if ($this->postModel->setObjQuestion($data)) {
-                    // Unset question diAGRAM
-                    unset($_SESSION['daigram']);
-                    $num_rows = $num_rows + 1;
-                    flash("msg", "Question $num_rows  is set successfully");
-                    redirect('posts/add4/' . $paper_id);
-                }
-            }
-        } else {
-            die('Something went wrong');
-        }
-    }
-
 
     // Add Post
     public function add2($paper_id)
     {
-        //$params = $this->postModel->getParamsByPaperID($paper_id);
         $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST
-            $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            // Pull the set num_rows for the particular subject
 
             $data = [
                 'paperID' => $paper_id,
@@ -115,22 +70,21 @@ class Processing extends Controller
                 'section' => 'theory_questions',
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
-                'question-A' => $_POST['question-A'],
-                'A-i' => $_POST['A-i'],
-                'A-ii' => $_POST['A-ii'],
-                'A-iii' => $_POST['A-iii'],
-                'A-iv' => $_POST['A-iv'],
-                'question-B' => $_POST['question-B'],
-                'B-i' => $_POST['B-i'],
-                'B-ii' => $_POST['B-ii'],
-                'B-iii' => $_POST['B-iii'],
-                'B-iv' => $_POST['B-iv'],
-                'question-C' => $_POST['question-C'],
-                'C-i' => $_POST['C-i'],
-                'C-ii' => $_POST['C-ii'],
-                'C-iii' => $_POST['C-iii'],
-                'question-D' => $_POST['question-D'],
-                //'total_subject_num_rows' => $expected_num_rows->num_rows2
+                'question-A' => val_entry($_POST['question-A']),
+                'A-i' => val_entry($_POST['A-i']),
+                'A-ii' => val_entry($_POST['A-ii']),
+                'A-iii' => val_entry($_POST['A-iii']),
+                'A-iv' => val_entry($_POST['A-iv']),
+                'question-B' => val_entry($_POST['question-B']),
+                'B-i' => val_entry($_POST['B-i']),
+                'B-ii' => val_entry($_POST['B-ii']),
+                'B-iii' => val_entry($_POST['B-iii']),
+                'B-iv' => val_entry($_POST['B-iv']),
+                'question-C' => val_entry($_POST['question-C']),
+                'C-i' => val_entry($_POST['C-i']),
+                'C-ii' => val_entry($_POST['C-ii']),
+                'C-iii' => val_entry($_POST['C-iii']),
+                'question-D' => val_entry($_POST['question-D']),
             ];
 
             if (empty($_SESSION['daigram'])) { // Question has no daigram

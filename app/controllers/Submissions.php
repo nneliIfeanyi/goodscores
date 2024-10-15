@@ -185,8 +185,6 @@ class Submissions extends Controller
   public function add_subject()
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'subject' => val_entry($_POST['subject']),
@@ -364,17 +362,14 @@ class Submissions extends Controller
   public function review($param)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
       $data = [
-        'paperID' => $_POST['paperID'],
-        'class' => $_POST['class'],
-        'subject' => $_POST['subject'],
-        'tag' => $_POST['section_tag'],
+        'paperID' => val_entry($_POST['paperID']),
+        'class' => val_entry($_POST['class']),
+        'subject' => val_entry($_POST['subject']),
+        'tag' => val_entry($_POST['section_tag']),
         'section' => $param,
-        'num_rows' => $_POST['num_rows'],
-        'instruction' => $_POST['instruction'],
+        'num_rows' => val_entry($_POST['num_rows']),
+        'instruction' => val_entry($_POST['instruction']),
       ];
       if ($param == 'objectives_questions') {
         $paramsID = $this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions');
@@ -408,26 +403,23 @@ class Submissions extends Controller
   public function edit2($id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
       $data = [
         'id' => $id,
-        'question-A' => $_POST['question-A'],
-        'A-i' => $_POST['A-i'],
-        'A-ii' => $_POST['A-ii'],
-        'A-iii' => $_POST['A-iii'],
-        'A-iv' => $_POST['A-iv'],
-        'question-B' => $_POST['question-B'],
-        'B-i' => $_POST['B-i'],
-        'B-ii' => $_POST['B-ii'],
-        'B-iii' => $_POST['B-iii'],
-        'B-iv' => $_POST['B-iv'],
-        'question-C' => $_POST['question-C'],
-        'C-i' => $_POST['C-i'],
-        'C-ii' => $_POST['C-ii'],
-        'C-iii' => $_POST['C-iii'],
-        'question-D' => $_POST['question-D']
+        'question-A' => val_entry($_POST['question-A']),
+        'A-i' => val_entry($_POST['A-i']),
+        'A-ii' => val_entry($_POST['A-ii']),
+        'A-iii' => val_entry($_POST['A-iii']),
+        'A-iv' => val_entry($_POST['A-iv']),
+        'question-B' => val_entry($_POST['question-B']),
+        'B-i' => val_entry($_POST['B-i']),
+        'B-ii' => val_entry($_POST['B-ii']),
+        'B-iii' => val_entry($_POST['B-iii']),
+        'B-iv' => val_entry($_POST['B-iv']),
+        'question-C' => val_entry($_POST['question-C']),
+        'C-i' => val_entry($_POST['C-i']),
+        'C-ii' => val_entry($_POST['C-ii']),
+        'C-iii' => val_entry($_POST['C-iii']),
+        'question-D' => val_entry($_POST['question-D']),
       ];
       if (empty($_SESSION['daigram'])) { // Update has no diagram
         $data['daigram'] = $_POST['daigram'];

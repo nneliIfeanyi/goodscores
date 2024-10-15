@@ -41,13 +41,20 @@ class Output extends Controller
 
   public function print($paperID)
   {
-    //$params = $this->postModel->getParamsByPaperID2($paperID);
-    //$params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
-    //$params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $obj = $this->postModel->getObjectives($paperID);
+    $theory = $this->postModel->getTheory($paperID);
+    $params = $this->postModel->getParamsFromCore($paperID);
+    $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $sch = $this->pageModel->getSchool($params->sch_id);
     $data = [
-      //  'params1' => $params1,
-      // 'params2' => $params2,
-      // 'params' => $params
+      'paperID' => $paperID,
+      'params' => $params,
+      'params1' => $params1,
+      'params2' => $params2,
+      'theory' => $theory,
+      'obj' => $obj,
+      'sch' => $sch
     ];
     $this->view('output/print', $data);
   }
