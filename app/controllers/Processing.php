@@ -26,6 +26,7 @@ class Processing extends Controller
                 'opt2' => trim($_POST['opt2']),
                 'opt3' => trim($_POST['opt3']),
                 'opt4' => trim($_POST['opt4']),
+                'ans' => $_POST['ans'],
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
                 'num_rows' => $num_rows,

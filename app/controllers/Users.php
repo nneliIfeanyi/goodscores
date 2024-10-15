@@ -20,7 +20,7 @@ class Users extends Controller
 
   public function index()
   {
-    redirect('welcome');
+    redirect('users/dashboard');
   }
 
 
@@ -73,6 +73,9 @@ class Users extends Controller
 
   public function classes()
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
     $data = [
       'classes' => $classes
@@ -102,6 +105,9 @@ class Users extends Controller
 
   public function edit_class($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $class = $this->userModel->getSingleClass($id);
     $data = [
       'class' => $class
@@ -112,6 +118,9 @@ class Users extends Controller
 
   public function subjects()
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
     $data = [
       'subjects' => $subjects
@@ -124,6 +133,9 @@ class Users extends Controller
   // Edit Subject included
   public function edit_subject($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $subject = $this->userModel->getSingleSubject($id);
     $data = [
       'subject' => $subject
@@ -134,6 +146,9 @@ class Users extends Controller
 
   public function profile($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $user = $this->userModel->findTeacherById($id);
     $data = [
       'err' => '',
@@ -145,6 +160,9 @@ class Users extends Controller
 
   public function upload($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (is_array($_FILES)) {
         $file = $_FILES['photo']['tmp_name'];
@@ -377,8 +395,16 @@ class Users extends Controller
   public function logout()
   {
     $id = $_COOKIE['user_id'];
+    $user_name = $_COOKIE['user_name'];
+    $name = $_COOKIE['name'];
+    $role = $_COOKIE['role'];
+    $photo = $_COOKIE['photo'];
 
     setcookie('user_id', $id, time() - 3, '/');
+    setcookie('user_name', $user_name, time() - 3, '/');
+    setcookie('name', $name, time() - 3, '/');
+    setcookie('role', $role, time() - 3, '/');
+    setcookie('photo', $photo, time() - 3, '/');
     session_unset();
     session_destroy();
     redirect('users/login');

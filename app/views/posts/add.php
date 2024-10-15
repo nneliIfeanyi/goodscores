@@ -108,6 +108,24 @@ $mathsObj = '';
                         <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
                       </div>
                     </div>
+                    <div class="d-flex flex-row gap-3 py-3">
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                        <label for="A" class="form-check-label">A</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                        <label for="B" class="form-check-label">B</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                        <label for="C" class="form-check-label">C</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                        <label for="D" class="form-check-label">D</label>
+                      </div>
+                    </div>
                   <?php
                   }
                   ?>
@@ -131,6 +149,25 @@ $mathsObj = '';
                       <input type="text" class="form-control form-control-lg" placeholder="Option D" name="opt4">
                     </div>
                   </div>
+                  <div class="d-flex flex-row gap-3 py-3">
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                      <label for="A" class="form-check-label">A</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                      <label for="B" class="form-check-label">B</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                      <label for="C" class="form-check-label">C</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                      <label for="D" class="form-check-label">D</label>
+                    </div>
+                  </div>
+
                 <?php endif; ?>
                 <div class="row">
                   <div class="col-2">

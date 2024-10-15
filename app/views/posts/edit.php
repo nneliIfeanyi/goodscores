@@ -212,7 +212,8 @@
     });
   </script>
 <?php endif; ?>
-<?php if ($mathsObj == '1') : ?>
+<?php $mathsObj = 1;
+if ($mathsObj == '1') : ?>
   <script>
     tinymce.init({
       selector: 'textarea.tiny2',

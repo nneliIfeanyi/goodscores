@@ -438,8 +438,8 @@ class Post
   public function setQuestions($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, section_alt, question, opt1, opt2, opt3, opt4, img) 
-      VALUES (:sch_id, :user_id, :paperID, :section_alt, :question, :opt1, :opt2, :opt3, :opt4, :img)');
+    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, section_alt, question, opt1, opt2, opt3, opt4, ans, img) 
+      VALUES (:sch_id, :user_id, :paperID, :section_alt, :question, :opt1, :opt2, :opt3, :opt4, :ans, :img)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -452,6 +452,7 @@ class Post
     $this->db->bind(':opt3', $data['opt3']);
     $this->db->bind(':opt4', $data['opt4']);
     $this->db->bind(':opt4', $data['opt4']);
+    $this->db->bind(':ans', $data['ans']);
     $this->db->bind(':img', $data['daigram']);
     if ($this->db->execute()) {
       return true;
