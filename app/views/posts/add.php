@@ -46,7 +46,7 @@ $mathsObj = '';
                   <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <div class="d-flex gap-3 ">
+              <div class="d-flex gap-2 wrap">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
                   <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
