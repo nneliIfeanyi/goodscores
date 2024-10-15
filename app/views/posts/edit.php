@@ -191,8 +191,8 @@
     tinymce.init({
       selector: 'textarea',
       height: 180,
-      plugins: '',
-      menubar: 'charmap',
+      plugins: 'charmap',
+      menubar: '',
       toolbar: 'dash charmap',
       setup: (editor) => {
 

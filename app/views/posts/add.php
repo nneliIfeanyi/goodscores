@@ -112,15 +112,15 @@ $mathsObj = '';
                   }
                   ?>
                 <?php else : ?>
-                  <textarea class="form-control" name="question" required><p><?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></p></textarea>
+                  <textarea class="form-control" name="question"><p></p></textarea>
                   <div class="row my-3">
                     <p class="col-2 d-lg-none">(A)</p>
                     <div class="col-10 col-lg-6">
-                      <input type="text" class="form-control form-control-lg" placeholder="Option A" required name="opt1">
+                      <input type="text" class="form-control form-control-lg" placeholder="Option A" name="opt1">
                     </div>
                     <p class="col-2 d-lg-none">(B)</p>
                     <div class="col-10 col-lg-6">
-                      <input type="text" class="form-control form-control-lg" placeholder="Option B" required name="opt2">
+                      <input type="text" class="form-control form-control-lg" placeholder="Option B" name="opt2">
                     </div>
                     <p class="col-2 d-lg-none">(C)</p>
                     <div class="col-10 col-lg-6">
