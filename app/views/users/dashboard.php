@@ -226,7 +226,7 @@
 
                                 <td><span class="badge bg-warning">Pending</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                     <i class="bi bi-eye"></i>
                                   </a>
                                   <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
@@ -239,7 +239,7 @@
                               <?php else : ?>
                                 <td><span class="badge bg-success">Completed</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                     <i class="bi bi-eye"></i>
                                   </a>
                                   <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
@@ -255,7 +255,7 @@
                               <?php if ($recent->num_rows > $theory_num_rows) : ?>
                                 <td><span class="badge bg-warning">Pending</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                     <i class="bi bi-eye"></i>
                                   </a>
                                   <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
@@ -268,7 +268,7 @@
                               <?php else : ?>
                                 <td><span class="badge bg-success">Completed</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show2/<?php echo $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                     <i class="bi bi-eye"></i>
                                   </a>
                                   <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
@@ -292,13 +292,13 @@
                               </td>
 
                             <?php elseif ($recent->section == 'others') : ?>
-
+                              <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                <i class="bi bi-eye"></i>
+                              </a>
                               <?php if ($recent->num_rows > $other_num_rows) : ?>
                                 <td><span class="badge bg-warning">Pending</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
-                                    <i class="bi bi-eye"></i>
-                                  </a>
+
                                   <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
                                     <i class="bi bi-printer"></i>
                                   </a>
@@ -309,7 +309,7 @@
                               <?php else : ?>
                                 <td><span class="badge bg-success">Completed</span></td>
                                 <td scope="row" class="d-flex gap-2">
-                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                     <i class="bi bi-eye"></i>
                                   </a>
                                   <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
