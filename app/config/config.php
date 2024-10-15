@@ -1,6 +1,21 @@
 <?php
 // DB Params
 //error_reporting(E_ALL);
+<<<<<<< HEAD
+=======
+// define("DB_HOST", "localhost");
+// define("DB_USER", "root");
+// define("DB_PASS", "");
+// define("DB_NAME", "goodscores");
+
+// // App Root
+// define('APPROOT', dirname(dirname(__FILE__)));
+// // URL Root
+// define('URLROOT', 'http://localhost/goodscores');
+// // Site Name
+// define('SITENAME', 'GoodScores');
+
+>>>>>>> main
 define("DB_HOST", "localhost");
 define("DB_USER", "root");
 define("DB_PASS", "");

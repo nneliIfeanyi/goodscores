@@ -5,8 +5,14 @@ class Users extends Controller
   public $postModel;
   public function __construct()
   {
-    if (!isset($_COOKIE['sch_id'])) {
+    if (!isset($_COOKIE['sch_id']) && !isset($_COOKIE['user_id'])) {
       redirect('pages/login');
+    } else {
+      $_SESSION['user_id'] = $_COOKIE['user_id'];
+      $_SESSION['name'] = $_COOKIE['name'];
+      $_SESSION['username'] = $_COOKIE['user_name'];
+      $_SESSION['photo'] = $_COOKIE['photo'];
+      $_SESSION['role'] = $_COOKIE['role'];
     }
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
@@ -14,7 +20,7 @@ class Users extends Controller
 
   public function index()
   {
-    redirect('welcome');
+    redirect('users/dashboard');
   }
 
 
@@ -67,6 +73,9 @@ class Users extends Controller
 
   public function classes()
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
     $data = [
       'classes' => $classes
@@ -96,6 +105,9 @@ class Users extends Controller
 
   public function edit_class($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $class = $this->userModel->getSingleClass($id);
     $data = [
       'class' => $class
@@ -106,6 +118,9 @@ class Users extends Controller
 
   public function subjects()
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
     $data = [
       'subjects' => $subjects
@@ -116,8 +131,11 @@ class Users extends Controller
 
 
   // Edit Subject included
-    public function edit_subject($id)
+  public function edit_subject($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $subject = $this->userModel->getSingleSubject($id);
     $data = [
       'subject' => $subject
@@ -128,6 +146,9 @@ class Users extends Controller
 
   public function profile($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     $user = $this->userModel->findTeacherById($id);
     $data = [
       'err' => '',
@@ -139,6 +160,9 @@ class Users extends Controller
 
   public function upload($id)
   {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (is_array($_FILES)) {
         $file = $_FILES['photo']['tmp_name'];
@@ -150,7 +174,8 @@ class Users extends Controller
           imagejpeg($target_layer, "assets/img/" . $_FILES['photo']['name']);
           $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
           if ($this->userModel->editPhoto($id, $db_image_file)) {
-            $_SESSION['photo'] = $db_image_file;
+            setcookie('photo', $db_image_file, time() + (86400 * 365), '/');
+            //$_SESSION['photo'] = $db_image_file;
             flash('msg', 'Profile photo updated..');
             echo "<script>
                 history.go(-2)
@@ -164,7 +189,8 @@ class Users extends Controller
           imagepng($target_layer, "assets/img/" . $_FILES['photo']['name']);
           $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
           if ($this->userModel->editPhoto($id, $db_image_file)) {
-            $_SESSION['photo'] = $db_image_file;
+            setcookie('photo', $db_image_file, time() + (86400 * 365), '/');
+            //$_SESSION['photo'] = $db_image_file;
             flash('msg', 'Profile photo updated..');
             echo "<script>
                 history.go(-2)
@@ -197,8 +223,6 @@ class Users extends Controller
 
     // Check if POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $data = [
         'name' => val_entry($_POST['name']),
@@ -339,7 +363,6 @@ class Users extends Controller
             <i class='bi bi-check-circle'></i>  &nbsp;Password incorrect!
           </p>
         ";
-          
         }
       }
     } else {
@@ -361,21 +384,28 @@ class Users extends Controller
   // Create Session With User Info
   public function createUserSession($user)
   {
-    $_SESSION['user_id'] = $user->id;
-    $_SESSION['name'] = $user->name;
-    $_SESSION['username'] = $user->username;
-    $_SESSION['photo'] = $user->img;
-    $_SESSION['role'] = $user->role;
+    setcookie('user_id', $user->id, time() + (86400 * 365), '/');
+    setcookie('user_name', $user->name, time() + (86400 * 365), '/');
+    setcookie('name', $user->username, time() + (86400 * 365), '/');
+    setcookie('photo', $user->img, time() + (86400 * 365), '/');
+    setcookie('role', $user->role, time() + (86400 * 365), '/');
   }
 
   // Logout & Destroy Session
   public function logout()
   {
-    unset($_SESSION['user_id']);
-    unset($_SESSION['name']);
-    unset($_SESSION['username']);
-    unset($_SESSION['role']);
-    unset($_SESSION['photo']);
+    $id = $_COOKIE['user_id'];
+    $user_name = $_COOKIE['user_name'];
+    $name = $_COOKIE['name'];
+    $role = $_COOKIE['role'];
+    $photo = $_COOKIE['photo'];
+
+    setcookie('user_id', $id, time() - 3, '/');
+    setcookie('user_name', $user_name, time() - 3, '/');
+    setcookie('name', $name, time() - 3, '/');
+    setcookie('role', $role, time() - 3, '/');
+    setcookie('photo', $photo, time() - 3, '/');
+    session_unset();
     session_destroy();
     redirect('users/login');
   }

@@ -64,12 +64,12 @@ class Pages extends Controller
         setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
         setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
         // Redirect to Teachers section
-          $redirect = URLROOT . '/users/login/';
-          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+        $redirect = URLROOT . '/users/login/';
+        echo "<p class='alert alert-success flash-msg fade show' role='alert'>
             <i class='bi bi-check-circle'></i>  &nbsp;School authentication approved! Redirecting to teachers section
           </p><meta http-equiv='refresh' content='5; $redirect'>
         ";
-         flash('msg', 'School authentication approved');
+        flash('msg', 'School authentication approved');
         // redirect('users/login');
       }
     } // End Post Request
@@ -168,10 +168,20 @@ class Pages extends Controller
     $id = $_COOKIE['sch_id'];
     $name = $_COOKIE['sch_name'];
     $username = $_COOKIE['sch_username'];
+    $user_id = $_COOKIE['user_id'];
+    $user_name = $_COOKIE['user_name'];
+    $name = $_COOKIE['name'];
+    $role = $_COOKIE['role'];
+    $photo = $_COOKIE['photo'];
 
     setcookie('sch_id', $id, time() - 3, '/');
     setcookie('sch_name', $name, time() - 3, '/');
     setcookie('sch_username', $username, time() - 3, '/');
+    setcookie('user_id', $user_id, time() - 3, '/');
+    setcookie('user_name', $user_name, time() - 3, '/');
+    setcookie('name', $name, time() - 3, '/');
+    setcookie('role', $role, time() - 3, '/');
+    setcookie('photo', $photo, time() - 3, '/');
     session_unset();
     session_destroy();
     redirect('pages/login');

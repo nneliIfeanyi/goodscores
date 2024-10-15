@@ -11,8 +11,8 @@
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/dashboard">Home</a></li>
-        <li class="breadcrumb-item">Users</li>
-        <li class="breadcrumb-item active"><?php echo $data['param']; ?></li>
+        <li class="breadcrumb-item">Exam</li>
+        <li class="breadcrumb-item active">Section</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
@@ -25,7 +25,7 @@
           <div class="card-body">
 
             <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-              <strong>Define Examination Parameters!</strong>
+              <strong>Define Section Parameters!</strong>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <form action="<?php echo URLROOT; ?>/submissions/set/<?php echo $data['param']; ?>" method="POST">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="my-4">
                   <label for="className">Section name</label>
-                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param'];?>" />
+                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
                 </div>
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="class" required>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="my-4">
                   <label for="className">Section name</label>
-                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param'];?>" />
+                  <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
                 </div>
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="class" required>
@@ -145,7 +145,7 @@
                   </select>
                 </div><!--===== Subject Ends =====-->
 
-                <?php elseif ($data['param'] == 'others') : ?>
+              <?php elseif ($data['param'] == 'others') : ?>
                 <div class="my-4">
                   <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
                   <input type="text" name="section_tag" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
@@ -156,26 +156,12 @@
                 </div>
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="class" required>
-                    <option value="">Select Class</option>
-                    <?php if (empty($data['classes'])) : ?>
-                      <option value="">No added class</option>
-                    <?php else : ?>
-                      <?php foreach ($data['classes'] as $class) : ?>
-                        <option value="<?php echo $class->classname; ?>"><?php echo $class->classname; ?></option>
-                      <?php endforeach; ?>
-                    <?php endif; ?>
+                    <option value="<?= $_GET['class']; ?>"><?= $_GET['class']; ?></option>
                   </select>
                 </div><!--===== Class Ends =====-->
                 <div class="my-4">
                   <select class="form-control form-control-lg" name="subject" required>
-                    <option value="">Select Subject</option>
-                    <?php if (empty($data['subjects'])) : ?>
-                      <option value="English Language">English Language</option>
-                    <?php else : ?>
-                      <?php foreach ($data['subjects'] as $subject) : ?>
-                        <option value="<?php echo $subject->subject; ?>"><?php echo $subject->subject; ?></option>
-                      <?php endforeach; ?>
-                    <?php endif; ?>
+                    <option value="<?= $_GET['subject']; ?>"><?= $_GET['subject']; ?></option>
                   </select>
                 </div><!--===== Subject Ends =====-->
                 <div class="my-4">
@@ -220,3 +206,11 @@
 
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<!-- Page loader fade in on form submit -->
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>

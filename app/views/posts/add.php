@@ -2,6 +2,7 @@
 <?php require APPROOT . '/views/inc/navbar.php';
 ?>
 <?php require APPROOT . '/views/inc/sidebar.php';
+$mathsObj = '';
 ?>
 
 <main id="main" class="main">
@@ -45,15 +46,18 @@
                   <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <div class="d-grid">
+              <div class="d-flex gap-2 flex-wrap">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 <?php else : ?>
-                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/set/theory_questions">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
+
+                  <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
+
                 <?php endif; ?>
-              </div>
-              <div class="mt-3">
-                <a href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               </div>
             <?php
             } else {
@@ -64,10 +68,11 @@
               }
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                <strong>Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
+                <strong><?= $data['tag']; ?> | Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
+                <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
                     <div class="mt-2 mb-4">
@@ -103,19 +108,37 @@
                         <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
                       </div>
                     </div>
+                    <div class="d-flex flex-row gap-3 py-3">
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                        <label for="A" class="form-check-label">A</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                        <label for="B" class="form-check-label">B</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                        <label for="C" class="form-check-label">C</label>
+                      </div>
+                      <div class="form-check border border-secondary">
+                        <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                        <label for="D" class="form-check-label">D</label>
+                      </div>
+                    </div>
                   <?php
                   }
                   ?>
                 <?php else : ?>
-                  <textarea class="form-control" name="question" required><p><?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></p></textarea>
+                  <textarea class="form-control" name="question"><p></p></textarea>
                   <div class="row my-3">
                     <p class="col-2 d-lg-none">(A)</p>
                     <div class="col-10 col-lg-6">
-                      <input type="text" class="form-control form-control-lg" placeholder="Option A" required name="opt1">
+                      <input type="text" class="form-control form-control-lg" placeholder="Option A" name="opt1">
                     </div>
                     <p class="col-2 d-lg-none">(B)</p>
                     <div class="col-10 col-lg-6">
-                      <input type="text" class="form-control form-control-lg" placeholder="Option B" required name="opt2">
+                      <input type="text" class="form-control form-control-lg" placeholder="Option B" name="opt2">
                     </div>
                     <p class="col-2 d-lg-none">(C)</p>
                     <div class="col-10 col-lg-6">
@@ -126,6 +149,25 @@
                       <input type="text" class="form-control form-control-lg" placeholder="Option D" name="opt4">
                     </div>
                   </div>
+                  <div class="d-flex flex-row gap-3 py-3">
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                      <label for="A" class="form-check-label">A</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                      <label for="B" class="form-check-label">B</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                      <label for="C" class="form-check-label">C</label>
+                    </div>
+                    <div class="form-check border border-secondary">
+                      <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                      <label for="D" class="form-check-label">D</label>
+                    </div>
+                  </div>
+
                 <?php endif; ?>
                 <div class="row">
                   <div class="col-2">
@@ -139,7 +181,7 @@
                     </div>
                   </div>
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                       <i class="bi bi-eye"></i>
                     </a>
                   </div>
@@ -184,12 +226,23 @@
 
       },
       charmap: [
+        [0x3d, 'equal sign'],
+        [0x2b, 'Plus sign'],
+        [0x2212, 'Minus sign'],
+        [0xd7, 'Multiplication sign'],
+        [0xf7, 'division sign'],
+        [0xb1, 'plus  or minus'],
+        [0x25, 'percent sign'],
+        [0x89, 'per mile sign'],
         [0xb0, 'degree sign'],
         [0xb9, 'superscript one'],
         [0xb2, 'superscript two'],
         [0xb3, 'superscript three'],
         [0x221A, 'square root'],
+        [0x221B, 'cube root'],
+        [0x221C, 'fourth root'],
         [0x3C0, 'pi'],
+        [0x2217, 'asterisk operator'],
         [0xBD, 'one half'],
         [0xBC, 'one quarter'],
         [0xBE, 'three quarter'],
@@ -225,9 +278,9 @@
     tinymce.init({
       selector: 'textarea',
       height: 180,
-      plugins: '',
+      plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash',
+      toolbar: 'dash charmap',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -257,12 +310,23 @@
 
       },
       charmap: [
+        [0x3d, 'equal sign'],
+        [0x2b, 'Plus sign'],
+        [0x2212, 'Minus sign'],
+        [0xd7, 'Multiplication sign'],
+        [0xf7, 'division sign'],
+        [0xb1, 'plus  or minus'],
+        [0x25, 'percent sign'],
+        [0x89, 'per mile sign'],
         [0xb0, 'degree sign'],
         [0xb9, 'superscript one'],
         [0xb2, 'superscript two'],
         [0xb3, 'superscript three'],
         [0x221A, 'square root'],
+        [0x221B, 'cube root'],
+        [0x221C, 'fourth root'],
         [0x3C0, 'pi'],
+        [0x2217, 'asterisk operator'],
         [0xBD, 'one half'],
         [0xBC, 'one quarter'],
         [0xBE, 'three quarter'],

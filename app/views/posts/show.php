@@ -15,7 +15,7 @@
   </div><!-- End Page Title -->
   <section class="row">
     <div class="col-lg-8">
-      <h5 class="fw-bold text-primary">objectives_questions</h5>
+      <h5 class="fw-bold text-primary"><?= $data['section_alt']; ?> </h5>
       <?php if (!empty($data['obj'])) : ?>
         <?php $n = 1;
         foreach ($data['obj'] as $obj) : ?>
@@ -25,9 +25,9 @@
             <div class="accordion-item bg-light px-1">
               <h2 class="accordion-header" id="flush-headingOne">
                 <?php if (!empty($obj->img)) : ?>
-                  <div class="d-flex justify-content-center">
-                    <div class="mt-2">
-                      <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded-3" height="90px" alt="daigram">
+                  <div class="">
+                    <div class="mt-2 me-5">
+                      <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
                     </div>
                   </div>
                 <?php endif; ?>
@@ -64,11 +64,12 @@
                   <?php endif; ?>
 
                   <div class="d-flex justify-content-center">
-                    <a href="<?php echo URLROOT; ?>/posts/edit/<?php echo $obj->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
+                    <a href="<?php echo URLROOT; ?>/posts/edit/<?php echo $obj->id; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
                     <form action="<?php echo URLROOT; ?>/posts/delete/<?php echo $obj->id; ?>" method="POST">
                       <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                       <input type="hidden" name="class" value="<?= $data['params']->class; ?>">
                       <input type="hidden" name="subject" value="<?= $data['params']->subject; ?>">
+                      <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
                       <input type="submit" name="" value="Delete" class="btn btn-danger btn-sm mt-3 rounded-0">
                     </form>
                   </div>
@@ -78,19 +79,31 @@
           </div>
         <?php $n++;
         endforeach; ?>
-        <div class="row mt-3">
+        <div class="row mt-4">
           <div class="col-12">
-            <div class="d-flex gap-3">
-              <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue</a>
+            <div class="d-flex gap-1 flex-wrap">
+              <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
+              <?php if ($_SESSION['role'] == 'Admin') : ?>
+                <a href="<?= URLROOT; ?>/output/print/<?= $data['params']->paperID; ?>" class="btn btn-outline-secondary">Print <i class="bi bi-printer"></i></a>
+                <a href="<?= URLROOT; ?>/output/pdf/<?= $data['params']->paperID; ?>" class="btn btn-outline-success">Download <i class="bi bi-download"></i></a>
+              <?php endif; ?>
+              <a href="javascript:void()" onclick="history.back()" class="btn"><i class="bi bi-chevron-left"></i> Go Back</a>
             </div>
           </div>
         </div>
       <?php else : ?>
         <p class="fw-bold">No Data | No Questions Set<br>
-        <a href="<?= URLROOT;?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Begin now</a>
+          <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-primary">Begin now</a>
         </p>
       <?php endif; ?>
     </div>
   </section>
 </main>
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
