@@ -226,6 +226,13 @@
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 <script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
+<script>
   tinymce.init({
     selector: 'textarea',
     height: 180,

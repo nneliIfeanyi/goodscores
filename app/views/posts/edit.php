@@ -122,6 +122,13 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
 <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
   <script>
     tinymce.init({

@@ -81,8 +81,9 @@
         endforeach; ?>
         <div class="row mt-4">
           <div class="col-12">
-            <div class="d-flex gap-3">
+            <div class="d-flex gap-1 flex-wrap">
               <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>?section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
+              <a href="<?= URLROOT; ?>/users/dashboard"> Go to Dashboard <i class="bi bi-chevron-right"></i></a>
               <?php if ($_SESSION['role'] == 'Admin') : ?>
                 <a href="<?= URLROOT; ?>/output/print/<?= $data['params']->paperID; ?>" class="btn btn-outline-secondary">Print <i class="bi bi-printer"></i></a>
                 <a href="<?= URLROOT; ?>/output/pdf/<?= $data['params']->paperID; ?>" class="btn btn-outline-success">Download <i class="bi bi-download"></i></a>
@@ -99,3 +100,10 @@
   </section>
 </main>
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+  $(':submit').each(function() {
+    $(this).click(function() {
+      $('#loader').fadeIn();
+    });
+  });
+</script>
