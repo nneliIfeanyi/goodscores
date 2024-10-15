@@ -45,7 +45,7 @@
                   <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
                 </div>
               </div>
-              <div class="d-flex gap-3 ">
+              <div class="d-flex gap-3 flex-wrap">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
                   <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show2/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>

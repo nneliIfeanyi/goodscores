@@ -1,29 +1,29 @@
 <?php
 // DB Params
 //error_reporting(E_ALL);
-// define("DB_HOST", "localhost");
-// define("DB_USER", "root");
-// define("DB_PASS", "");
-// define("DB_NAME", "goodscores");
-
-// // App Root
-// define('APPROOT', dirname(dirname(__FILE__)));
-// // URL Root
-// define('URLROOT', 'http://localhost/goodscores');
-// // Site Name
-// define('SITENAME', 'GoodScores');
-
 define("DB_HOST", "localhost");
-define("DB_USER", "stanvicc_concepts");
-define("DB_PASS", "Ebenezer@30");
-define("DB_NAME", "stanvicc_goodscores");
+define("DB_USER", "root");
+define("DB_PASS", "");
+define("DB_NAME", "goodscores");
 
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));
 // URL Root
-define('URLROOT', 'https://goodscores.stanvic.com.ng');
+define('URLROOT', 'http://localhost/goodscores');
 // Site Name
-define('SITENAME', 'Goodscores');
+define('SITENAME', 'GoodScores');
+
+// define("DB_HOST", "localhost");
+// define("DB_USER", "stanvicc_concepts");
+// define("DB_PASS", "Ebenezer@30");
+// define("DB_NAME", "stanvicc_goodscores");
+
+// // App Root
+// define('APPROOT', dirname(dirname(__FILE__)));
+// // URL Root
+// define('URLROOT', 'https://goodscores.stanvic.com.ng');
+// // Site Name
+// define('SITENAME', 'GoodScores');
 
 
 
