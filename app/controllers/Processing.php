@@ -21,11 +21,11 @@ class Processing extends Controller
             $num_rows = $this->postModel->checkObjectivesNumRows($paper_id, $_POST['section_alt'], $_COOKIE['sch_id']);
             $data = [
                 'paperID' => $paper_id,
-                'question' => trim($_POST['question']),
-                'opt1' => trim($_POST['opt1']),
-                'opt2' => trim($_POST['opt2']),
-                'opt3' => trim($_POST['opt3']),
-                'opt4' => trim($_POST['opt4']),
+                'question' => val_entry($_POST['question']),
+                'opt1' => val_entry($_POST['opt1']),
+                'opt2' => val_entry($_POST['opt2']),
+                'opt3' => val_entry($_POST['opt3']),
+                'opt4' => val_entry($_POST['opt4']),
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
                 'num_rows' => $num_rows,
