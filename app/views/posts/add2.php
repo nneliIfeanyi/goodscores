@@ -85,7 +85,7 @@
                         <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?>a</p>
                       </div>
                       <div class="col-11"><!-- Numbering A input -->
-                        <textarea class="tiny" name="question-A" required><p></p></textarea>
+                        <textarea class="tiny" name="question-A"></textarea>
                         <button class="accordion-button p-0 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                         </button><!-- Accordion toggle button -->
                         <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -267,78 +267,20 @@
     });
   });
 </script>
-<?php if ($data['subject'] == 'Maths' || $data['subject'] == 'maths' || $data['subject'] == 'Mathematics' || $data['subject'] == 'mathematics' || $data['subject'] == 'Further Maths' || $data['subject'] == 'further maths' || $data['subject'] == 'Further Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'further mathematics' || $data['subject'] == 'Physics' || $data['subject'] == 'physics') : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea.tiny',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'charmap',
-      charmap: [
-        [0x3d, 'equal sign'],
-        [0x2b, 'Plus sign'],
-        [0x2212, 'Minus sign'],
-        [0xd7, 'Multiplication sign'],
-        [0xf7, 'division sign'],
-        [0xb1, 'plus  or minus'],
-        [0x25, 'percent sign'],
-        [0x89, 'per mile sign'],
-        [0xb0, 'degree sign'],
-        [0xb9, 'superscript one'],
-        [0xb2, 'superscript two'],
-        [0xb3, 'superscript three'],
-        [0x221A, 'square root'],
-        [0x221B, 'cube root'],
-        [0x221C, 'fourth root'],
-        [0x3C0, 'pi'],
-        [0x2217, 'asterisk operator'],
-        [0xBD, 'one half'],
-        [0xBC, 'one quarter'],
-        [0xBE, 'three quarter'],
-        [0x2153, 'two third'],
-        [0x2154, 'one third'],
-        [0x2208, 'element of'],
-        [0x220B, 'member'],
-        [0x2209, 'not element of'],
-        [0x2203, 'there exist'],
-        [0x2205, 'empty set'],
-        [0x2207, 'nabla'],
-        [0x221D, 'proportional to'],
-        [0x221E, 'infinity'],
-        [0x2220, 'angle'],
-        [0x2229, 'intersection'],
-        [0x222A, 'union'],
-        [0x2264, 'less or equal to'],
-        [0x2265, 'greater or equal to'],
-        [0x2282, 'subset of'],
-        [0x2283, 'superset of'],
-        [0x2284, 'not a subset of'],
-        [0x2286, 'subset of or equal to'],
-        [0x2287, 'superset of or equal to'],
-        [0x2260, 'not equal to'],
-        [0x222B, 'integral'],
-        [0x2211, 'summation'],
-        [0x2044, 'fraction slash'],
-      ]
-    });
-  </script>
-<?php else : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'dash charmap',
-      setup: (editor) => {
+<script>
+  tinymce.init({
+    selector: 'textarea.tiny',
+    height: 200,
+    plugins: 'charmap emoticon wordcount pagebreak',
+    menubar: 'edit insert format tools table',
+    toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
+    setup: (editor) => {
 
-        editor.ui.registry.addButton('dash', {
-          text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-        });
+      editor.ui.registry.addButton('dash', {
+        text: '__________',
+        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+      });
 
-      },
-    });
-  </script>
-<?php endif; ?>
+    },
+  });
+</script>
