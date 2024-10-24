@@ -33,7 +33,35 @@ class Pages extends Controller
     $this->view('pages/welcome', $data);
   }
 
+  // Load Homepage
+  public function iscbt()
+  {
+    if (!isset($_COOKIE['sch_id'])) {
+      redirect('pages/login');
+    }
+    if (!isset($_SESSION['user_id'])) {
+      redirect('users/login');
+    }
 
+    if ($this->pageModel->makeCbt($_COOKIE['sch_id'])) {
+      setcookie('cbt', '1', time() + (86400 * 365), '/');
+      redirect('pages/profile/' . $_COOKIE['sch_id']);
+    }
+  }
+
+  public function nocbt()
+  {
+    if (!isset($_COOKIE['sch_id'])) {
+      redirect('pages/login');
+    }
+    if (!isset($_SESSION['user_id'])) {
+      redirect('users/login');
+    }
+    if ($this->pageModel->unMakeCbt($_COOKIE['sch_id'])) {
+      setcookie('cbt', '0', time() + (86400 * 365), '/');
+      redirect('pages/profile/' . $_COOKIE['sch_id']);
+    }
+  }
   public function login()
   {
     if (isset($_COOKIE['sch_id'])) {
@@ -63,6 +91,7 @@ class Pages extends Controller
         setcookie('sch_id', $sch->id, time() + (86400 * 365), '/');
         setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
         setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
+        setcookie('cbt', $sch->isCbt, time() + (86400 * 365), '/');
         // Redirect to Teachers section
         $redirect = URLROOT . '/users/login/';
         echo "<p class='alert alert-success flash-msg fade show' role='alert'>
@@ -173,6 +202,7 @@ class Pages extends Controller
     $name = $_COOKIE['name'];
     $role = $_COOKIE['role'];
     $photo = $_COOKIE['photo'];
+    $cbt =  $_COOKIE['cbt'];
 
     setcookie('sch_id', $id, time() - 3, '/');
     setcookie('sch_name', $name, time() - 3, '/');
@@ -182,6 +212,7 @@ class Pages extends Controller
     setcookie('name', $name, time() - 3, '/');
     setcookie('role', $role, time() - 3, '/');
     setcookie('photo', $photo, time() - 3, '/');
+    setcookie('cbt', $cbt, time() - 3, '/');
     session_unset();
     session_destroy();
     redirect('pages/login');
@@ -215,6 +246,9 @@ class Pages extends Controller
 
   public function profile($id)
   {
+    if (!isset($_COOKIE['sch_id'])) {
+      redirect('pages/login');
+    }
     // If post 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
@@ -240,11 +274,57 @@ class Pages extends Controller
       //Set Data
       $data = [
         'user' => $school,
-        'role' => $user->role
+        'role' => $user->role,
+        'isCbt' => $school->isCbt
       ];
 
       // Load about view
       $this->view('pages/profile', $data);
+    }
+  }
+
+
+  public function advance()
+  {
+    if (!isset($_COOKIE['sch_id'])) {
+      redirect('pages/login');
+    }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+
+      $data = [
+        'classname' => val_entry($_POST['classname']),
+        'sch_id' => $_COOKIE['sch_id']
+      ];
+
+      $data['classname'] = strtolower($data['classname']);
+      $data['classname'] = preg_replace('/\s+/', '-', $data['classname']);
+
+      if ($this->pageModel->checkIfClassExist($data['classname'])) {
+        echo "<p class='alert alert-danger flash-msg fade show' role='alert'>
+            <i class='bi bi-check-circle'></i>  &nbsp;Class is already added!
+          </p>
+        ";
+      } else {
+        if ($this->pageModel->addClass($data)) {
+          flash('msg', 'Class is added successfully');
+          $redirect = URLROOT . '/pages/advance';
+          echo "><meta http-equiv='refresh' content='0; $redirect'>
+        ";
+        } else {
+          die('Something went wrong!');
+        }
+      }
+    } // End Post Request
+    else {
+      $classes = $this->pageModel->getClasses($_COOKIE['sch_id']);
+      $data = [
+        'classes' => $classes,
+        'sections' => ''
+      ];
+
+      // Load about view
+      $this->view('pages/advance', $data);
     }
   }
 }

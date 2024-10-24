@@ -446,4 +446,22 @@ class Submissions extends Controller
       die('Something went wrong..');
     }
   }
+
+   public function core_paper_edit($paper_id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+      $data = [
+        'id' => $paper_id,
+        'duration' => val_entry($_POST['duration']),
+        'published' => val_entry($_POST['publish']),
+      ];
+       if ($this->userModel->coreEdit($data)) {
+          flash('msg', 'Success!');
+          redirect('users/dashboard/');
+        } else {
+          die('Something went wrong');
+        }
+    }
+  }
 }

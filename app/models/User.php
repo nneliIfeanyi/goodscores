@@ -235,11 +235,6 @@ class User
     $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':classname', $data['classname']);
-    // $this->db->bind(':obj_num_rows', $data['obj_num_rows']);
-    // $this->db->bind(':theory_num_rows', $data['theory_num_rows']);
-    //$this->db->bind(':choice', $data['choice']);
-    //$this->db->bind(':duration', $data['duration']);
-
     //Execute
     if ($this->db->execute()) {
       return true;
@@ -409,6 +404,24 @@ class User
     // Bind Values
     $this->db->bind(':id', $id);
     $this->db->bind(':img', '');
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  public function coreEdit($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE core SET published = :published, duration = :duration WHERE paperID = :id AND sch_id = :sch_id');
+
+    // Bind Values
+    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':published', $data['published']);
+    $this->db->bind(':duration', $data['duration']);
 
     //Execute
     if ($this->db->execute()) {

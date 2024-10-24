@@ -292,9 +292,9 @@
                               </td>
 
                             <?php elseif ($recent->section == 'others') : ?>
-                              <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
-                                <i class="bi bi-eye"></i>
-                              </a>
+                              <td><a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>&section_alt=<?= $recent->section_alt; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                  <i class="bi bi-eye"></i>
+                                </a></td>
                               <?php if ($recent->num_rows > $other_num_rows) : ?>
                                 <td><span class="badge bg-warning">Pending</span></td>
                                 <td scope="row" class="d-flex gap-2">

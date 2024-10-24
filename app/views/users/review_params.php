@@ -119,7 +119,34 @@
                         </div><!-- End Delete Modal-->
                     </div>
                 </div>
+                 <?php if ($_COOKIE['cbt'] == '1') : ?>
+                    <div class="card">
+                    <div class="card-body">
 
+                        <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
+                            <strong>Alter CBT Settings</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
+                                <div class="my-4">
+                                    <label for="">Exam Duration in minutes</label>
+                                    <input type="number" value="" name="duration" required class="form-control form-control-lg" />
+                                </div>
+                                <div class="my-4">
+                                    <label>Publish Exam</label>
+                                <select class="form-control form-control-lg" required name="publish">
+                                    <option value="">Select an option</option>
+                                    <option value="0">Hidden</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="d-grid">
+                                <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>

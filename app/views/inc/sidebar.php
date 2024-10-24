@@ -23,7 +23,14 @@
          <span>Subjects</span>
        </a>
      </li><!-- End Subjects Nav -->
-
+     <?php if ($_COOKIE['cbt'] == '1') : ?>
+       <li class="nav-item">
+         <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/students">
+           <i class="bi bi-people"></i>
+           <span>Students</span>
+         </a>
+       </li><!-- End Students Nav -->
+     <?php endif; ?>
 
      <li class="nav-item">
        <label class="nav-link collapsed" data-bs-target="#setquestionsnav" data-bs-toggle="collapse" href="#">

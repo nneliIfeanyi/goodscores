@@ -216,7 +216,7 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap',
+      toolbar: 'dash charmap subscript superscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -280,7 +280,7 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap',
+      toolbar: 'dash charmap subscript superscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -300,7 +300,7 @@ $mathsObj = '';
       plugins: 'charmap',
       menubar: '',
       // toolbar: 'charmap',
-      toolbar: 'dash charmap',
+      toolbar: 'dash charmap subscript superscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {

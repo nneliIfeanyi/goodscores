@@ -127,4 +127,84 @@ class Page
             return false;
         }
     }
+
+    // Classes DB Connection //
+    // Classes DB Connection //\\// Classes DB Connection //\\// Classes DB Connection //
+    public function getClasses($id)
+    {
+        $this->db->query("SELECT * FROM fetch1 WHERE sch_id = :id;");
+        $this->db->bind(':id', $id);
+        $results = $this->db->resultset();
+
+        return $results;
+    }
+    public function checkIfClassExist($classname)
+    {
+        $this->db->query("SELECT * FROM fetch1 WHERE classname = :classname AND sch_id = :sch_id;");
+        $this->db->bind(':classname', $classname);
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+        $row = $this->db->single();
+
+        //Check Rows
+        if ($this->db->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Add Class
+    public function addClass($data)
+    {
+        // Prepare Query
+        $this->db->query('INSERT INTO fetch1 (sch_id, classname) 
+      VALUES (:sch_id, :classname)');
+
+        // Bind Values
+        $this->db->bind(':sch_id', $data['sch_id']);
+        $this->db->bind(':classname', $data['classname']);
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Classes DB Connection //
+    // Classes DB Connection //\\// Classes DB Connection //\\// Classes DB Connection //
+
+    public function makeCbt($id)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE school SET isCbt = :yes WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+        $this->db->bind(':yes', '1');
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function unMakeCbt($id)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE school SET isCbt = :yes WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+        $this->db->bind(':yes', '0');
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

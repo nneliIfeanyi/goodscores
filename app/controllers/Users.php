@@ -3,6 +3,7 @@ class Users extends Controller
 {
   public $userModel;
   public $postModel;
+  public $pageModel;
   public function __construct()
   {
     if (!isset($_COOKIE['sch_id']) && !isset($_COOKIE['user_id'])) {
@@ -16,6 +17,7 @@ class Users extends Controller
     }
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
+    $this->pageModel = $this->model('Page');
   }
 
   public function index()
@@ -76,9 +78,13 @@ class Users extends Controller
     if (!$this->isLoggedIn()) {
       redirect('users/login');
     }
+    $sch = $this->pageModel->getSchool($_COOKIE['sch_id']);
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+    $classesAll = $this->pageModel->getClasses($_COOKIE['sch_id']);
     $data = [
-      'classes' => $classes
+      'classes' => $classes,
+      'sch' => $sch,
+      'classes2' => $classesAll
     ];
 
     $this->view('users/classes', $data);
