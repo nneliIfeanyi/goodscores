@@ -140,6 +140,9 @@ class Students extends Controller
                 }
             }
         } else {
+            if (!isset($_COOKIE['sch_id'])) {
+                redirect('pages/login');
+            }
             if ($this->isLoggedIn()) {
                 redirect('students/dashboard');
             }
@@ -220,9 +223,11 @@ class Students extends Controller
             ];
             if ($this->studentModel->insertScore($data)) {
                 if ($result >= 50) {
-                    redirect('students/success/' . $result);
+                    //redirect('students/success/' . $result);
+                    $this->view('students/success', $data);
                 } else {
-                    redirect('students/failed/' . $result);
+                    // redirect('students/failed/' . $result);
+                    $this->view('students/failed', $data);
                 }
             } else {
                 die('Something went wrong!');

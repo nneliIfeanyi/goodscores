@@ -7,26 +7,32 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Success!</h1>
+        <h1 class="text-success fw-semibold">Success!</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/students/dashboard">Home</a></li>
                 <li class="breadcrumb-item">Students</li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item active">CBT</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body pb-3">
+                    <h5 class="card-title"><?= $data['subject']; ?> | CA Test</h5>
 
-    <div class="card">
-        <div class="card-body pb-0">
-            <h5 class="card-title">Recent | Activities</h5>
+                    <div class="badge rounded-circle p-5 bg-success">
+                        <p class="fw-bold fs-4"> <?= $data['score']; ?>%</p>
+                    </div>
+                    <p><span class="fs-2 fw-bold">PASSED!</span><br /> Based on 50% and above.</p>
+                    <div class="d-grid  mt-4 me-4">
+                        <a href="<?= URLROOT; ?>/students/dashboard" class="btn btn-outline-primary"><i class="bi bi-chevron-left"></i> Return</a>
+                    </div>
+                </div>
 
-
-
+            </div>
         </div>
-
-    </div>
-
     </div>
 
 

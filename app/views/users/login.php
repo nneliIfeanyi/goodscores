@@ -10,9 +10,9 @@
   </div>
   <main>
     <div class="container">
-          <!-- Ajax Response -->
-    <div id="ajax-msg"></div>
-    <!-- End Ajax Response -->
+      <!-- Ajax Response -->
+      <div id="ajax-msg"></div>
+      <!-- End Ajax Response -->
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
@@ -50,7 +50,7 @@
                         <i class="bi bi-eye password-visible-btn position-absolute top-50 translate-middle-y end-0 z-3  px-3"></i>
                         <input type="password" name="password" class="form-control password pe-5" value="" id="yourPassword">
                       </div>
-                      
+
                     </div>
 
                     <div class="col-12">
@@ -63,7 +63,8 @@
                       <input value="Login" id="submit" class="btn btn-primary w-100" type="submit">
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0">Don't have account? <a href="<?php echo URLROOT; ?>/users/register">Create teacher's account</a></p>
+                      <p class="small py-1 mb-0">Don't have account? <a href="<?php echo URLROOT; ?>/users/register">Create teacher's account</a></p>
+                      <p class="small border-top py-1 fw-bold mb-0"><a href="<?php echo URLROOT; ?>/students/login">I am a student!</a></p>
                     </div>
                   </form>
 
@@ -81,28 +82,28 @@
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
   <script>
-        $('form').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: "<?php echo URLROOT; ?>/users/login",
-                method: "POST",
-                data: new FormData(this),
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#submit').attr('disabled', 'disabled');
-                    $('#submit').val('Processing, Pls Wait ....');
+    $('form').on('submit', function(event) {
+      event.preventDefault();
+      $.ajax({
+        url: "<?php echo URLROOT; ?>/users/login",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $('#submit').attr('disabled', 'disabled');
+          $('#submit').val('Processing, Pls Wait ....');
 
-                },
-                success: function(data) {
-                    $('#submit').attr('disabled', false);
-                    $('#submit').val('Login');
-                    $('#ajax-msg').html(data);
-                }
-            });
+        },
+        success: function(data) {
+          $('#submit').attr('disabled', false);
+          $('#submit').val('Login');
+          $('#ajax-msg').html(data);
+        }
+      });
 
-        });
-    </script>
+    });
+  </script>
   <!-- Show and Hide Password -->
   <script>
     $(document).ready(function() {

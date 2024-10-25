@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/students/inc/header.php'; ?>
 
 <body>
-    <style>
+    <!-- <style>
         @import url(https://fonts.googleapis.com/css?family=Open+Sans:800);
 
         .container {
@@ -31,7 +31,7 @@
             text-anchor: middle;
             fill: rgb(34, 213, 201);
         }
-    </style>
+    </style> -->
     <!-- PAGE LOADER -->
     <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
         <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
@@ -61,7 +61,7 @@
 
                     <span class="nav-link nav-icon">
                         <i class="bi bi-bell"></i>
-                        <span class="badge bg-primary badge-number" id="counter"></span>
+                        <span class="badge bg-primary badge-number"></span>
                     </span><!-- End Notification Icon -->
                 </li>
                 <li class="container">
@@ -166,7 +166,7 @@
     </div>
     </div>
     <?php require APPROOT . '/views/inc/footer.php'; ?>
-    <!-- <script>
+    <script>
         function countdown(minutes) {
             var seconds = 60;
             var mins = minutes
@@ -189,8 +189,8 @@
         }
         //You can use this script with a call to onclick, onblur or any other attribute you would like to use. 
         countdown(<?= $data['core']->duration ?>); //where n is the number of minutes required.
-    </script> -->
-    <script>
+    </script>
+    <!-- <script>
         var width = 400,
             height = 400,
             timePassed = 0,
@@ -227,7 +227,7 @@
             .enter().append("g")
             .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
             .attr("class", "field");
-    </script>
+    </script> -->
 
     <script>
         // query current page visibility state: prerender, visible, hidden
@@ -241,8 +241,8 @@
             }
 
             // fires when app transitions from prerender, user returns to the app / tab.
-            if (document.visibilityState == 'visible') {
+            // if (document.visibilityState == 'visible') {
 
-            }
+            // }
         });
     </script>

@@ -7,7 +7,7 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Failed!</h1>
+        <h1 class="text-danger fw-semibold">Failed!</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/students/dashboard">Home</a></li>
@@ -17,16 +17,23 @@
         </nav>
     </div><!-- End Page Title -->
 
-    <div class="card">
-        <div class="card-body pb-0">
-            <h5 class="card-title">Recent | Activities</h5>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body pb-3">
+                    <h5 class="card-title"><?= $data['subject']; ?> | CA Test</h5>
 
+                    <div class="badge rounded-circle p-5 bg-danger">
+                        <p class="fw-bold fs-4"> <?= $data['score']; ?>%</p>
+                    </div>
+                    <p><span class="fs-2 fw-bold">FAILED!</span><br /> Based on 50% and below.</p>
+                    <div class="d-grid  mt-4 me-4">
+                        <a href="<?= URLROOT; ?>/students/dashboard" class="btn btn-outline-primary"><i class="bi bi-chevron-left"></i> Return</a>
+                    </div>
+                </div>
 
-
+            </div>
         </div>
-
-    </div>
-
     </div>
 
 
