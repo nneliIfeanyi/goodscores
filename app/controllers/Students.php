@@ -16,7 +16,7 @@ class Students extends Controller
     // Load Homepage
     public function index()
     {
-        if (!$this->isLoggedIn()) {
+        if (!$this->isLoggedIn2()) {
             redirect('users/login');
         }
         $count = $this->studentModel->getStudentsCount();
@@ -32,7 +32,7 @@ class Students extends Controller
 
     public function add()
     {
-        if (!$this->isLoggedIn()) {
+        if (!$this->isLoggedIn2()) {
             redirect('users/login');
         }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -368,6 +368,15 @@ class Students extends Controller
     public function isLoggedIn()
     {
         if (isset($_SESSION['student_id'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isLoggedIn2()
+    {
+        if (isset($_SESSION['user_id'])) {
             return true;
         } else {
             return false;
