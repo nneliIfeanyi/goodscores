@@ -17,7 +17,7 @@
 
     <section class="section">
         <div class="row">
-            <div class="col-md-10 col-lg-8">
+            <div class="col-lg-6">
 
                 <div class="card">
                     <div class="card-body">
@@ -119,32 +119,38 @@
                         </div><!-- End Delete Modal-->
                     </div>
                 </div>
-                 <?php if ($_COOKIE['cbt'] == '1') : ?>
+            </div>
+            <div class="col-lg-6">
+                <?php if ($_COOKIE['cbt'] == '1') : ?>
                     <div class="card">
-                    <div class="card-body">
+                        <div class="card-body">
 
-                        <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-                            <strong>Alter CBT Settings</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
+                            <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
+                                <strong>Alter CBT Settings</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
+
                                 <div class="my-4">
-                                    <label for="">Exam Duration in minutes</label>
-                                    <input type="number" value="" name="duration" required class="form-control form-control-lg" />
+                                    <label for="">Enter Duration in minutes <span style="font-size: smaller;">(eg. <strong>"90"</strong> for 1hour 30minutes)</span></label>
+                                    <input type="number" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" />
                                 </div>
                                 <div class="my-4">
-                                    <label>Publish Exam</label>
-                                <select class="form-control form-control-lg" required name="publish">
-                                    <option value="">Select an option</option>
-                                    <option value="0">Hidden</option>
-                                    <option value="1">Yes</option>
-                                </select>
-                            </div>
-                            <div class="d-grid">
-                                <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
-                            </div>
-                        </form>
-                    </div>
+                                    <label>Publish As</label>
+                                    <select class="form-control form-control-lg" required name="publishAS">
+                                        <option value="<?= $data['core']->publishedAS; ?>"><?= $data['core']->publishedAS; ?></option>
+                                        <option value="1st CA">1st CA</option>
+                                        <option value="2nd CA">2nd CA</option>
+                                        <option value="3rd CA">3rd CA</option>
+                                        <option value="Exam">Exam</option>
+                                        <option value="Take Home Assignment">Take Home Assignment</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid">
+                                    <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>

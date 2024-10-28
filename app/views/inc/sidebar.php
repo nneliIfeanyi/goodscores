@@ -25,11 +25,23 @@
      </li><!-- End Subjects Nav -->
      <?php if ($_COOKIE['cbt'] == '1') : ?>
        <li class="nav-item">
-         <a class="nav-link collapsed" href="<?php echo URLROOT; ?>/students">
-           <i class="bi bi-people"></i>
-           <span>Students</span>
-         </a>
-       </li><!-- End Students Nav -->
+         <label class="nav-link collapsed" data-bs-target="#students-nav" data-bs-toggle="collapse" href="#">
+           <i class="bi bi-gear"></i><span>Students</span><i class="bi bi-chevron-down ms-auto"></i>
+         </label>
+         <ul id="students-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+           <li>
+             <a href="<?php echo URLROOT; ?>/students">
+               <i class="bi bi-circle"></i><span>Database</span>
+             </a>
+           </li>
+           <li>
+             <a href="<?php echo URLROOT; ?>/#">
+               <i class="bi bi-circle"></i><span>Assessment</span>
+             </a>
+           </li>
+
+         </ul>
+       </li>
      <?php endif; ?>
 
      <li class="nav-item">
@@ -53,36 +65,8 @@
            </a>
          </li>
 
-         <!-- <li>
-           <a href="<?php echo URLROOT; ?>/users/set/others">
-             <i class="bi bi-circle"></i><span>Others</span>
-           </a>
-         </li> -->
-
        </ul>
      </li><!-- End Set Questions Nav -->
-
-
-     <!-- <li class="nav-item">
-       <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-         <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
-       </a>
-       <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-         <li>
-           <a href="<?php echo URLROOT; ?>/users/classes">
-             <i class="bi bi-circle"></i><span>School Settings</span>
-           </a>
-         </li>
-         <li>
-           <a href="<?php echo URLROOT; ?>/users/subjects">
-             <i class="bi bi-circle"></i><span>User Settings</span>
-           </a>
-         </li>
-
-       </ul>
-     </li> --><!-- End Settings Nav -->
-
-
 
      <li class="nav-heading">More</li>
 

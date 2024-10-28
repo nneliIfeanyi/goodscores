@@ -26,6 +26,7 @@
                     <tr>
 
                         <th scope="col">Subject</th>
+                        <th>Tag</th>
                         <th scope="col">Duration</th>
                         <th>Status</th>
                         <th>Score</th>
@@ -44,6 +45,7 @@
 
                                 <tr>
                                     <td><?= $recent->subject ?></td>
+                                    <td class="badge text-bg-primary"><?= $recent->publishedAS ?></td>
                                     <td><?= $recent->duration ?> Minutes</td>
                                     <td><span class="badge bg-warning">Pending</span></td>
                                     <td></td>
@@ -68,7 +70,7 @@
                                             <div class="modal-footer">
                                                 <div class="d-flex gap-4">
                                                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                                                    <a href="<?= URLROOT; ?>/students/cbt/<?= $recent->paperID; ?>" class="btn btn-primary">Start <i class="bi bi-chevron-right"></i></a>
+                                                    <a href="<?= URLROOT; ?>/students/timeCalc/<?= $recent->paperID; ?>" class="btn btn-primary">Start <i class="bi bi-chevron-right"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -79,6 +81,7 @@
                             ?>
                                 <tr>
                                     <td><?= $recent->subject ?></td>
+                                    <td class="badge text-bg-primary"><?= $recent->publishedAS ?></td>
                                     <td><?= $recent->duration ?> Minutes</td>
                                     <td><span class="badge bg-success">Completed</span></td>
                                     <td><?= $details->score; ?>%</td>
@@ -87,8 +90,8 @@
                                     <?php else : ?>
                                         <td><span class="badge bg-danger">Failed!</span></td>
                                     <?php endif; ?>
-                                    <td>
-                                        <span class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></span>
+                                    <td class="">
+                                        <!-- <span class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></span> -->
                                     </td>
                                 </tr>
                             <?php endif; ?>

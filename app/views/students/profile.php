@@ -1,6 +1,13 @@
-<?php require APPROOT . '/views/students/inc/header.php'; ?>
-<?php require APPROOT . '/views/students/inc/navbar.php'; ?>
-<?php require APPROOT . '/views/students/inc/sidebar.php'; ?>
+<?php require APPROOT . '/views/students/inc/header.php';
+if ($this->isLoggedIn2()) {
+    require APPROOT . '/views/inc/navbar.php';
+    require APPROOT . '/views/inc/sidebar.php';
+} else {
+    require APPROOT . '/views/students/inc/navbar.php';
+    require APPROOT . '/views/students/inc/sidebar.php';
+}
+
+?>
 
 
 <main id="main" class="main">

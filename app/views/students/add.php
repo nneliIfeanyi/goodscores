@@ -33,7 +33,7 @@
                             <input type="hidden" name="year" value="<?= SCH_SESSION; ?>">
                             <div class="my-4">
                                 <label for="className">Firstname</label>
-                                <input type="text" name="firstname" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                <input type="text" required name="firstname" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                             </div>
                             <div class="my-4">
                                 <label for="className">Middle name</label>
@@ -41,7 +41,7 @@
                             </div>
                             <div class="my-4">
                                 <label for="className">Surname</label>
-                                <input type="text" name="surname" class="form-control form-control-lg" />
+                                <input type="text" required name="surname" class="form-control form-control-lg" />
                             </div>
 
                             <!-- <div class="my-4">
@@ -49,14 +49,14 @@
                                 <input type="date" name="dob" class="form-control form-control-lg" />
                             </div> -->
                             <div class="my-4">
-                                <select name="gender" class="form-control form-control-lg">
+                                <select required name="gender" class="form-control form-control-lg">
                                     <option value="">Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
                             <div class="my-4">
-                                <select name="class" class="form-control form-control-lg">
+                                <select required name="class" class="form-control form-control-lg">
                                     <option value="">Select class</option>
                                     <?php foreach ($data['classes'] as $class) : ?>
                                         <option value="<?= $class->classname ?>"><?= $class->classname ?></option>
@@ -64,8 +64,9 @@
                                 </select>
                             </div>
                             <div class="my-4">
-                                <label for="className">Reg. Number <small>(Reg. no is auto generated)</small></label>
-                                <input type="text" name="regNo" value="prefix_<?= $data['regNo'] ?>" class="form-control form-control-lg" />
+                                <label for="className">Pass Key <small>(Pass key is auto generated)</small></label>
+                                <input type="hidden" name="regNo" value="<?= $_COOKIE['sch_username'] . '_' . $data['regNo'] ?>">
+                                <input type=" text" disabled value="<?= $_COOKIE['sch_username'] . '_' . $data['regNo'] ?>" class="form-control form-control-lg" />
                             </div>
                             <div class="d-grid mx-4">
                                 <input type="submit" value="Continue" class="btn btn-outline-primary">

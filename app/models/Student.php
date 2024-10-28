@@ -184,26 +184,26 @@ class Student
     }
 
     // Get Cbt Params per class
-    public function getCbtCore($class)
+    public function getCbtCore($paper_id)
     {
-        $this->db->query("SELECT * FROM core WHERE sch_id = :sch_id AND term = :term AND year = :year AND class = :class AND published = :yes ORDER BY id DESC;");
+        $this->db->query("SELECT * FROM core WHERE sch_id = :sch_id AND term = :term AND year = :year AND paperID = :id AND published = :yes ORDER BY id DESC;");
         $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $this->db->bind(':term', TERM);
         $this->db->bind(':year', SCH_SESSION);
-        $this->db->bind(':class', $class);
+        $this->db->bind(':id', $paper_id);
         $this->db->bind(':yes', '1');
         $this->db->single();
 
         return $this->db->single();
     }
 
-    public function getCbtParam($class)
+    public function getCbtParam($paper_id)
     {
-        $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND term = :term AND year = :year AND class = :class ORDER BY id DESC;");
+        $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND term = :term AND year = :year AND paperID = :id ORDER BY id DESC;");
         $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $this->db->bind(':term', TERM);
         $this->db->bind(':year', SCH_SESSION);
-        $this->db->bind(':class', $class);
+        $this->db->bind(':id', $paper_id);
         $this->db->single();
 
         return $this->db->single();
@@ -249,14 +249,15 @@ class Student
     public function insertScore($data)
     {
         // Prepare Query
-        $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, sub_ject, score) 
-      VALUES (:sch_id, :student_id, :paperID, :sub_ject, :score)');
+        $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, sub_ject, tag, score) 
+      VALUES (:sch_id, :student_id, :paperID, :sub_ject, :tag, :score)');
 
         // Bind Values
         $this->db->bind(':sch_id', $data['sch_id']);
         $this->db->bind(':student_id', $data['student_id']);
         $this->db->bind(':paperID', $data['paperID']);
         $this->db->bind(':sub_ject', $data['subject']);
+        $this->db->bind(':tag', $data['cbtTag']);
         $this->db->bind(':score', $data['score']);
         //Execute
         if ($this->db->execute()) {
@@ -269,6 +270,35 @@ class Student
     public function checkIfExamTaken($paper_id)
     {
         $this->db->query("SELECT * FROM scores WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+        $this->db->bind(':student_id', $_SESSION['student_id']);
+        $this->db->bind(':id', $paper_id);
+        $this->db->single();
+
+        return $this->db->single();
+    }
+    public function initTime($data)
+    {
+        // Prepare Query
+        $this->db->query('INSERT INTO timing (sch_id, student_id, paperID, startTime, endTime) 
+      VALUES (:sch_id, :student_id, :paperID, :startTime, :endTime)');
+
+        // Bind Values
+        $this->db->bind(':sch_id', $data['sch_id']);
+        $this->db->bind(':student_id', $data['student_id']);
+        $this->db->bind(':paperID', $data['paperID']);
+        $this->db->bind(':startTime', $data['startTime']);
+        $this->db->bind(':endTime', $data['endTime']);
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function pullTime($paper_id,)
+    {
+        $this->db->query("SELECT * FROM timing WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
         $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $this->db->bind(':student_id', $_SESSION['student_id']);
         $this->db->bind(':id', $paper_id);

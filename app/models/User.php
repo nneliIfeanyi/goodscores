@@ -415,13 +415,14 @@ class User
   public function coreEdit($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE core SET published = :published, duration = :duration WHERE paperID = :id AND sch_id = :sch_id');
+    $this->db->query('UPDATE core SET published = :published, duration = :duration, publishedAS = :publishedAS WHERE paperID = :id AND sch_id = :sch_id');
 
     // Bind Values
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $this->db->bind(':id', $data['id']);
     $this->db->bind(':published', $data['published']);
     $this->db->bind(':duration', $data['duration']);
+    $this->db->bind(':publishedAS', $data['publishAS']);
 
     //Execute
     if ($this->db->execute()) {

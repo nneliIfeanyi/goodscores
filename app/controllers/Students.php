@@ -36,7 +36,7 @@ class Students extends Controller
             redirect('users/login');
         }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $prefix = 'prefix_';
+
             $data = [
                 'sch_id' => $_COOKIE['sch_id'],
                 'firstname' => val_entry($_POST['firstname']),
@@ -45,7 +45,7 @@ class Students extends Controller
                 'fullname' => val_entry($_POST['surname'] . ' ' . $_POST['firstname'] . ' ' . $_POST['middlename']),
                 'gender' => val_entry($_POST['gender']),
                 'class' => val_entry($_POST['class']),
-                'regNo' => $prefix . $_POST['regNo']
+                'regNo' => $_POST['regNo']
             ];
             if ($this->studentModel->addStudent($data)) {
                 flash('msg', 'Success');
@@ -92,8 +92,8 @@ class Students extends Controller
                 die('Something went wrong');
             }
         } else {
-            if (!$this->isLoggedIn()) {
-                redirect('students/login');
+            if (!$this->isLoggedIn() && !$this->isLoggedIn2()) {
+                redirect('users/login');
             }
             $classes = $this->pageModel->getClasses($_COOKIE['sch_id']);
             $details = $this->studentModel->findStudentById($id);
@@ -174,11 +174,25 @@ class Students extends Controller
         if (!$this->isLoggedIn()) {
             redirect('students/login');
         }
-        $details = $this->studentModel->findStudentById($_SESSION['student_id']);
-        $core = $this->studentModel->getCbtCore($details->class);
-        $param = $this->studentModel->getCbtParam($details->class);
+        $duration = $this->studentModel->pullTime($paper_id);
+        // $dbTime = $duration->startTime;
+        // $now = date('h:i', $dbTime);
+        // $end = date('h:i', $dbTime + 3600);
+        // $diff = $now - time() + 3600;
+        // $countMins = floor($diff / 60);
+        // $countSec = floor($diff - ($countMins * 60));
+        // echo $diff . '<br>';
+        // echo $countMins . '<br>';
+        // echo $countSec . '<br>';
+        // exit();
+        //$details = $this->studentModel->findStudentById($_SESSION['student_id']);
+        $core = $this->studentModel->getCbtCore($paper_id);
+        $param = $this->studentModel->getCbtParam($paper_id);
         $cbt = $this->studentModel->getCbtQuestions($paper_id);
         $data = [
+            'sch_id' => $_COOKIE['sch_id'],
+            'student_id' => $_SESSION['student_id'],
+            'paperID' => $paper_id,
             'core' => $core,
             'param' => $param,
             'cbt' => $cbt
@@ -186,7 +200,15 @@ class Students extends Controller
 
         // Load view
         if (!$this->studentModel->checkIfExamTaken($paper_id)) {
-            $this->view('students/cbt', $data);
+            // Pull Time Records
+            $loggedEndTime = $duration->endTime;
+            $now = date('i:s');
+            if ($now < $loggedEndTime) {
+                $this->view('students/cbt', $data);
+            } else {
+                $this->view('students/timeUp', $data);
+            }
+            //
         } else {
             flash('msg', 'You already sat for this exam');
             $details = $this->studentModel->checkIfExamTaken($paper_id);
@@ -196,6 +218,22 @@ class Students extends Controller
                 redirect('students/failed/' . $details->score);
             }
         }
+    }
+    public function timeCalc($paper_id)
+    {
+        $core = $this->studentModel->getCbtCore($paper_id);
+        $data = [
+            'sch_id' => $_COOKIE['sch_id'],
+            'student_id' => $_SESSION['student_id'],
+            'paperID' => $paper_id
+        ];
+        // Exam Time Manipulate
+        $time = strtotime('+' . $core->duration . ' minutes');
+        $data['endTime'] = date('i:s', $time);
+        $data['startTime'] = date('i:s');
+        // Insert Time Records
+        $this->studentModel->initTime($data);
+        redirect('students/cbt/' . $paper_id);
     }
     public function submit_cbt($paper_id)
     {
@@ -213,24 +251,33 @@ class Students extends Controller
                 // echo $_POST['ans' . $i] . '|' . $_POST['default' . $i] . ' = ' . $score . '<br>';
                 $total += $score;
             }
-            $result =  round($total / $cbtRowCount * 100, 1);
+            if ($total <= 0) {
+                $result = 0;
+            } else {
+                $result =  round($total / $cbtRowCount * 100, 1);
+            }
             $data = [
                 'sch_id' => $_COOKIE['sch_id'],
                 'student_id' => $_SESSION['student_id'],
                 'subject' => $_POST['subject'],
                 'paperID' => $_POST['paperID'],
-                'score' => $result
+                'score' => $result,
+                'cbtTag' => $_POST['cbtTag']
             ];
-            if ($this->studentModel->insertScore($data)) {
+            if (!$this->studentModel->checkIfExamTaken($paper_id)) {
+                // Insert Score To DB
+                $this->studentModel->insertScore($data);
                 if ($result >= 50) {
-                    //redirect('students/success/' . $result);
                     $this->view('students/success', $data);
                 } else {
-                    // redirect('students/failed/' . $result);
                     $this->view('students/failed', $data);
                 }
             } else {
-                die('Something went wrong!');
+                if ($result >= 50) {
+                    $this->view('students/success', $data);
+                } else {
+                    $this->view('students/failed', $data);
+                }
             }
         } else {
             die('Something went wrong!');
@@ -266,16 +313,37 @@ class Students extends Controller
     }
     public function profile($id)
     {
-        if (!$this->isLoggedIn()) {
-            redirect('students/login');
-        }
-        $details = $this->studentModel->findStudentById($id);
-        $data = [
-            'user' => $details,
-        ];
+        if (!$this->isLoggedIn() && !$this->isLoggedIn2()) {
+            // Student And Teacher Not Logged In
+            redirect('users/login');
+        } else if (!$this->isLoggedIn() && $this->isLoggedIn2()) {
+            // Student Not Logged In But Teacher Is Logged In
+            $details = $this->studentModel->findStudentById($id);
+            $data = [
+                'user' => $details,
+            ];
 
-        // Load view
-        $this->view('students/profile', $data);
+            // Load view
+            $this->view('students/profile', $data);
+        } else if ($this->isLoggedIn() && !$this->isLoggedIn2()) {
+            // Student Not Logged In But Teacher Is Logged In
+            $details = $this->studentModel->findStudentById($id);
+            $data = [
+                'user' => $details,
+            ];
+
+            // Load view
+            $this->view('students/profile', $data);
+        } else {
+            // Both is LOgged in
+            $details = $this->studentModel->findStudentById($id);
+            $data = [
+                'user' => $details,
+            ];
+
+            // Load view
+            $this->view('students/profile', $data);
+        }
     }
 
 
@@ -319,23 +387,43 @@ class Students extends Controller
                 }
             } // End if is_array
         } else {
-            if (!$this->isLoggedIn()) {
-                redirect('students/login');
-            }
-            $user = $this->studentModel->findStudentById($id);
-            $data = [
-                'user' => $user
-            ];
 
-            $this->view('students/upload', $data);
+            if (!$this->isLoggedIn() && !$this->isLoggedIn2()) {
+                // Student And Teacher Not Logged In
+                redirect('users/login');
+            } else if (!$this->isLoggedIn() && $this->isLoggedIn2()) {
+                // Student Not Logged In But Teacher Is Logged In
+                $user = $this->studentModel->findStudentById($id);
+                $data = [
+                    'user' => $user
+                ];
+
+                $this->view('students/upload', $data);
+            } else if ($this->isLoggedIn() && !$this->isLoggedIn2()) {
+                // Student Not Logged In But Teacher Is Logged In
+                $user = $this->studentModel->findStudentById($id);
+                $data = [
+                    'user' => $user
+                ];
+
+                $this->view('students/upload', $data);
+            } else {
+                // Both is LOgged in
+                $user = $this->studentModel->findStudentById($id);
+                $data = [
+                    'user' => $user
+                ];
+
+                $this->view('students/upload', $data);
+            }
         }
     }
 
     // Remove | delete student profile image
     public function remove_img($id)
     {
-        if (!$this->isLoggedIn()) {
-            redirect('students/login');
+        if (!$this->isLoggedIn() && !$this->isLoggedIn2()) {
+            redirect('users/login');
         }
         $user = $this->studentModel->findStudentById($id);
         if ($this->studentModel->removePhoto($id)) {

@@ -447,21 +447,113 @@ class Submissions extends Controller
     }
   }
 
-   public function core_paper_edit($paper_id)
+  public function set2($param)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+
+      $data = [
+        'paperID' => '',
+        'class' => val_entry($_POST['class']),
+        'subject' => val_entry($_POST['subject']),
+        'term' => val_entry($_POST['term']),
+        'section' => $param,
+        'sch_id' => $_COOKIE['sch_id'],
+        'user_id' => $_SESSION['user_id'],
+        'year' => val_entry($_POST['year']),
+        'num_rows' => val_entry($_POST['num_rows']),
+        'tag' => val_entry($_POST['section_tag']),
+        'instruction' => val_entry($_POST['instruction']),
+      ];
+      $paper_exist = $this->postModel->checkIfPaperExist($data);
+      $section_exist = $this->postModel->checkIfSectionExist($data);
+      // For Theory Question
+      if ($param == 'theory_questions') {
+        if ($paper_exist && $section_exist) {
+          redirect('posts/add2/' . $section_exist->paperID);
+        } elseif ($paper_exist && !$section_exist) { // Other section exist
+          // Insert theory section with same paperID as theory
+          $data['paperID'] = $paper_exist->paperID;
+          $data['section_alt'] = '';
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question
+          redirect('posts/add2/' . $paper_exist->paperID);
+        } else {
+          // Exam questions has not been initiated
+          //Generate paperID
+          $data['paperID'] = substr(md5(time()), 22);
+          $data['section_alt'] = '';
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
+          //Initiate exam question on the params table
+          $this->postModel->addExamParams($data);
+          // Redirect to continue with set question 1
+          redirect('posts/add2/' . $data['paperID']);
+        }
+      } elseif ($param == 'objectives_questions') {
+        // Exam questions has not been initiated
+        //Generate paperID
+        $data['paperID'] = substr(md5(time()), 22);
+        $data['section_alt'] = '';
+        //Initiate exam paper on the core table
+        $this->postModel->addExamCore($data);
+        //Initiate exam question on the params table
+        $this->postModel->addExamParams($data);
+        // Redirect to continue with set question 1
+        redirect('posts/add/' . $data['paperID'] . '?section_alt=' . '');
+      } elseif ($param == 'custom') {
+
+        if ($paper_exist) {
+          redirect('posts/custom/' . $paper_exist->paperID);
+        } else {
+          // Exam questions has not been initiated
+          //Generate paperID
+          $data['paperID'] = substr(md5(time()), 22);
+          //Initiate exam paper on the core table
+          $this->postModel->addExamCore($data);
+          // Add to params 
+          $data['section_alt'] = '';
+          $this->postModel->addExamParams($data);
+          $data['content'] = '';
+          $this->postModel->setCustom($data);
+          redirect('posts/custom/' . $data['paperID']);
+        }
+      } elseif ($param == 'others') {
+        //Generate paperID
+        $data['paperID'] = substr(md5(time()), 22);
+        $data['section_alt'] = val_entry($_POST['section_alt']);
+        //Initiate exam paper on the core table
+        $this->postModel->addExamCore($data);
+        //Initiate exam question on the params table
+        $this->postModel->addExamParams($data);
+        // Redirect to continue with set question 1
+        redirect('posts/add/' . $data['paperID'] . '?section_alt=' . val_entry($_POST['section_alt']));
+      }
+    } else { // Not a post request
+      redirect('users/set_questions');
+    }
+  } // End set question method
+
+  public function core_paper_edit($paper_id)
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
       $data = [
         'id' => $paper_id,
         'duration' => val_entry($_POST['duration']),
-        'published' => val_entry($_POST['publish']),
+        'publishAS' => val_entry($_POST['publishAS']),
       ];
-       if ($this->userModel->coreEdit($data)) {
-          flash('msg', 'Success!');
-          redirect('users/dashboard/');
-        } else {
-          die('Something went wrong');
-        }
+      if (!empty($data['publishAS'])) {
+        $data['published'] = 1;
+      } else {
+        $data['published'] = 0;
+      }
+      if ($this->userModel->coreEdit($data)) {
+        flash('msg', 'Success!');
+        redirect('users/dashboard/');
+      } else {
+        die('Something went wrong');
+      }
     }
   }
 }

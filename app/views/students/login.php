@@ -21,7 +21,7 @@
                             <div class="d-flex justify-content-center py-4">
                                 <a href="<?php echo URLROOT; ?>/pages" class="logo d-flex align-items-center w-auto">
                                     <img src="<?php echo URLROOT; ?>/assets/img/logo.png" alt="">
-                                    <span class=""><?php echo SITENAME; ?></span>
+                                    <span class=""><?php echo $_COOKIE['sch_username']; ?></span>
                                 </a>
                             </div><!-- End Logo -->
 
