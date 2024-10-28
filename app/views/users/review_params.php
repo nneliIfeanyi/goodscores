@@ -136,13 +136,13 @@
                                     <div class="col-6">
                                         <div class="input-group mb-3">
                                             <input type="number" value="<?= $data['hr']; ?>" name="hr" required class="form-control form-control-lg" />
-                                            <span class="input-group-text" id="basic-addon2">Hour(s)</span>
+                                            <span class="input-group-text" id="basic-addon2">Hr</span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group mb-3">
                                             <input type="number" value="<?= $data['min']; ?>" name="min" required class="form-control form-control-lg" />
-                                            <span class="input-group-text" id="basic-addon2">minutes</span>
+                                            <span class="input-group-text" id="basic-addon2">min</span>
                                         </div>
                                     </div>
                                     <!-- <label for="">Enter Duration in hours <span style="font-size: smaller;"></span></label>
