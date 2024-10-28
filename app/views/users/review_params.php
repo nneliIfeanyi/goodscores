@@ -131,9 +131,24 @@
                             </div>
                             <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
 
-                                <div class="my-4">
-                                    <label for="">Enter Duration in minutes <span style="font-size: smaller;">(eg. <strong>"90"</strong> for 1hour 30minutes)</span></label>
-                                    <input type="number" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" />
+                                <div class="my-4 row">
+                                    <label for="">Enter Duration</label>
+                                    <div class="col-6">
+                                        <div class="input-group mb-3">
+                                            <input type="number" value="<?= $data['hr']; ?>" name="hr" required class="form-control form-control-lg" />
+                                            <span class="input-group-text" id="basic-addon2">Hour(s)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-group mb-3">
+                                            <input type="number" value="<?= $data['min']; ?>" name="min" required class="form-control form-control-lg" />
+                                            <span class="input-group-text" id="basic-addon2">minutes</span>
+                                        </div>
+                                    </div>
+                                    <!-- <label for="">Enter Duration in hours <span style="font-size: smaller;"></span></label>
+                                    <div class="col-3">
+                                        <input type="number" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" />
+                                    </div> -->
                                 </div>
                                 <div class="my-4">
                                     <label>Publish As</label>

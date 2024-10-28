@@ -540,7 +540,7 @@ class Submissions extends Controller
 
       $data = [
         'id' => $paper_id,
-        'duration' => val_entry($_POST['duration']),
+        'duration' => val_entry($_POST['hr'] . ':' . $_POST['min']),
         'publishAS' => val_entry($_POST['publishAS']),
       ];
       if (!empty($data['publishAS'])) {

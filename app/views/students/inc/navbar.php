@@ -70,7 +70,7 @@
             <?php if (!empty($_SESSION['profile_photo'])) : ?>
               <img src="<?= URLROOT; ?>/<?= $_SESSION['profile_photo']; ?>" alt="Profile" class="rounded-circle">
             <?php else : ?>
-              <span class="d-none d-md-block ps-2"><?php echo $_SESSION['fullname']; ?></span>
+              <span class="ps-2"><?php echo $_SESSION['fullname']; ?></span>
             <?php endif; ?>
           </label><!-- End Profile Image Icon -->
         </li><!-- End Profile Nav -->

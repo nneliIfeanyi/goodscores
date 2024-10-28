@@ -97,12 +97,17 @@ class Users extends Controller
       $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
       $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
       $core = $this->postModel->getParamsFromCore($_GET['paperID']);
+      $duration = explode(':', $core->duration);
+      $hr = $duration[0];
+      $min = $duration[1];
       $data = [
         'classes' => $classes,
         'subjects' => $subjects,
         'params' => $params,
         'section' => $params->section,
-        'core' => $core
+        'core' => $core,
+        'hr' => $hr,
+        'min' => $min
       ];
 
       $this->view('users/review_params', $data);

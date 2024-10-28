@@ -202,7 +202,8 @@ class Students extends Controller
         if (!$this->studentModel->checkIfExamTaken($paper_id)) {
             // Pull Time Records
             $loggedEndTime = $duration->endTime;
-            $now = date('i:s');
+            $data['duration'] = $loggedEndTime;
+            $now = date('H:i:s');
             if ($now < $loggedEndTime) {
                 $this->view('students/cbt', $data);
             } else {
@@ -228,9 +229,12 @@ class Students extends Controller
             'paperID' => $paper_id
         ];
         // Exam Time Manipulate
-        $time = strtotime('+' . $core->duration . ' minutes');
-        $data['endTime'] = date('i:s', $time);
-        $data['startTime'] = date('i:s');
+        $duration = explode(':', $core->duration);
+        $hr = $duration[0];
+        $min = $duration[1];
+        $time = strtotime('+' . $hr . ' hours ' . $min . ' minutes');
+        $data['endTime'] = date('H:i:s', $time);
+        $data['startTime'] = date('H:i:s');
         // Insert Time Records
         $this->studentModel->initTime($data);
         redirect('students/cbt/' . $paper_id);

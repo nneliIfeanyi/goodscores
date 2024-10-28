@@ -4,16 +4,16 @@
     <style>
         @import url(https://fonts.googleapis.com/css?family=Open+Sans:800);
 
-        .countdown-container {
+        /* .countdown-container {
             max-width: 300px;
             margin: 10px auto;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+        } */
 
-        #countdown-display {
+        #countDown {
             font-size: 14px;
             font-weight: bold;
             margin-top: -7px;
@@ -55,7 +55,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <a href="#" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block"><?= $_COOKIE['sch_username']; ?></span>
+                <span class=""><?= $_COOKIE['sch_username']; ?></span>
             </a>
             <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
         </div><!-- End Logo -->
@@ -67,7 +67,7 @@
 
                     <span class="nav-link nav-icon">
                         <i class="bi bi-bell"></i>
-                        <span id="countdown-display" class="badge bg-primary badge-number"></span>
+                        <span id="countDown" class="badge bg-primary badge-number"></span>
                     </span><!-- End Notification Icon -->
                 </li>
                 <li class="nav-item dropdown pe-3">
@@ -171,6 +171,42 @@
     </div>
     <?php require APPROOT . '/views/inc/footer.php'; ?>
     <script>
+        // Set the date we're counting down to
+        var countDownDate = new Date("<?= date('M d'); ?>, <?= date('Y'); ?> <?= $data['duration']; ?>").getTime();
+        // var countDownDate = new Date("Aug 19, 2024 10:00:25").getTime();
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element with id="demo"
+            var display = document.getElementById("countDown").innerHTML = hours + "h " +
+                minutes + "m " + seconds + "s ";
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                location.reload();
+                clearInterval(x);
+                document.getElementById("countDown").innerHTML = "EXPIRED";
+            } else if (distance <= 5 * 60) { // 5 minutes warning
+                // Change text color to warning color
+                display.style.color = 'orange';
+                // Add blinking effect
+                display.classList.add('blinking');
+            }
+        }, 1000);
+    </script>
+    <!-- <script>
         const countdownDisplay = document.getElementById('countdown-display');
         let intervalId = null;
         let countdownTime = 0;
@@ -233,7 +269,7 @@
                 countdownDisplay.style.color = 'red';
             }
         });
-    </script>
+    </script> -->
 
     <!--<script>
         // query current page visibility state: prerender, visible, hidden
