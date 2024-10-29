@@ -88,12 +88,12 @@
                                         <?php if ($details->score >= 50) : ?>
                                             <td><span class="badge bg-success">Passed!</span></td>
                                             <td class="">
-                                                <a href="<?= URLROOT ?>/students/success/<?= $details->score ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
+                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
                                             </td>
                                         <?php else : ?>
                                             <td><span class="badge bg-danger">Failed!</span></td>
                                             <td class="">
-                                                <a href="<?= URLROOT ?>/students/failed/<?= $details->score ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
+                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
                                             </td>
                                         <?php endif; ?>
 

@@ -175,17 +175,6 @@ class Students extends Controller
             redirect('students/login');
         }
         $duration = $this->studentModel->pullTime($paper_id);
-        // $dbTime = $duration->startTime;
-        // $now = date('h:i', $dbTime);
-        // $end = date('h:i', $dbTime + 3600);
-        // $diff = $now - time() + 3600;
-        // $countMins = floor($diff / 60);
-        // $countSec = floor($diff - ($countMins * 60));
-        // echo $diff . '<br>';
-        // echo $countMins . '<br>';
-        // echo $countSec . '<br>';
-        // exit();
-        //$details = $this->studentModel->findStudentById($_SESSION['student_id']);
         $core = $this->studentModel->getCbtCore($paper_id);
         $param = $this->studentModel->getCbtParam($paper_id);
         $cbt = $this->studentModel->getCbtQuestions($paper_id);
@@ -242,6 +231,7 @@ class Students extends Controller
     public function submit_cbt($paper_id)
     {
         $cbtRowCount = $this->studentModel->getCbtRowCount($paper_id);
+        $core = $this->studentModel->getCbtCore($paper_id);
         $total = 0;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -284,7 +274,30 @@ class Students extends Controller
                 }
             }
         } else {
-            die('Something went wrong!');
+            $result =  round(1 / $cbtRowCount * 100, 1);
+            $data = [
+                'sch_id' => $_COOKIE['sch_id'],
+                'student_id' => $_SESSION['student_id'],
+                'subject' => $core->subject,
+                'paperID' => $paper_id,
+                'score' => $result,
+                'cbtTag' => $core->publishedAS
+            ];
+            if (!$this->studentModel->checkIfExamTaken($paper_id)) {
+                // Insert Score To DB
+                $this->studentModel->insertScore($data);
+                if ($result >= 50) {
+                    $this->view('students/success', $data);
+                } else {
+                    $this->view('students/failed', $data);
+                }
+            } else {
+                if ($result >= 50) {
+                    $this->view('students/success', $data);
+                } else {
+                    $this->view('students/failed', $data);
+                }
+            }
         }
     }
     public function success($score)

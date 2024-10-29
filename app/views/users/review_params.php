@@ -132,23 +132,19 @@
                             <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
 
                                 <div class="my-4 row">
-                                    <label for="">Enter Duration</label>
+                                    <label for="">Enter Duration<br><span style="font-size: smaller;">one digit not allowed, use "00", "01", "02" instead of "0", "1", "2"</span></label>
                                     <div class="col-6">
                                         <div class="input-group mb-3">
-                                            <input type="number" value="<?= $data['hr']; ?>" name="hr" required class="form-control form-control-lg" />
+                                            <input type="number" value="<?= $data['hr']; ?>" minlength="2" maxlength="2" name="hr" required class="form-control form-control-lg" />
                                             <span class="input-group-text" id="basic-addon2">Hr</span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group mb-3">
-                                            <input type="number" value="<?= $data['min']; ?>" name="min" required class="form-control form-control-lg" />
+                                            <input type="number" value="<?= $data['min']; ?>" name="min" minlength="2" maxlength="2" required class="form-control form-control-lg" />
                                             <span class="input-group-text" id="basic-addon2">min</span>
                                         </div>
                                     </div>
-                                    <!-- <label for="">Enter Duration in hours <span style="font-size: smaller;"></span></label>
-                                    <div class="col-3">
-                                        <input type="number" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" />
-                                    </div> -->
                                 </div>
                                 <div class="my-4">
                                     <label>Publish As</label>
