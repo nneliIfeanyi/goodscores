@@ -72,7 +72,7 @@ $mathsObj = '';
               <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
                 <input type="hidden" name="isSubjective" value="no">
                 <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
-                <div class="my-4">
+                <div class="mt-4 mb-2">
                   <label for="className">Sub-section Instruction</label>
                   <input type="text" name="sub_ins" class="form-control form-control-lg" />
                 </div>
@@ -184,12 +184,12 @@ $mathsObj = '';
           <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
             <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              <strong><?= $data['tag']; ?> | Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
+              <strong>Set Subjective Question</strong>
             </div>
             <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
               <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
               <input type="hidden" name="isSubjective" value="yes">
-              <div class="my-4">
+              <div class="mt-4 mb-2">
                 <label for="className">Sub-section Instruction</label>
                 <input type="text" name="sub_ins" class="form-control form-control-lg" />
               </div>

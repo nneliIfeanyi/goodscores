@@ -171,8 +171,9 @@ class Student
     // Find Teacher BY Username
     public function findStudent($passkey)
     {
-        $this->db->query("SELECT * FROM students WHERE passkey = :passkey");
+        $this->db->query("SELECT * FROM students WHERE passkey = :passkey AND sch_id = :sch_id;");
         $this->db->bind(':passkey', $passkey);
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $row = $this->db->single();
 
         //Check Rows
