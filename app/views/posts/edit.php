@@ -108,19 +108,19 @@
               <?php endif; ?>
               <div class="d-flex flex-row gap-3 py-3">
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                  <input type="radio" name="ans" value="A" <?php echo ($data['post']->ans == 'A') ? 'checked' : ''; ?> class="form-check-input" id="A">
                   <label for="A" class="form-check-label">A</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                  <input type="radio" name="ans" value="B" <?php echo ($data['post']->ans == 'B') ? 'checked' : ''; ?> class="form-check-input" id="B">
                   <label for="B" class="form-check-label">B</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                  <input type="radio" name="ans" value="C" <?php echo ($data['post']->ans == 'C') ? 'checked' : ''; ?> class="form-check-input" id="C">
                   <label for="C" class="form-check-label">C</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                  <input type="radio" name="ans" value="D" <?php echo ($data['post']->ans == 'D') ? 'checked' : ''; ?> class="form-check-input" id="D">
                   <label for="D" class="form-check-label">D</label>
                 </div>
               </div>
