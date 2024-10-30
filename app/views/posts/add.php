@@ -20,16 +20,15 @@ $mathsObj = '';
 
   <section class="section">
     <div class="row">
-      <div class="col-md-10 col-lg-7 alert border-0 alert-dismissible fade show" role="alert">
-        <div class="card">
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          <div class="card-body">
+      <div class="col-md-10 col-lg-7 alert border-0 p-0 alert-dismissible fade show" role="alert">
+        <div class="row">
+          <div class="col-lg-11 me-auto">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             <?php
             if ($data['num_rows'] >= $data['total_subject_num_rows']) {
             ?>
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>objectives_questions</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
               <textarea class="form-control" disabled name="question" required placeholder="COMPLETED"></textarea>
               <div class="row my-3">
@@ -74,7 +73,7 @@ $mathsObj = '';
                 <input type="hidden" name="isSubjective" value="no">
                 <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
                 <div class="my-4">
-                  <label for="className">Sub Instruction</label>
+                  <label for="className">Sub-section Instruction</label>
                   <input type="text" name="sub_ins" class="form-control form-control-lg" />
                 </div>
                 <?php if (!empty($_SESSION['daigram'])) : ?>
@@ -178,13 +177,12 @@ $mathsObj = '';
             ?>
           </div>
         </div>
-
       </div>
       <!-- ===== isSubjective Question ===== -->
       <?php if ($_COOKIE['cbt'] == '1') : ?>
         <?php if ($data['num_rows'] < $data['total_subject_num_rows']) : ?>
-          <div class="col-md-10 col-lg-5 alert alert-dismissible fade show" role="alert">
-            <div class="bg-secondary text-light border-0 p-3 rounded-3">
+          <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
+            <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               <strong><?= $data['tag']; ?> | Question <?php echo $data['num_rows'] . ' of ' . $data['total_subject_num_rows']; ?></strong>
             </div>
@@ -192,7 +190,7 @@ $mathsObj = '';
               <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
               <input type="hidden" name="isSubjective" value="yes">
               <div class="my-4">
-                <label for="className">Sub Instruction</label>
+                <label for="className">Sub-section Instruction</label>
                 <input type="text" name="sub_ins" class="form-control form-control-lg" />
               </div>
               <?php if (!empty($_SESSION['daigram'])) : ?>
