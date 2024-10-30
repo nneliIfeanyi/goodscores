@@ -37,21 +37,29 @@
               </h2>
               <div id="<?php echo $obj->id; ?>" class="accordion-collapse collapse py-0" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body row">
-                  <p class="col-2 d-lg-none">(A)</p>
-                  <div class="col-10 col-lg-3">
-                    <p data-bs-toggle="tooltip" data-bs-title="Option A"><?php echo $obj->opt1; ?></p>
-                  </div>
-
-                  <p class="col-2 d-lg-none">(B)</p>
-                  <div class="col-10 col-lg-3">
-                    <p data-bs-toggle="tooltip" data-bs-title="Option B"><?php echo $obj->opt2; ?></p>
-                  </div>
+                  <?php if ($obj->isSubjective == 'yes') : ?>
+                    <div class="col-10 col-lg-3 fw-semibold text-center">
+                      <p data-bs-toggle="tooltip" data-bs-title="Answer"><?php echo $obj->ans; ?></p>
+                    </div>
+                  <?php endif; ?>
+                  <?php if (!empty($obj->opt1)) : ?>
+                    <p class="col-2 d-lg-none">(A)</p>
+                    <div class="col-10 col-lg-3">
+                      <p class="<?php echo ($obj->ans == 'A') ? 'fw-bold text-decoration-underline' : ''; ?>" data-bs-toggle="tooltip" data-bs-title="Option A"><?php echo $obj->opt1; ?></p>
+                    </div>
+                  <?php endif; ?>
+                  <?php if (!empty($obj->opt2)) : ?>
+                    <p class="col-2 d-lg-none">(B)</p>
+                    <div class="col-10 col-lg-3">
+                      <p class="<?php echo ($obj->ans == 'B') ? 'fw-bold text-decoration-underline' : ''; ?>" data-bs-toggle="tooltip" data-bs-title="Option B"><?php echo $obj->opt2; ?></p>
+                    </div>
+                  <?php endif; ?>
 
 
                   <?php if (!empty($obj->opt3)) : ?>
                     <p class="col-2 d-lg-none">(C)</p>
                     <div class="col-10 col-lg-3">
-                      <p data-bs-toggle="tooltip" data-bs-title="Option C"><?php echo $obj->opt3; ?></p>
+                      <p class="<?php echo ($obj->ans == 'C') ? 'fw-bold text-decoration-underline' : ''; ?>" data-bs-toggle="tooltip" data-bs-title="Option C"><?php echo $obj->opt3; ?></p>
                     </div>
                   <?php endif; ?>
 
@@ -59,7 +67,7 @@
                   <?php if (!empty($obj->opt4)) : ?>
                     <p class="col-2 d-lg-none">(D)</p>
                     <div class="col-10 col-lg-3">
-                      <p data-bs-toggle="tooltip" data-bs-title="Option D"><?php echo $obj->opt4; ?></p>
+                      <p class="<?php echo ($obj->ans == 'D') ? 'fw-bold text-decoration-underline' : ''; ?>" data-bs-toggle="tooltip" data-bs-title="Option D"><?php echo $obj->opt4; ?></p>
                     </div>
                   <?php endif; ?>
 

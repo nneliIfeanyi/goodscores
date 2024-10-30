@@ -239,7 +239,10 @@ class Posts extends Controller
         'opt1' => trim($_POST['opt1']),
         'opt4' => trim($_POST['opt4']),
         'opt2' => trim($_POST['opt2']),
-        'opt3' => trim($_POST['opt3'])
+        'opt3' => trim($_POST['opt3']),
+        'ans' => $_POST['ans'],
+        'isSubjective' => $_POST['isSubjective'],
+        'sub_ins' => trim($_POST['sub_ins'])
       ];
 
       if (empty($_SESSION['daigram'])) { // Update has no diagram

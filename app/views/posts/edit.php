@@ -17,7 +17,7 @@
 
   <section class="section">
     <div class="row">
-      <div class="col-md-10 col-lg-8">
+      <div class="col-md-10 col-lg-7">
 
         <div class="card">
           <div class="card-body">
@@ -53,6 +53,11 @@
               <input type="hidden" name="paperID" value="<?php echo $data['post']->paperID; ?>">
               <input type="hidden" name="daigram" value="<?= $data['post']->img; ?>">
               <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
+              <input type="hidden" name="isSubjective" value="no">
+              <div class="my-4">
+                <label for="className">Sub Instruction</label>
+                <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
+              </div>
               <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
                 <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
                 <?php
@@ -101,6 +106,24 @@
                   </div>
                 </div>
               <?php endif; ?>
+              <div class="d-flex flex-row gap-3 py-3">
+                <div class="form-check border border-secondary">
+                  <input type="radio" name="ans" value="A" class="form-check-input" id="A">
+                  <label for="A" class="form-check-label">A</label>
+                </div>
+                <div class="form-check border border-secondary">
+                  <input type="radio" name="ans" value="B" class="form-check-input" id="B">
+                  <label for="B" class="form-check-label">B</label>
+                </div>
+                <div class="form-check border border-secondary">
+                  <input type="radio" name="ans" value="C" class="form-check-input" id="C">
+                  <label for="C" class="form-check-label">C</label>
+                </div>
+                <div class="form-check border border-secondary">
+                  <input type="radio" name="ans" value="D" class="form-check-input" id="D">
+                  <label for="D" class="form-check-label">D</label>
+                </div>
+              </div>
               <div class="d-flex gap-2">
                 <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Change diagram">
                   <i class="bi bi-camera"></i>
@@ -116,6 +139,80 @@
         </div>
 
       </div>
+      <!-- ===== isSubjective Question ===== -->
+
+      <?php if ($_COOKIE['cbt'] == '1') : ?>
+        <div class="col-md-10 col-lg-5">
+          <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
+            <strong><?php echo $data['params']->tag; ?></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <?php if (!empty($data['post']->img) && empty($_SESSION['daigram'])) : ?>
+            <div class="d-flex justify-content-center">
+              <div class="mt-2 mb-4">
+                <img src="<?php echo URLROOT . '/' . $data['post']->img; ?>" class="img-fluid rounded-3" alt="daigram">
+              </div>
+            </div>
+            <label style="font-size: x-small;">To change question diagram | click camera icon.</label>
+          <?php elseif (!empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+            <div class="d-flex justify-content-center">
+              <div class="mt-2 mb-4">
+                <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+              </div>
+            </div>
+          <?php elseif (empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+            <div class="d-flex justify-content-center">
+              <div class="mt-2 mb-4">
+                <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+              </div>
+            </div>
+          <?php else : ?>
+            <label style="font-size: x-small;">To append a diagram | click camera icon.</label>
+
+          <?php endif; ?>
+          <form action="<?php echo URLROOT; ?>/posts/edit/<?php echo $data['post']->id; ?>" method="POST">
+            <input type="hidden" name="paperID" value="<?php echo $data['post']->paperID; ?>">
+            <input type="hidden" name="daigram" value="<?= $data['post']->img; ?>">
+            <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
+            <input type="hidden" name="isSubjective" value="yes">
+            <div class="my-4">
+              <label for="className">Sub Instruction</label>
+              <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
+            </div>
+            <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
+              <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
+              <?php
+              $mathsObj = 1;
+              if ($mathsObj == '1') {
+              ?>
+                <div class="my-4">
+                  <label for="className">Expected answer</label>
+                  <textarea class="tiny2" name="ans"><?= $data['post']->ans; ?></textarea>
+                </div>
+              <?php
+              }
+              ?>
+            <?php else : ?>
+              <textarea class="form-control" name="question"><?php echo $data['post']->question; ?></textarea>
+              <div class="my-4">
+                <label for="className">Expected answer</label>
+                <input type="text" name="ans" value="<?= $data['post']->ans; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+              </div>
+
+            <?php endif; ?>
+            <div class="d-flex gap-2">
+              <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Change diagram">
+                <i class="bi bi-camera"></i>
+              </a>
+              <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
+              <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>&section_alt=<?= $data['params']->section_alt; ?>" class="btn-outline-dark btn">
+                <i class="bi bi-chevron-left"></i> Back
+              </a>
+            </div>
+          </form>
+        </div>
+        <!-- ===== End isSubjective Question ===== -->
+      <?php endif; ?>
     </div>
   </section>
 

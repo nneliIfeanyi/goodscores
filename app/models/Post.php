@@ -438,8 +438,8 @@ class Post
   public function setQuestions($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, section_alt, question, opt1, opt2, opt3, opt4, ans, img) 
-      VALUES (:sch_id, :user_id, :paperID, :section_alt, :question, :opt1, :opt2, :opt3, :opt4, :ans, :img)');
+    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, section_alt, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction) 
+      VALUES (:sch_id, :user_id, :paperID, :section_alt, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -447,6 +447,7 @@ class Post
     $this->db->bind(':paperID', $data['paperID']);
     $this->db->bind(':section_alt', $data['section_alt']);
     $this->db->bind(':question', $data['question']);
+    $this->db->bind(':isSubjective', $data['isSubjective']);
     $this->db->bind(':opt1', $data['opt1']);
     $this->db->bind(':opt2', $data['opt2']);
     $this->db->bind(':opt3', $data['opt3']);
@@ -454,6 +455,7 @@ class Post
     $this->db->bind(':opt4', $data['opt4']);
     $this->db->bind(':ans', $data['ans']);
     $this->db->bind(':img', $data['daigram']);
+    $this->db->bind(':sub_ins', $data['sub_ins']);
     if ($this->db->execute()) {
       return true;
     } else {
@@ -604,7 +606,7 @@ class Post
   public function updateObj($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE objectives SET question = :question, opt1 = :opt1, opt2 = :opt2, opt3 = :opt3, opt4 = :opt4, img = :img WHERE id = :id');
+    $this->db->query('UPDATE objectives SET question = :question, isSubjective = :isSubjective, opt1 = :opt1, opt2 = :opt2, opt3 = :opt3, opt4 = :opt4, ans = :ans, img = :img, subInstruction = :sub_ins WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
@@ -614,7 +616,9 @@ class Post
     $this->db->bind(':opt3', $data['opt3']);
     $this->db->bind(':opt4', $data['opt4']);
     $this->db->bind(':img', $data['daigram']);
-
+    $this->db->bind(':ans', $data['ans']);
+    $this->db->bind(':isSubjective', $data['isSubjective']);
+    $this->db->bind(':sub_ins', $data['sub_ins']);
     //Execute
     if ($this->db->execute()) {
       return true;

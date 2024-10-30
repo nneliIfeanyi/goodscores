@@ -274,16 +274,17 @@ class Students extends Controller
                 }
             }
         } else {
-            $result =  round(1 / $cbtRowCount * 100, 1);
+            $examTaken = $this->studentModel->checkIfExamTaken($paper_id);
             $data = [
                 'sch_id' => $_COOKIE['sch_id'],
                 'student_id' => $_SESSION['student_id'],
                 'subject' => $core->subject,
                 'paperID' => $paper_id,
-                'score' => $result,
+                'score' => $examTaken->score,
                 'cbtTag' => $core->publishedAS
             ];
-            if (!$this->studentModel->checkIfExamTaken($paper_id)) {
+            if (!$examTaken) {
+                $result =  round(1 / $cbtRowCount * 100, 1);
                 // Insert Score To DB
                 $this->studentModel->insertScore($data);
                 if ($result >= 50) {
@@ -292,7 +293,7 @@ class Students extends Controller
                     $this->view('students/failed', $data);
                 }
             } else {
-                if ($result >= 50) {
+                if ($examTaken->score >= 50) {
                     $this->view('students/success', $data);
                 } else {
                     $this->view('students/failed', $data);

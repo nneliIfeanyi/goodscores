@@ -29,20 +29,6 @@
                 opacity: 1;
             }
         }
-
-        .blinking2 {
-            animation: blinkBg 1s infinite;
-        }
-
-        @keyframes blinkBg {
-            0% {
-                border: 2.5px solid grey;
-            }
-
-            100% {
-                border: 3px solid tomato;
-            }
-        }
     </style>
     <!-- PAGE LOADER -->
     <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
@@ -138,14 +124,24 @@
                                         <div class="d-flex flex-row gap-5 flex-wrap fw-bold m-0 ps-3 pb-2" style="font-size: 14px;">
 
                                             <input type="hidden" name="default<?= $n; ?>" value="<?= $recent->ans; ?>">
-                                            <div class="form-check border pe-1">
-                                                <input type="radio" name="ans<?= $n; ?>" value="A" class="form-check-input fs-2" id="A">
-                                                <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
-                                            </div>
-                                            <div class="form-check border pe-1">
-                                                <input type="radio" name="ans<?= $n; ?>" value="B" class="form-check-input fs-2" id="B">
-                                                <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
-                                            </div>
+                                            <?php if ($recent->isSubjective == 'yes') : ?>
+                                                <div class="my-4">
+                                                    <label for="className">Answer</label>
+                                                    <input type="text" name="ans<?= $n; ?>" class="form-control form-control-lg" />
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($recent->opt1)) : ?>
+                                                <div class="form-check border pe-1">
+                                                    <input type="radio" name="ans<?= $n; ?>" value="A" class="form-check-input fs-2" id="A">
+                                                    <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($recent->opt2)) : ?>
+                                                <div class="form-check border pe-1">
+                                                    <input type="radio" name="ans<?= $n; ?>" value="B" class="form-check-input fs-2" id="B">
+                                                    <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
+                                                </div>
+                                            <?php endif; ?>
                                             <?php if (!empty($recent->opt3)) : ?>
                                                 <div class="form-check border  pe-1">
                                                     <input type="radio" name="ans<?= $n; ?>" value="C" class="form-check-input fs-2" id="C">
@@ -209,7 +205,6 @@
                 display.style.color = 'orange';
                 // Add blinking effect
                 display.classList.add('blinking');
-                document.getElementById("card").classList.add('blinking2');
             }
         }, 1000);
     </script>
