@@ -234,57 +234,77 @@ class Students extends Controller
         $core = $this->studentModel->getCbtCore($paper_id);
         $total = 0;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (!$this->studentModel->checkIfResponseExist($paper_id)) {
+                for ($i = 1; $i <= $cbtRowCount; $i++) {
+                    $data = [
+                        'sch_id' => $_COOKIE['sch_id'],
+                        'student_id' => $_SESSION['student_id'],
+                        'paperID' => $_POST['paperID'],
+                        'response' => $_POST['ans' . $i],
+                        'question' => $_POST['question' . $i],
+                        'opt1' => $_POST[$i . 'optA'],
+                        'opt2' => $_POST[$i . 'optB'],
+                        'opt3' => $_POST[$i . 'optC'],
+                        'opt4' => $_POST[$i . 'optD'],
+                        'img' => $_POST['img' . $i],
+                        'isSubjective' => $_POST['isSubjective' . $i],
+                        'subInstruction' => $_POST['subInstruction' . $i],
+                        'section_alt' => $_POST['section_alt' . $i],
+                        'ans' => $_POST['default' . $i],
+                    ];
+                    // Insert || Set Response
+                    $this->studentModel->setResponse($data);
 
-            for ($i = 1; $i <= $cbtRowCount; $i++) {
-
-                if ($_POST['ans' . $i] === $_POST['default' . $i]) {
-                    $score = 1;
+                    if ($_POST['ans' . $i] === $_POST['default' . $i]) {
+                        $score = 1;
+                    } else {
+                        $score = 0;
+                    }
+                    $total += $score;
+                } //// End For Loop
+                if ($total <= 0) {
+                    $result = 0;
                 } else {
-                    $score = 0;
+                    $result =  round($total / $cbtRowCount * 100, 1);
                 }
-                // echo $_POST['ans' . $i] . '|' . $_POST['default' . $i] . ' = ' . $score . '<br>';
-                $total += $score;
-            }
-            if ($total <= 0) {
-                $result = 0;
-            } else {
-                $result =  round($total / $cbtRowCount * 100, 1);
-            }
-            $data = [
-                'sch_id' => $_COOKIE['sch_id'],
-                'student_id' => $_SESSION['student_id'],
-                'subject' => $_POST['subject'],
-                'paperID' => $_POST['paperID'],
-                'score' => $result,
-                'cbtTag' => $_POST['cbtTag']
-            ];
-            if (!$this->studentModel->checkIfExamTaken($paper_id)) {
-                // Insert Score To DB
-                $this->studentModel->insertScore($data);
+                $cbt = $this->studentModel->getResponse($paper_id);
+                $data = [
+                    'sch_id' => $_COOKIE['sch_id'],
+                    'student_id' => $_SESSION['student_id'],
+                    'subject' => $_POST['subject'],
+                    'paperID' => $_POST['paperID'],
+                    'score' => $result,
+                    'cbtTag' => $_POST['cbtTag'],
+                    'cbt' => $cbt,
+                    'response' => $_POST['ans' . $i]
+                ];
+                if (!$this->studentModel->checkIfExamTaken($paper_id)) {
+                    // Insert Score To DB
+                    $this->studentModel->insertScore($data);
+                }
                 if ($result >= 50) {
                     $this->view('students/success', $data);
                 } else {
                     $this->view('students/failed', $data);
                 }
             } else {
-                if ($result >= 50) {
-                    $this->view('students/success', $data);
-                } else {
-                    $this->view('students/failed', $data);
-                }
+                redirect('students/dashboard');
             }
-        } else {
+        } else { // Post Request Ends ................................
+            $cbt = $this->studentModel->getResponse($paper_id);
             $examTaken = $this->studentModel->checkIfExamTaken($paper_id);
-            $data = [
-                'sch_id' => $_COOKIE['sch_id'],
-                'student_id' => $_SESSION['student_id'],
-                'subject' => $core->subject,
-                'paperID' => $paper_id,
-                'score' => $examTaken->score,
-                'cbtTag' => $core->publishedAS
-            ];
             if (!$examTaken) {
+                $data = [
+                    'sch_id' => $_COOKIE['sch_id'],
+                    'student_id' => $_SESSION['student_id'],
+                    'subject' => $core->subject,
+                    'paperID' => $paper_id,
+                    'score' => '',
+                    'cbtTag' => $core->publishedAS,
+                    'cbt' => ''
+                ];
                 $result =  round(1 / $cbtRowCount * 100, 1);
+                $data['score'] = $result;
                 // Insert Score To DB
                 $this->studentModel->insertScore($data);
                 if ($result >= 50) {
@@ -293,6 +313,15 @@ class Students extends Controller
                     $this->view('students/failed', $data);
                 }
             } else {
+                $data = [
+                    'sch_id' => $_COOKIE['sch_id'],
+                    'student_id' => $_SESSION['student_id'],
+                    'subject' => $core->subject,
+                    'paperID' => $paper_id,
+                    'score' => $examTaken->score,
+                    'cbtTag' => $core->publishedAS,
+                    'cbt' => $cbt
+                ];
                 if ($examTaken->score >= 50) {
                     $this->view('students/success', $data);
                 } else {

@@ -110,50 +110,79 @@
                             <input type="hidden" name="subject" value="<?= $data['core']->subject; ?>">
                             <input type="hidden" name="paperID" id="name" value="<?= $data['core']->paperID; ?>">
                             <input type="hidden" name="cbtTag" value="<?= $data['core']->publishedAS; ?>">
+                            <input type="hidden" name="isSubjective" value="<?= $data['core']->isSubjective; ?>">
                             <?php
                             if (!empty($data['cbt'])) :
                                 $n = 1;
                                 foreach ($data['cbt'] as $recent) : ?>
                                     <div class="border-bottom mb-2">
+                                        <input type="hidden" name="img<?= $n; ?>" value="<?= $recent->img; ?>">
+                                        <input type="hidden" name="subInstruction<?= $n; ?>" value="<?= $recent->subInstruction; ?>">
+                                        <input type="hidden" name="isSubjective<?= $n; ?>" value="<?= $recent->isSubjective; ?>">
+                                        <input type="hidden" name="section_alt<?= $n; ?>" value="<?= $recent->section_alt; ?>">
+                                        <?php if (!empty($recent->img)) : ?>
+                                            <div class="">
+                                                <div class="mt-2 me-5">
+                                                    <img src="<?php echo URLROOT . '/' . $recent->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                         <!-- Question Div -->
                                         <div class="d-flex flex-row gap-2 m-0">
-                                            <p class="badge bg-primary"><?= $n; ?> </p>
+                                            <p class="badge bg-primary fw-bold"><?= $n; ?> </p>
                                             <?= $recent->question; ?>
+                                            <input type="hidden" name="question<?= $n; ?>" value="<?= $recent->question; ?>">
                                         </div>
                                         <!-- OPtions Div -->
-                                        <div class="d-flex flex-row gap-5 flex-wrap fw-bold m-0 ps-3 pb-2" style="font-size: 14px;">
+                                        <div class="d-flex flex-wrap fw-bold m-0 py-3" style="font-size: 14px;">
 
                                             <input type="hidden" name="default<?= $n; ?>" value="<?= $recent->ans; ?>">
                                             <?php if ($recent->isSubjective == 'yes') : ?>
-                                                <div class="my-4">
+                                                <input type="hidden" name="<?= $n; ?>optA" value="">
+                                                <input type="hidden" name="<?= $n; ?>optB" value="">
+                                                <input type="hidden" name="<?= $n; ?>optC" value="">
+                                                <input type="hidden" name="<?= $n; ?>optD" value="">
+                                                <div class="my-2">
                                                     <label for="className">Answer</label>
                                                     <input type="text" name="ans<?= $n; ?>" class="form-control form-control-lg" />
                                                 </div>
                                             <?php endif; ?>
-                                            <?php if (!empty($recent->opt1)) : ?>
-                                                <div class="form-check border pe-1">
-                                                    <input type="radio" name="ans<?= $n; ?>" value="A" class="form-check-input fs-2" id="A">
-                                                    <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (!empty($recent->opt2)) : ?>
-                                                <div class="form-check border pe-1">
-                                                    <input type="radio" name="ans<?= $n; ?>" value="B" class="form-check-input fs-2" id="B">
-                                                    <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (!empty($recent->opt3)) : ?>
-                                                <div class="form-check border  pe-1">
-                                                    <input type="radio" name="ans<?= $n; ?>" value="C" class="form-check-input fs-2" id="C">
-                                                    <label style="margin-left: -11px;" for="C" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (!empty($recent->opt4)) : ?>
-                                                <div class="form-check border  pe-1">
-                                                    <input type="radio" name="ans<?= $n; ?>" value="D" class="form-check-input fs-2" id="D">
-                                                    <label style="margin-left: -11px;" for="D" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
-                                                </div>
-                                            <?php endif; ?>
+                                            <div class="mx-3 my-1">
+                                                <?php if (!empty($recent->opt1)) : ?>
+                                                    <div class="form-check border pe-1">
+                                                        <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="A" class="form-check-input fs-2" id="A">
+                                                        <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="mx-3 my-1">
+                                                <?php if (!empty($recent->opt2)) : ?>
+                                                    <div class="form-check border pe-1">
+                                                        <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="B" class="form-check-input fs-2" id="B">
+                                                        <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="mx-3 my-1">
+                                                <?php if (!empty($recent->opt3)) : ?>
+                                                    <div class="form-check border  pe-1">
+                                                        <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="C" class="form-check-input fs-2" id="C">
+                                                        <label style="margin-left: -11px;" for="C" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="mx-3 my-1">
+                                                <?php if (!empty($recent->opt4)) : ?>
+                                                    <div class="form-check border  pe-1">
+                                                        <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="D" class="form-check-input fs-2" id="D">
+                                                        <label style="margin-left: -11px;" for="D" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php $n++;
@@ -216,7 +245,12 @@
         document.addEventListener('visibilitychange', function() {
             // fires when user switches tabs, apps, goes to homescreen, etc.
             if (document.visibilityState == 'hidden') {
-                location.href = '<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>';
+                let url = '<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>';
+                setTimeout(submitCBT, 60000);
+
+                function submitCBT() {
+                    location.href = url;
+                }
             }
 
             // fires when app transitions from prerender, user returns to the app / tab.

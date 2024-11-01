@@ -51,7 +51,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>
-                                            <span class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#section<?= $recent->id; ?>"><i class="bi bi-chevron-right"></i></span>
+                                            <span class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#section<?= $recent->id; ?>">start <i class="bi bi-chevron-right"></i></span>
                                         </td>
                                     </tr>
                                     <!-- Modal -->
@@ -88,12 +88,12 @@
                                         <?php if ($details->score >= 50) : ?>
                                             <td><span class="badge bg-success">Passed!</span></td>
                                             <td class="">
-                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
+                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> view</a>
                                             </td>
                                         <?php else : ?>
                                             <td><span class="badge bg-danger">Failed!</span></td>
                                             <td class="">
-                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-chevron-right"></i></a>
+                                                <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> view</a>
                                             </td>
                                         <?php endif; ?>
 

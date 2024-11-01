@@ -297,9 +297,60 @@ class Student
             return false;
         }
     }
-    public function pullTime($paper_id,)
+    public function pullTime($paper_id)
     {
         $this->db->query("SELECT * FROM timing WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+        $this->db->bind(':student_id', $_SESSION['student_id']);
+        $this->db->bind(':id', $paper_id);
+        $this->db->single();
+
+        return $this->db->single();
+    }
+    // Insert objective questions to objectives table
+    public function setResponse($data)
+    {
+        // Prepare Query
+        $this->db->query('INSERT INTO responses (sch_id, student_id, paperID, section_alt, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction, response) 
+      VALUES (:sch_id, :student_id, :paperID, :section_alt, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins, :response)');
+
+        // Bind Values
+        $this->db->bind(':sch_id', $data['sch_id']);
+        $this->db->bind(':student_id', $data['student_id']);
+        $this->db->bind(':paperID', $data['paperID']);
+        $this->db->bind(':section_alt', $data['section_alt']);
+        $this->db->bind(':question', $data['question']);
+        $this->db->bind(':isSubjective', $data['isSubjective']);
+        $this->db->bind(':opt1', $data['opt1']);
+        $this->db->bind(':opt2', $data['opt2']);
+        $this->db->bind(':opt3', $data['opt3']);
+        $this->db->bind(':opt4', $data['opt4']);
+        $this->db->bind(':opt4', $data['opt4']);
+        $this->db->bind(':ans', $data['ans']);
+        $this->db->bind(':img', $data['img']);
+        $this->db->bind(':sub_ins', $data['subInstruction']);
+        $this->db->bind(':response', $data['response']);
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getResponse($paper_id)
+    {
+        $this->db->query("SELECT * FROM responses WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+        $this->db->bind(':student_id', $_SESSION['student_id']);
+        $this->db->bind(':id', $paper_id);
+        $this->db->resultset();
+
+        return $this->db->resultset();
+    }
+
+    public function checkIfResponseExist($paper_id)
+    {
+        $this->db->query("SELECT * FROM responses WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
         $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $this->db->bind(':student_id', $_SESSION['student_id']);
         $this->db->bind(':id', $paper_id);

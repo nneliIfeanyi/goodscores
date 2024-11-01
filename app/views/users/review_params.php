@@ -148,8 +148,9 @@
                                 </div>
                                 <div class="my-4">
                                     <label>Publish As</label>
-                                    <select class="form-control form-control-lg" required name="publishAS">
+                                    <select class="form-control form-control-lg" name="publishAS">
                                         <option value="<?= $data['core']->publishedAS; ?>"><?= $data['core']->publishedAS; ?></option>
+                                        <option value="">None</option>
                                         <option value="1st CA">1st CA</option>
                                         <option value="2nd CA">2nd CA</option>
                                         <option value="3rd CA">3rd CA</option>
