@@ -234,6 +234,7 @@ class Students extends Controller
         $core = $this->studentModel->getCbtCore($paper_id);
         $total = 0;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
                     $data = [
