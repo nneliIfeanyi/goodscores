@@ -236,17 +236,30 @@ class Students extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
+                    $try = str_replace('<', '&#60;', $_POST['question' . $i]);
+                    $question = str_replace('>', '&#62;', $try);
+                    $try1 = str_replace('<', '&#60;', $_POST[$i . 'optA']);
+                    $opt1 = str_replace('>', '&#62;', $try1);
+                    $try2 = str_replace('<', '&#60;', $_POST[$i . 'optB']);
+                    $opt2 = str_replace('>', '&#62;', $try2);
+                    $try3 = str_replace('<', '&#60;', $_POST[$i . 'optC']);
+                    $opt3 = str_replace('>', '&#62;', $try3);
+                    $try4 = str_replace('<', '&#60;', $_POST[$i . 'optD']);
+                    $opt4 = str_replace('>', '&#62;', $try4);
+                    $try5 = str_replace('<', '&#60;', $_POST['ans' . $i]);
+                    $ans = str_replace('>', '&#62;', $try5);
+
                     $data = [
                         'sch_id' => $_COOKIE['sch_id'],
                         'student_id' => $_SESSION['student_id'],
                         'paperID' => $_POST['paperID'],
-                        'response' => $_POST['ans' . $i],
-                        'question' => trim($_POST['question' . $i]),
-                        'opt1' => trim($_POST[$i . 'optA']),
-                        'opt2' => trim($_POST[$i . 'optB']),
-                        'opt3' => trim($_POST[$i . 'optC']),
-                        'opt4' => trim($_POST[$i . 'optD']),
-                        'img' => trim($_POST['img' . $i]),
+                        'response' => $ans,
+                        'question' => $question,
+                        'opt1' => $opt1,
+                        'opt2' => $opt2,
+                        'opt3' => $opt3,
+                        'opt4' => $opt4,
+                        'img' => $_POST['img' . $i],
                         'isSubjective' => $_POST['isSubjective' . $i],
                         'subInstruction' => $_POST['subInstruction' . $i],
                         'section_alt' => $_POST['section_alt' . $i],
