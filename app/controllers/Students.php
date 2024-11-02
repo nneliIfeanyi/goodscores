@@ -236,8 +236,6 @@ class Students extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
-                    $try = str_replace('<', '&#60;', $_POST['question' . $i]);
-                    $question = str_replace('>', '&#62;', $try);
                     $try1 = str_replace('<', '&#60;', $_POST[$i . 'optA']);
                     $opt1 = str_replace('>', '&#62;', $try1);
                     $try2 = str_replace('<', '&#60;', $_POST[$i . 'optB']);
@@ -254,7 +252,7 @@ class Students extends Controller
                         'student_id' => $_SESSION['student_id'],
                         'paperID' => $_POST['paperID'],
                         'response' => $ans,
-                        'question' => $question,
+                        'question' => $_POST['question' . $i],
                         'opt1' => $opt1,
                         'opt2' => $opt2,
                         'opt3' => $opt3,
