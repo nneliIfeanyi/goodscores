@@ -234,7 +234,6 @@ class Students extends Controller
         $core = $this->studentModel->getCbtCore($paper_id);
         $total = 0;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
                     $data = [
@@ -242,12 +241,12 @@ class Students extends Controller
                         'student_id' => $_SESSION['student_id'],
                         'paperID' => $_POST['paperID'],
                         'response' => $_POST['ans' . $i],
-                        'question' => $_POST['question' . $i],
-                        'opt1' => $_POST[$i . 'optA'],
-                        'opt2' => $_POST[$i . 'optB'],
-                        'opt3' => $_POST[$i . 'optC'],
-                        'opt4' => $_POST[$i . 'optD'],
-                        'img' => $_POST['img' . $i],
+                        'question' => trim($_POST['question' . $i]),
+                        'opt1' => trim($_POST[$i . 'optA']),
+                        'opt2' => trim($_POST[$i . 'optB']),
+                        'opt3' => trim($_POST[$i . 'optC']),
+                        'opt4' => trim($_POST[$i . 'optD']),
+                        'img' => trim($_POST['img' . $i]),
                         'isSubjective' => $_POST['isSubjective' . $i],
                         'subInstruction' => $_POST['subInstruction' . $i],
                         'section_alt' => $_POST['section_alt' . $i],
