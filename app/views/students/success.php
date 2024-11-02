@@ -48,7 +48,7 @@ require APPROOT . '/views/students/inc/sidebar.php';
                     <div class="mx-3 my-1">
                         <?php if (!empty($recent->opt1)) : ?>
                             <div class="form-check <?= ($recent->response == 'A' && $recent->ans == 'A') ? 'border-success' : ''; ?> <?= ($recent->response == 'A' && $recent->ans != 'A') ? 'border-danger' : ''; ?> <?= ($recent->response != 'A' && $recent->ans == 'A') ? 'border-success' : ''; ?> border pe-1 ">
-                                <input type="radio" disabled <?= ($recent->response == 'A') ? 'checked' : ''; ?> class="form-check-input fs-2" id="A">
+                                <input type="radio" <?= ($recent->response == 'A') ? 'checked' : ''; ?> class="form-check-input fs-2" id="A">
                                 <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
                             </div><i class="bi "></i>
                         <?php endif; ?>
@@ -56,7 +56,7 @@ require APPROOT . '/views/students/inc/sidebar.php';
                     <div class="mx-3 my-1">
                         <?php if (!empty($recent->opt2)) : ?>
                             <div class="form-check border <?= ($recent->response == 'B' && $recent->ans == 'B') ? 'border-success' : ''; ?><?= ($recent->response == 'B' && $recent->ans != 'B') ? 'border-danger' : ''; ?> <?= ($recent->response != 'B' && $recent->ans == 'B') ? 'border-success' : ''; ?> pe-1">
-                                <input type="radio" disabled <?= ($recent->response == 'B') ? 'checked' : ''; ?> class="form-check-input fs-2" id="B">
+                                <input type="radio" <?= ($recent->response == 'B') ? 'checked' : ''; ?> class="form-check-input fs-2" id="B">
                                 <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
                             </div>
                         <?php endif; ?>
@@ -64,7 +64,7 @@ require APPROOT . '/views/students/inc/sidebar.php';
                     <div class="mx-3 my-1">
                         <?php if (!empty($recent->opt3)) : ?>
                             <div class="form-check border <?= ($recent->response == 'C' && $recent->ans == 'C') ? 'border-success' : ''; ?> <?= ($recent->response == 'C' && $recent->ans != 'C') ? 'border-danger' : ''; ?> <?= ($recent->response != 'C' && $recent->ans == 'C') ? 'border-success' : ''; ?> pe-1">
-                                <input type="radio" disabled <?= ($recent->response == 'C') ? 'checked' : ''; ?> class="form-check-input fs-2" id="C">
+                                <input type="radio" <?= ($recent->response == 'C') ? 'checked' : ''; ?> class="form-check-input fs-2" id="C">
                                 <label style="margin-left: -11px;" for="C" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
                             </div>
                         <?php endif; ?>
@@ -72,7 +72,7 @@ require APPROOT . '/views/students/inc/sidebar.php';
                     <div class="ms-3 my-1">
                         <?php if (!empty($recent->opt4)) : ?>
                             <div class="form-check border <?= ($recent->response == 'D' && $recent->ans == 'D') ? 'border-success' : ''; ?><?= ($recent->response == 'D' && $recent->ans != 'D') ? 'border-danger' : ''; ?> <?= ($recent->response != 'D' && $recent->ans == 'D') ? 'border-success' : ''; ?> pe-1">
-                                <input type="radio" disabled <?= ($recent->response == 'D') ? 'checked' : ''; ?> class="form-check-input fs-2" id="D">
+                                <input type="radio" <?= ($recent->response == 'D') ? 'checked' : ''; ?> class="form-check-input fs-2" id="D">
                                 <label style="margin-left: -11px;" for="D" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
                             </div>
                         <?php endif; ?>
