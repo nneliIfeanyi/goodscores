@@ -24,6 +24,11 @@
           <div class="accordion accordion-flush border-bottom" id="accordionFlushExample">
             <div class="accordion-item bg-light px-1">
               <h2 class="accordion-header" id="flush-headingOne">
+                <?php if (!empty($obj->subInstruction)) : ?>
+                  <div class="fs-6">
+                    <?= $obj->subInstruction; ?>
+                  </div>
+                <?php endif; ?>
                 <?php if (!empty($obj->img)) : ?>
                   <div class="">
                     <div class="mt-2 me-5">

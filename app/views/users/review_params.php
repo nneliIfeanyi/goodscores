@@ -1,6 +1,8 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<?php require APPROOT . '/views/inc/navbar.php'; ?>
-<?php require APPROOT . '/views/inc/sidebar.php'; ?>
+<?php //require APPROOT . '/views/inc/navbar.php'; 
+?>
+<?php //require APPROOT . '/views/inc/sidebar.php'; 
+?>
 
 <main id="main" class="main">
 
@@ -86,9 +88,9 @@
                                 <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
                             </div><!--===== Submit Button Ends =====-->
                         </form><!--===== Set Question Form Ends =====-->
-                        <div class="d-grid mt-3">
+                        <!-- <div class="d-grid mt-3">
                             <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
-                        </div>
+                        </div> -->
                         <div class="d-grid mt-3">
                             <span data-bs-toggle="modal" data-bs-target="#section<?= $data['params']->paperID; ?>" class="btn btn-danger">Delete this section</span>
                         </div>

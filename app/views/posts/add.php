@@ -212,7 +212,7 @@ $mathsObj = '';
                 ?>
                   <div class="my-4">
                     <label for="className">Expected answer</label>
-                    <textarea class="tiny2" name="ans" required><p></p></textarea>
+                    <textarea class="tiny2" name="ans"><p></p></textarea>
                   </div>
                 <?php
                 }
@@ -221,7 +221,7 @@ $mathsObj = '';
                 <textarea class="form-control" name="question"><p></p></textarea>
                 <div class="my-4">
                   <label for="className">Expected answer</label>
-                  <input type="text" name="ans" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                  <input type="text" name="ans" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                 </div>
 
               <?php endif; ?>
@@ -268,7 +268,8 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap subscript superscript',
+      toolbar: 'dash charmap subscript superscript bold',
+      newline_behavior: 'linebreak',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -332,7 +333,8 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap subscript superscript',
+      toolbar: 'dash charmap subscript superscript bold',
+      newline_behavior: 'linebreak',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -351,8 +353,9 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
+      newline_behavior: 'linebreak',
       // toolbar: 'charmap',
-      toolbar: 'dash charmap subscript superscript',
+      toolbar: 'dash charmap subscript superscript bold',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {

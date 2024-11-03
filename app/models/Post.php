@@ -394,28 +394,6 @@ class Post
   }
 
 
-
-
-  // //Check subject num_rows
-  // public function checkSubjectNumRows($class, $user_id, $sch_id)
-  // {
-  //   $this->db->query("SELECT * FROM classes WHERE sch_id = :sch_id AND user_id = :user_id AND classname = :class;");
-
-  //   $this->db->bind(':sch_id', $sch_id);
-  //   $this->db->bind(':user_id', $user_id);
-  //   $this->db->bind(':class', $class);
-
-  //   $num_rows = $this->db->single();
-
-  //   //Check Rows
-  //   if ($this->db->rowCount() > 0) {
-  //     return $num_rows;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-
   // // Get All Activities
   // public function getAllActivities($sch_id, $user_id)
   // {
@@ -493,8 +471,8 @@ class Post
   public function setQuestions2($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO theory (sch_id, user_id, paperID, questionID, questionA, questionB, questionC, questionD, img, Ai, Aii, Aiii, Aiv, Bi, Bii, Biii, Biv, Ci, Cii, Ciii) 
-      VALUES (:sch_id, :user_id, :paperID, :questionID, :questionA, :questionB, :questionC, :questionD, :img, :Ai, :Aii, :Aiii, :Aiv, :Bi, :Bii, :Biii, :Biv, :Ci, :Cii, :Ciii)');
+    $this->db->query('INSERT INTO theory (sch_id, user_id, paperID, questionID, questionA, img) 
+      VALUES (:sch_id, :user_id, :paperID, :questionID, :questionA, :img)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -502,20 +480,6 @@ class Post
     $this->db->bind(':paperID', $data['paperID']);
     $this->db->bind(':questionID', $data['questionID']);
     $this->db->bind(':questionA', $data['question-A']);
-    $this->db->bind(':questionB', $data['question-B']);
-    $this->db->bind(':questionC', $data['question-C']);
-    $this->db->bind(':questionD', $data['question-D']);
-    $this->db->bind(':Ai', $data['A-i']);
-    $this->db->bind(':Aii', $data['A-ii']);
-    $this->db->bind(':Aiii', $data['A-iii']);
-    $this->db->bind(':Aiv', $data['A-iv']);
-    $this->db->bind(':Bi', $data['B-i']);
-    $this->db->bind(':Bii', $data['B-ii']);
-    $this->db->bind(':Biii', $data['B-iii']);
-    $this->db->bind(':Biv', $data['B-iv']);
-    $this->db->bind(':Ci', $data['C-i']);
-    $this->db->bind(':Cii', $data['C-ii']);
-    $this->db->bind(':Ciii', $data['C-iii']);
     $this->db->bind(':img', $data['img']);
     if ($this->db->execute()) {
       return true;
@@ -689,25 +653,11 @@ class Post
   public function updateTheory($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE theory SET questionA = :questionA, questionB = :questionB, questionC = :questionC,questionD = :questionD, Ai = :Ai, Aii = :Aii, Aiii = :Aiii, Aiv = :Aiv, Bi = :Bi, Bii = :Bii, Biii = :Biii, Biv = :Biv, Ci = :Ci, Cii = :Cii, Ciii = :Ciii, img = :img WHERE id = :id');
+    $this->db->query('UPDATE theory SET questionA = :questionA, img = :img WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
     $this->db->bind(':questionA', $data['question-A']);
-    $this->db->bind(':questionB', $data['question-B']);
-    $this->db->bind(':questionC', $data['question-C']);
-    $this->db->bind(':questionD', $data['question-D']);
-    $this->db->bind(':Ai', $data['A-i']);
-    $this->db->bind(':Aii', $data['A-ii']);
-    $this->db->bind(':Aiii', $data['A-iii']);
-    $this->db->bind(':Aiv', $data['A-iv']);
-    $this->db->bind(':Bi', $data['B-i']);
-    $this->db->bind(':Bii', $data['B-ii']);
-    $this->db->bind(':Biii', $data['B-iii']);
-    $this->db->bind(':Biv', $data['B-iv']);
-    $this->db->bind(':Ci', $data['C-i']);
-    $this->db->bind(':Cii', $data['C-ii']);
-    $this->db->bind(':Ciii', $data['C-iii']);
     $this->db->bind(':img', $data['daigram']);
 
     //Execute
