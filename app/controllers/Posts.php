@@ -231,8 +231,8 @@ class Posts extends Controller
   {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       // Sanitize POST
-      $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+      //$_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $ans = strtolower($_POST['ans']);
       $data = [
         'id' => $id,
         'question' => trim($_POST['question']),
@@ -240,7 +240,7 @@ class Posts extends Controller
         'opt4' => trim($_POST['opt4']),
         'opt2' => trim($_POST['opt2']),
         'opt3' => trim($_POST['opt3']),
-        'ans' => $_POST['ans'],
+        'ans' => trim($ans),
         'isSubjective' => $_POST['isSubjective'],
         'sub_ins' => trim($_POST['sub_ins'])
       ];

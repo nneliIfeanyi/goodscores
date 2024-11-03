@@ -4,11 +4,13 @@ class Output extends Controller
   public $postModel;
   public $pageModel;
   public $userModel;
+  public $studentModel;
   public function __construct()
   {
     $this->postModel = $this->model('Post');
     $this->pageModel = $this->model('Page');
     $this->userModel = $this->model('User');
+    $this->studentModel = $this->model('Student');
   }
 
   // Load Homepage
@@ -41,7 +43,7 @@ class Output extends Controller
 
   public function print($paperID)
   {
-    $obj = $this->postModel->getObjectives($paperID);
+    $obj = $this->studentModel->getCbtQuestions($paperID);
     $theory = $this->postModel->getTheory($paperID);
     $params = $this->postModel->getParamsFromCore($paperID);
     $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
@@ -57,6 +59,26 @@ class Output extends Controller
       'sch' => $sch
     ];
     $this->view('output/print', $data);
+  }
+
+  public function print2($paperID)
+  {
+    $obj = $this->studentModel->getCbtQuestions($paperID);
+    $theory = $this->postModel->getTheory($paperID);
+    $params = $this->postModel->getParamsFromCore($paperID);
+    $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $sch = $this->pageModel->getSchool($params->sch_id);
+    $data = [
+      'paperID' => $paperID,
+      'params' => $params,
+      'params1' => $params1,
+      'params2' => $params2,
+      'theory' => $theory,
+      'obj' => $obj,
+      'sch' => $sch
+    ];
+    $this->view('output/print2', $data);
   }
 
   public function review_params($paperID)

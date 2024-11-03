@@ -16,12 +16,12 @@
   </div><!-- End Page Title -->
   <section class="section">
     <div class="row">
-      <div class="col-md-10 col-lg-8">
+      <div class="col-md-10 col-lg-6">
 
         <div class="card">
           <div class="card-body">
 
-            <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
+            <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
               <strong>theory_questions | <?= $data['post']->questionID; ?></strong>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -198,31 +198,82 @@
                     </div>
                   </div>
                 </div><!-- Question D div ends here -->
-                <div class="row my-3">
-                  <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
-                      <i class="bi bi-camera"></i>
-                    </a>
-                  </div>
-                  <div class="col-8">
-                    <div class="d-grid">
-                      <input type="submit" name="submit" id="submit" value="SET" class="btn btn-outline-primary">
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show2/<?= $data['post']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
-                      <i class="bi bi-eye"></i>
-                    </a>
-                  </div>
-                </div>
               </div><!-- End Accordion without outline borders -->
             </form>
           </div>
         </div>
       </div>
+      <div class="col-lg-6">
+        <?php if (!empty($data['post']->img) && empty($_SESSION['daigram'])) : ?>
+          <div class="d-flex justify-content-center">
+            <div class="mt-2 mb-4">
+              <img src="<?php echo URLROOT . '/' . $data['post']->img; ?>" class="img-fluid rounded-3" alt="daigram">
+            </div>
+          </div>
+          <label style="font-size: x-small;">To change question diagram | click camera icon.</label>
+        <?php elseif (!empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+          <div class="d-flex justify-content-center">
+            <div class="mt-2 mb-4">
+              <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+            </div>
+          </div>
+        <?php elseif (empty($data['post']->img) && !empty($_SESSION['daigram'])) : ?>
+          <div class="d-flex justify-content-center">
+            <div class="mt-2 mb-4">
+              <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+            </div>
+          </div>
+        <?php else : ?>
+          <label style="font-size: small;">To append a diagram | click camera icon.</label>
+        <?php endif; ?>
+        <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
+          <strong>theory_questions | <?= $data['post']->questionID; ?></strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <!-- Theory question form submit -->
+        <form action="<?php echo URLROOT; ?>/submissions/edit2/<?= $data['post']->id; ?>" method="POST">
+          <input type="hidden" name="questionID" value=" <?= $data['post']->questionID; ?>">
+
+          <div class="row mb-2">
+            <div class="col-1"> <!-- Numbering badge -->
+              <p class="badge bg-secondary"><?= $data['post']->questionID; ?></p>
+            </div>
+            <div class="col-11"><!-- Question  input -->
+              <textarea class="tiny" name="question"><?= $data['post']->questionA; ?></textarea>
+            </div>
+          </div>
+          <div class="row my-3">
+            <div class="col-2">
+              <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
+                <i class="bi bi-camera"></i>
+              </a>
+            </div>
+            <div class="col-8">
+              <div class="d-grid">
+                <input type="submit" name="submit" id="submit" value="SET" class="btn btn-outline-primary">
+              </div>
+            </div>
+            <div class="col-2">
+              <a href="<?php echo URLROOT; ?>/posts/show2/<?= $data['post']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                <i class="bi bi-eye"></i>
+              </a>
+            </div>
+          </div>
+
+      </div><!-- End Accordion without outline borders -->
+      </form>
+    </div>
+    </div>
+
     </div>
   </section>
+
 </main><!-- End #main -->
+</div>
+</div>
+</section>
+</main><!-- End #main -->
+
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 <script>
@@ -234,16 +285,17 @@
 </script>
 <script>
   tinymce.init({
-    selector: 'textarea',
-    height: 180,
-    plugins: 'charmap',
-    menubar: '',
-    toolbar: 'dash charmap',
+    selector: 'textarea.tiny',
+    height: 400,
+    plugins: 'charmap emoticon wordcount pagebreak table',
+    menubar: 'edit insert format tools table',
+    toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
+    newline_behavior: 'linebreak',
     setup: (editor) => {
 
       editor.ui.registry.addButton('dash', {
         text: '__________',
-        onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+        onAction: (_) => editor.insertContent(`__________`)
       });
 
     },

@@ -59,7 +59,7 @@
                 <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
               </div>
               <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
-                <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
+                <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
                 <?php
                 $mathsObj = 1;
                 if ($mathsObj == '1') {
@@ -86,7 +86,7 @@
                 }
                 ?>
               <?php else : ?>
-                <textarea class="form-control" name="question" required><?php echo $data['post']->question; ?></textarea>
+                <textarea class="form-control" name="question"><?php echo $data['post']->question; ?></textarea>
                 <div class="row my-3">
                   <p class="col-2 d-lg-none">(A)</p>
                   <div class="col-10 col-lg-6">
@@ -108,20 +108,20 @@
               <?php endif; ?>
               <div class="d-flex flex-row gap-3 py-3">
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="A" <?php echo ($data['post']->ans == 'A') ? 'checked' : ''; ?> class="form-check-input" id="A">
-                  <label for="A" class="form-check-label">A</label>
+                  <input type="radio" name="ans" value="A" <?php echo ($data['post']->ans == 'a') ? 'checked' : ''; ?> class="form-check-input" id="A">
+                  <label for="A" class="form-check-label">a</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="B" <?php echo ($data['post']->ans == 'B') ? 'checked' : ''; ?> class="form-check-input" id="B">
-                  <label for="B" class="form-check-label">B</label>
+                  <input type="radio" name="ans" value="B" <?php echo ($data['post']->ans == 'b') ? 'checked' : ''; ?> class="form-check-input" id="B">
+                  <label for="B" class="form-check-label">b</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="C" <?php echo ($data['post']->ans == 'C') ? 'checked' : ''; ?> class="form-check-input" id="C">
-                  <label for="C" class="form-check-label">C</label>
+                  <input type="radio" name="ans" value="C" <?php echo ($data['post']->ans == 'c') ? 'checked' : ''; ?> class="form-check-input" id="C">
+                  <label for="C" class="form-check-label">c</label>
                 </div>
                 <div class="form-check border border-secondary">
-                  <input type="radio" name="ans" value="D" <?php echo ($data['post']->ans == 'D') ? 'checked' : ''; ?> class="form-check-input" id="D">
-                  <label for="D" class="form-check-label">D</label>
+                  <input type="radio" name="ans" value="D" <?php echo ($data['post']->ans == 'd') ? 'checked' : ''; ?> class="form-check-input" id="D">
+                  <label for="D" class="form-check-label">d</label>
                 </div>
               </div>
               <div class="d-flex gap-2">
@@ -180,7 +180,7 @@
               <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
             </div>
             <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
-              <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
+              <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
               <?php
               $mathsObj = 1;
               if ($mathsObj == '1') {
@@ -196,7 +196,7 @@
               <textarea class="form-control" name="question"><?php echo $data['post']->question; ?></textarea>
               <div class="my-4">
                 <label for="className">Expected answer</label>
-                <input type="text" name="ans" value="<?= $data['post']->ans; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                <input type="text" name="ans" value="<?= $data['post']->ans; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
               </div>
 
             <?php endif; ?>
@@ -233,61 +233,16 @@
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap',
+      newline_behavior: 'linebreak',
+      toolbar: 'dash charmap bold superscript subscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
           text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+          onAction: (_) => editor.insertContent(`__________`)
         });
 
       },
-      charmap: [
-        [0x3d, 'equal sign'],
-        [0x2b, 'Plus sign'],
-        [0x2212, 'Minus sign'],
-        [0xd7, 'Multiplication sign'],
-        [0xf7, 'division sign'],
-        [0xb1, 'plus  or minus'],
-        [0x25, 'percent sign'],
-        [0x89, 'per mile sign'],
-        [0xb0, 'degree sign'],
-        [0xb9, 'superscript one'],
-        [0xb2, 'superscript two'],
-        [0xb3, 'superscript three'],
-        [0x221A, 'square root'],
-        [0x221B, 'cube root'],
-        [0x221C, 'fourth root'],
-        [0x3C0, 'pi'],
-        [0x2217, 'asterisk operator'],
-        [0xBD, 'one half'],
-        [0xBC, 'one quarter'],
-        [0xBE, 'three quarter'],
-        [0x2153, 'two third'],
-        [0x2154, 'one third'],
-        [0x2208, 'element of'],
-        [0x220B, 'member'],
-        [0x2209, 'not element of'],
-        [0x2203, 'there exist'],
-        [0x2205, 'empty set'],
-        [0x2207, 'nabla'],
-        [0x221D, 'proportional to'],
-        [0x221E, 'infinity'],
-        [0x2220, 'angle'],
-        [0x2229, 'intersection'],
-        [0x222A, 'union'],
-        [0x2264, 'less or equal to'],
-        [0x2265, 'greater or equal to'],
-        [0x2282, 'subset of'],
-        [0x2283, 'superset of'],
-        [0x2284, 'not a subset of'],
-        [0x2286, 'subset of or equal to'],
-        [0x2287, 'superset of or equal to'],
-        [0x2260, 'not equal to'],
-        [0x222B, 'integral'],
-        [0x2211, 'summation'],
-        [0x2044, 'fraction slash'],
-      ]
     });
   </script>
 <?php else : ?>
@@ -297,12 +252,13 @@
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      toolbar: 'dash charmap',
+      newline_behavior: 'linebreak',
+      toolbar: 'dash charmap superscript subscript bold',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
           text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
+          onAction: (_) => editor.insertContent(`__________`)
         });
 
       },
@@ -317,8 +273,8 @@ if ($mathsObj == '1') : ?>
       height: 180,
       plugins: 'charmap',
       menubar: '',
-      // toolbar: 'charmap',
-      toolbar: 'dash charmap',
+      newline_behavior: 'linebreak',
+      toolbar: 'dash charmap bold superscript subscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -327,52 +283,6 @@ if ($mathsObj == '1') : ?>
         });
 
       },
-      charmap: [
-        [0x3d, 'equal sign'],
-        [0x2b, 'Plus sign'],
-        [0x2212, 'Minus sign'],
-        [0xd7, 'Multiplication sign'],
-        [0xf7, 'division sign'],
-        [0xb1, 'plus  or minus'],
-        [0x25, 'percent sign'],
-        [0x89, 'per mile sign'],
-        [0xb0, 'degree sign'],
-        [0xb9, 'superscript one'],
-        [0xb2, 'superscript two'],
-        [0xb3, 'superscript three'],
-        [0x221A, 'square root'],
-        [0x221B, 'cube root'],
-        [0x221C, 'fourth root'],
-        [0x3C0, 'pi'],
-        [0x2217, 'asterisk operator'],
-        [0xBD, 'one half'],
-        [0xBC, 'one quarter'],
-        [0xBE, 'three quarter'],
-        [0x2153, 'two third'],
-        [0x2154, 'one third'],
-        [0x2208, 'element of'],
-        [0x220B, 'member'],
-        [0x2209, 'not element of'],
-        [0x2203, 'there exist'],
-        [0x2205, 'empty set'],
-        [0x2207, 'nabla'],
-        [0x221D, 'proportional to'],
-        [0x221E, 'infinity'],
-        [0x2220, 'angle'],
-        [0x2229, 'intersection'],
-        [0x222A, 'union'],
-        [0x2264, 'less or equal to'],
-        [0x2265, 'greater or equal to'],
-        [0x2282, 'subset of'],
-        [0x2283, 'superset of'],
-        [0x2284, 'not a subset of'],
-        [0x2286, 'subset of or equal to'],
-        [0x2287, 'superset of or equal to'],
-        [0x2260, 'not equal to'],
-        [0x222B, 'integral'],
-        [0x2211, 'summation'],
-        [0x2044, 'fraction slash'],
-      ]
     });
   </script>
 <?php endif; ?>
