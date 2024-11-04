@@ -1,6 +1,6 @@
 {
   "name": "Goodscores",
-  "short_name": "Teacher's Aid",
+  "short_name": "Goodscores",
   "start_url": "index.php",
   "display": "standalone",
   "background_color": "#f6f9ff",
