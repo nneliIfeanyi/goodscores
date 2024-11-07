@@ -37,7 +37,7 @@ class Users extends Controller
     $subjects = $this->userModel->getUserSubjectsRowCount($_SESSION['user_id']);
     $classes = $this->userModel->getUserClassesRowCount($_SESSION['user_id']);
     $params = $this->postModel->getRecentParams();
-    $class = $this->userModel->getClasses($_COOKIE['sch_id']);
+    $class = $this->userModel->getTeachers($_COOKIE['sch_id']);
 
     //$all = $this->postModel->getParamsRowCount();
     $data = [

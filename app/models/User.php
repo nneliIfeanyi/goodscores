@@ -149,9 +149,9 @@ class User
 
     return $results;
   }
-  public function getClasses()
+  public function getTeachers()
   {
-    $this->db->query("SELECT * FROM classes WHERE sch_id = :id;");
+    $this->db->query("SELECT * FROM teachers WHERE sch_id = :id;");
     $this->db->bind(':id', $_COOKIE['sch_id']);
     $results = $this->db->resultset();
 

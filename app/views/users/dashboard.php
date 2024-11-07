@@ -190,17 +190,17 @@
                   <h5 class="card-title">Archives | Output</h5>
                   <ul class="nav nav-tabs nav-tabs-bordered">
 
-                    <?php foreach ($data['class'] as $myclass) : ?>
+                    <?php foreach ($data['class'] as $teachers) : ?>
                       <li class="nav-item">
-                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#clasz<?= $myclass->id ?>"><?= $myclass->classname ?></button>
+                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#clasz<?= $teachers->id ?>"><?= $teachers->username ?></button>
                       </li>
                     <?php endforeach; ?>
                   </ul><!-- Tab Links ul Ends -->
                   <div class="tab-content pt-2">
                     <?php $n = 1;
-                    foreach ($data['class'] as $myclass) : ?>
+                    foreach ($data['class'] as $teachers) : ?>
 
-                      <div class="tab-pane fade" id="clasz<?= $myclass->id ?>">
+                      <div class="tab-pane fade" id="clasz<?= $teachers->id ?>">
                         <table class="table table-borderless">
                           <thead>
                             <tr>
@@ -216,7 +216,7 @@
                           <tbody>
 
                             <?php
-                            if (!empty($archive = $this->postModel->getArchive($myclass->classname))) :
+                            if (!empty($archive = $this->postModel->getArchive($teachers->id))) :
                               foreach ($archive as $recent) :
                                 $obj_num_rows = $this->postModel->checkObjectivesNumRows($recent->paperID, $_COOKIE['sch_id']);
                                 $theory_num_rows = $this->postModel->checkTheoryNumRows($recent->paperID, $_COOKIE['sch_id']);

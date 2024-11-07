@@ -500,11 +500,11 @@ class Post
 
   // Get All Exam params ie. Archives 
   // 
-  public function getArchive($class)
+  public function getArchive($id)
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND class = :class ORDER BY id DESC;");
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND user_id = :id ORDER BY id DESC;");
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-    $this->db->bind(':class', $class);
+    $this->db->bind(':id', $id);
     $this->db->resultset();
     return $this->db->resultset();
   }
