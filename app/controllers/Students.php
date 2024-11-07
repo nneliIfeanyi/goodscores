@@ -21,9 +21,11 @@ class Students extends Controller
         }
         $count = $this->studentModel->getStudentsCount();
         $classes = $this->pageModel->getClasses($_COOKIE['sch_id']);
+        $class = $this->userModel->getUserClasses($_SESSION['user_id']);
         $data = [
             'count' => $count,
-            'classes' => $classes
+            'classes' => $classes,
+            'class' => $class
         ];
 
         // Load view
@@ -236,33 +238,19 @@ class Students extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
-                    $try = str_replace('<', '&#60;', $_POST['question' . $i]);
-                    $question = str_replace('>', '&#62;', $try);
-                    $try1 = str_replace('<', '&#60;', $_POST[$i . 'optA']);
-                    $opt1 = str_replace('>', '&#62;', $try1);
-                    $try2 = str_replace('<', '&#60;', $_POST[$i . 'optB']);
-                    $opt2 = str_replace('>', '&#62;', $try2);
-                    $try3 = str_replace('<', '&#60;', $_POST[$i . 'optC']);
-                    $opt3 = str_replace('>', '&#62;', $try3);
-                    $try4 = str_replace('<', '&#60;', $_POST[$i . 'optD']);
-                    $opt4 = str_replace('>', '&#62;', $try4);
-                    $try5 = str_replace('<', '&#60;', $_POST['ans' . $i]);
-                    $ans = str_replace('>', '&#62;', $try5);
-
                     $data = [
                         'sch_id' => $_COOKIE['sch_id'],
                         'student_id' => $_SESSION['student_id'],
                         'paperID' => $_POST['paperID'],
-                        'response' => $ans,
-                        'question' => $question,
-                        'opt1' => $opt1,
-                        'opt2' => $opt2,
-                        'opt3' => $opt3,
-                        'opt4' => $opt4,
+                        'response' => $_POST['ans' . $i],
+                        'question' => $_POST['question' . $i],
+                        'opt1' => $_POST[$i . 'optA'],
+                        'opt2' => $_POST[$i . 'optB'],
+                        'opt3' => $_POST[$i . 'optC'],
+                        'opt4' => $_POST[$i . 'optD'],
                         'img' => $_POST['img' . $i],
                         'isSubjective' => $_POST['isSubjective' . $i],
                         'subInstruction' => $_POST['subInstruction' . $i],
-                        'section_alt' => $_POST['section_alt' . $i],
                         'ans' => $_POST['default' . $i],
                     ];
                     // Insert || Set Response
@@ -285,6 +273,7 @@ class Students extends Controller
                     'sch_id' => $_COOKIE['sch_id'],
                     'student_id' => $_SESSION['student_id'],
                     'subject' => $_POST['subject'],
+                    'class' => $_POST['class'],
                     'paperID' => $_POST['paperID'],
                     'score' => $result,
                     'cbtTag' => $_POST['cbtTag'],
@@ -306,6 +295,7 @@ class Students extends Controller
         } else { // Post Request Ends ................................
             $cbt = $this->studentModel->getResponse($paper_id);
             $examTaken = $this->studentModel->checkIfExamTaken($paper_id);
+            $param = $this->studentModel->getCbtCore($paper_id);
             if (!$examTaken) {
                 $data = [
                     'sch_id' => $_COOKIE['sch_id'],
@@ -316,7 +306,7 @@ class Students extends Controller
                     'cbtTag' => $core->publishedAS,
                     'cbt' => ''
                 ];
-                $result =  round(1 / $cbtRowCount * 100, 1);
+                $result =  0;
                 $data['score'] = $result;
                 // Insert Score To DB
                 $this->studentModel->insertScore($data);
@@ -326,19 +316,51 @@ class Students extends Controller
                     $this->view('students/failed', $data);
                 }
             } else {
-                $data = [
-                    'sch_id' => $_COOKIE['sch_id'],
-                    'student_id' => $_SESSION['student_id'],
-                    'subject' => $core->subject,
-                    'paperID' => $paper_id,
-                    'score' => $examTaken->score,
-                    'cbtTag' => $core->publishedAS,
-                    'cbt' => $cbt
-                ];
-                if ($examTaken->score >= 50) {
-                    $this->view('students/success', $data);
-                } else {
-                    $this->view('students/failed', $data);
+                if ($param->publishedAS == 'CA1') {
+                    $data = [
+                        'sch_id' => $_COOKIE['sch_id'],
+                        'student_id' => $_SESSION['student_id'],
+                        'subject' => $core->subject,
+                        'paperID' => $paper_id,
+                        'score' => $examTaken->CA1,
+                        'cbtTag' => $core->publishedAS,
+                        'cbt' => $cbt
+                    ];
+                    if ($examTaken->CA1 >= 50) {
+                        $this->view('students/success', $data);
+                    } else {
+                        $this->view('students/failed', $data);
+                    }
+                } elseif ($param->publishedAS == 'CA2') {
+                    $data = [
+                        'sch_id' => $_COOKIE['sch_id'],
+                        'student_id' => $_SESSION['student_id'],
+                        'subject' => $core->subject,
+                        'paperID' => $paper_id,
+                        'score' => $examTaken->CA2,
+                        'cbtTag' => $core->publishedAS,
+                        'cbt' => $cbt
+                    ];
+                    if ($examTaken->CA2 >= 50) {
+                        $this->view('students/success', $data);
+                    } else {
+                        $this->view('students/failed', $data);
+                    }
+                } elseif ($param->publishedAS == 'exam') {
+                    $data = [
+                        'sch_id' => $_COOKIE['sch_id'],
+                        'student_id' => $_SESSION['student_id'],
+                        'subject' => $core->subject,
+                        'paperID' => $paper_id,
+                        'score' => $examTaken->exam,
+                        'cbtTag' => $core->publishedAS,
+                        'cbt' => $cbt
+                    ];
+                    if ($examTaken->exam >= 50) {
+                        $this->view('students/success', $data);
+                    } else {
+                        $this->view('students/failed', $data);
+                    }
                 }
             }
         }
@@ -370,6 +392,73 @@ class Students extends Controller
 
         // Load view
         $this->view('students/failed', $data);
+    }
+    public function assessment()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+            $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+            $data = [
+                'term' => val_entry($_POST['term']),
+                'subject' => val_entry($_POST['subject']),
+                'class' => val_entry($_POST['class']),
+                'subjects' => $subjects,
+                'classes' => $classes,
+            ];
+            if ($scores = $this->studentModel->getScores($data['class'], $data['term'], $data['subject'])) {
+                $data['scores'] = $scores;
+                $this->view('students/assessment', $data);
+            } else {
+                $data = [
+                    'term' => val_entry($_POST['term']),
+                    'subject' => val_entry($_POST['subject']),
+                    'class' => val_entry($_POST['class']),
+                    'subjects' => $subjects,
+                    'classes' => $classes,
+                    'scores' => ''
+                ];
+                // Load view
+                $this->view('students/assessment', $data);
+            }
+        } else {
+            $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
+            $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
+            $data = [
+                'subjects' => $subjects,
+                'classes' => $classes,
+                'scores' => ''
+            ];
+            // Load view
+            $this->view('students/assessment', $data);
+        }
+    }
+    public function scoring($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'id' => $id,
+                'CA1' => val_entry($_POST['CA1']),
+                'CA2' => val_entry($_POST['CA2']),
+                'exam' => val_entry($_POST['exam']),
+            ];
+            if ($this->studentModel->updateScores($id)) {
+                flash('msg', 'Sucessfull!');
+                redirect('students/assessment');
+            }
+        } else {
+            $CA1 = $this->studentModel->getCA1($id);
+            $CA2 = $this->studentModel->getCA2($id);
+            $exam = $this->studentModel->getExam($id);
+            $data = [
+                'id' => $id,
+                'CA1' => $CA1->score,
+                'CA2' => $CA2->score,
+                'exam' => $exam->score
+            ];
+
+            // Load view
+            $this->view('students/scoring', $data);
+        }
     }
     public function profile($id)
     {
@@ -498,6 +587,7 @@ class Students extends Controller
             die('Something went wrong');
         }
     } // End remove | delete student profile image
+
 
     // Create Session With User Info
     public function createUserSession($user)

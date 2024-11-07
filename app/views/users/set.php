@@ -88,26 +88,34 @@
                     <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
                   </div>
                   <div class="my-4">
-                    <select class="form-control form-control-lg" name="class" required>
-                      <option value="">Select Class</option>
-                      <?php if (empty($data['classes'])) : ?>
-                        <option value="">No added class</option>
+                    <select class="form-control form-control-lg" name="class">
+                      <?php if (empty($_GET['class'])) : ?>
+                        <option value="">Select Class</option>
+                        <?php if (empty($data['classes'])) : ?>
+                          <option value="">No added class</option>
+                        <?php else : ?>
+                          <?php foreach ($data['classes'] as $class) : ?>
+                            <option value="<?php echo $class->classname; ?>"><?php echo $class->classname; ?></option>
+                          <?php endforeach; ?>
+                        <?php endif; ?>
                       <?php else : ?>
-                        <?php foreach ($data['classes'] as $class) : ?>
-                          <option value="<?php echo $class->classname; ?>"><?php echo $class->classname; ?></option>
-                        <?php endforeach; ?>
+                        <option value="<?= $_GET['class']; ?>"><?= $_GET['class']; ?></option>
                       <?php endif; ?>
                     </select>
                   </div><!--===== Class Ends =====-->
                   <div class="my-4">
-                    <select class="form-control form-control-lg" name="subject" required>
-                      <option value="">Select Subject</option>
-                      <?php if (empty($data['subjects'])) : ?>
-                        <option value="">No added subject</option>
+                    <select class="form-control form-control-lg" name="subject">
+                      <?php if (empty($_GET['subject'])) : ?>
+                        <option value="">Select Subject</option>
+                        <?php if (empty($data['subjects'])) : ?>
+                          <option value="">No added subject</option>
+                        <?php else : ?>
+                          <?php foreach ($data['subjects'] as $subject) : ?>
+                            <option value="<?php echo $subject->subject; ?>"><?php echo $subject->subject; ?></option>
+                          <?php endforeach; ?>
+                        <?php endif; ?>
                       <?php else : ?>
-                        <?php foreach ($data['subjects'] as $subject) : ?>
-                          <option value="<?php echo $subject->subject; ?>"><?php echo $subject->subject; ?></option>
-                        <?php endforeach; ?>
+                        <option value="<?= $_GET['subject']; ?>"><?= $_GET['subject']; ?></option>
                       <?php endif; ?>
                     </select>
                   </div><!--===== Subject Ends =====-->
@@ -148,34 +156,6 @@
                       <?php endif; ?>
                     </select>
                   </div><!--===== Subject Ends =====-->
-
-                <?php elseif ($data['param'] == 'others') : ?>
-                  <div class="my-4">
-                    <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
-                    <input type="text" name="section_tag" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                  </div>
-                  <div class="my-4">
-                    <label for="className">Section name</label>
-                    <input type="text" name="section_alt" class="form-control form-control-lg" value="" />
-                  </div>
-                  <div class="my-4">
-                    <select class="form-control form-control-lg" name="class" required>
-                      <option value="<?= $_GET['class']; ?>"><?= $_GET['class']; ?></option>
-                    </select>
-                  </div><!--===== Class Ends =====-->
-                  <div class="my-4">
-                    <select class="form-control form-control-lg" name="subject" required>
-                      <option value="<?= $_GET['subject']; ?>"><?= $_GET['subject']; ?></option>
-                    </select>
-                  </div><!--===== Subject Ends =====-->
-                  <div class="my-4">
-                    <label for="className">Number of questions for this section</label>
-                    <input type="number" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                  </div>
-                  <div class="my-4">
-                    <label for="className">Exam instruction for this section <span style="font-size: small;">(eg. Answer only 1 question in this section)</span></label>
-                    <input name="instruction" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                  </div><!--===== Others section Instruction Ends =====-->
                 <?php endif; ?>
 
                 <div class="d-grid">

@@ -107,10 +107,11 @@
                             <h3 class="pb-3 h4"><?= $data['param']->section ?> | <?= $data['param']->instruction ?></h3>
                         </div>
                         <form action="<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>" method="POST">
+                            <input type="hidden" name="class" value="<?= $data['core']->class; ?>">
                             <input type="hidden" name="subject" value="<?= $data['core']->subject; ?>">
                             <input type="hidden" name="paperID" id="name" value="<?= $data['core']->paperID; ?>">
                             <input type="hidden" name="cbtTag" value="<?= $data['core']->publishedAS; ?>">
-                            <input type="hidden" name="isSubjective" value="<?= $data['core']->isSubjective; ?>">
+                            <!-- <input type="hidden" name="isSubjective" value="<?= $data['core']->isSubjective; ?>"> -->
                             <?php
                             if (!empty($data['cbt'])) :
                                 $n = 1;
@@ -119,7 +120,6 @@
                                         <input type="hidden" name="img<?= $n; ?>" value="<?= $recent->img; ?>">
                                         <input type="hidden" name="subInstruction<?= $n; ?>" value="<?= $recent->subInstruction; ?>">
                                         <input type="hidden" name="isSubjective<?= $n; ?>" value="<?= $recent->isSubjective; ?>">
-                                        <input type="hidden" name="section_alt<?= $n; ?>" value="<?= $recent->section_alt; ?>">
                                         <?php if (!empty($recent->img)) : ?>
                                             <div class="">
                                                 <div class="mt-2 me-5">
@@ -151,7 +151,7 @@
                                                 <?php if (!empty($recent->opt1)) : ?>
                                                     <div class="form-check border pe-1">
                                                         <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="A" class="form-check-input fs-2" id="A">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="a" class="form-check-input fs-2" id="A">
                                                         <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
                                                     </div>
                                                 <?php endif; ?>
@@ -160,7 +160,7 @@
                                                 <?php if (!empty($recent->opt2)) : ?>
                                                     <div class="form-check border pe-1">
                                                         <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="B" class="form-check-input fs-2" id="B">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="b" class="form-check-input fs-2" id="B">
                                                         <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
                                                     </div>
                                                 <?php endif; ?>
@@ -169,7 +169,7 @@
                                                 <?php if (!empty($recent->opt3)) : ?>
                                                     <div class="form-check border  pe-1">
                                                         <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="C" class="form-check-input fs-2" id="C">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="c" class="form-check-input fs-2" id="C">
                                                         <label style="margin-left: -11px;" for="C" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
                                                     </div>
                                                 <?php endif; ?>
@@ -178,7 +178,7 @@
                                                 <?php if (!empty($recent->opt4)) : ?>
                                                     <div class="form-check border  pe-1">
                                                         <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="D" class="form-check-input fs-2" id="D">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="d" class="form-check-input fs-2" id="D">
                                                         <label style="margin-left: -11px;" for="D" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
                                                     </div>
                                                 <?php endif; ?>

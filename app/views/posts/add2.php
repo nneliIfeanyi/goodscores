@@ -82,7 +82,10 @@
                     <p class="badge bg-secondary"><?= $data['num_rows'] + (1); ?></p>
                   </div>
                   <div class="col-11"><!-- Question  input -->
-                    <textarea class="tiny" name="question"></textarea>
+                    <textarea class="tiny" name="question">
+                    <b>a)</b>&nbsp;<br/>
+                    <b>b)</b>&nbsp;<br/>
+                    </textarea>
                   </div>
                 </div>
 
@@ -130,7 +133,7 @@
   tinymce.init({
     selector: 'textarea.tiny',
     height: 400,
-    plugins: 'charmap emoticon wordcount pagebreak',
+    plugins: 'charmap emoticon wordcount table pagebreak',
     menubar: 'edit insert format tools table',
     toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
     newline_behavior: 'linebreak',

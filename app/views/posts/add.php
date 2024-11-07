@@ -20,7 +20,7 @@ $mathsObj = '';
 
   <section class="section">
     <div class="row">
-      <div class="col-md-10 col-lg-7 alert border-0 p-0 alert-dismissible fade show" role="alert">
+      <div class="col-md-10 col-lg-10 alert border-0 p-0 alert-dismissible fade show" role="alert">
         <div class="row">
           <div class="col-lg-11 me-auto">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -30,31 +30,31 @@ $mathsObj = '';
               <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
                 <strong>objectives_questions</strong>
               </div>
-              <textarea class="form-control" disabled name="question" required placeholder="COMPLETED"></textarea>
+              <textarea class="form-control" disabled required placeholder="COMPLETED"></textarea>
               <div class="row my-3">
                 <div class="col-6 col-md-3">
-                  <input type="text" disabled class="form-control" placeholder="Opt-A" required name="opt1">
+                  <input type="text" disabled class="form-control" placeholder="Opt-A">
                 </div>
                 <div class="col-6 col-md-3">
-                  <input type="text" disabled class="form-control" placeholder="Opt-B" required name="opt2">
+                  <input type="text" disabled class="form-control" placeholder="Opt-B">
                 </div>
                 <div class="col-6 col-md-3">
-                  <input type="text" disabled class="form-control" placeholder="Opt-C" name="opt3">
+                  <input type="text" disabled class="form-control" placeholder="Opt-C">
                 </div>
                 <div class="col-6 col-md-3">
-                  <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
+                  <input type="text" disabled class="form-control" placeholder="Opt-D">
                 </div>
               </div>
               <div class="d-flex gap-2 flex-wrap">
                 <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'theory_questions')) : ?>
                   <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add2/<?= $data['paperID']; ?>">Go to Theory Questions <i class="bi bi-chevron-right"></i></a>
-                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn btn-outline-secondary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
                   <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
                 <?php else : ?>
-                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>">Preview <i class="bi bi-eye"></i></a>
+                  <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>">Preview <i class="bi bi-eye"></i></a>
                   <a class="btn" href="<?php echo URLROOT; ?>/users/dashboard">Go to Dashboard <i class="bi bi-chevron-right"></i></a>
 
-                  <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
+                  <a href="<?= URLROOT; ?>/users/set/theory_questions?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Theory Section</a>
 
                 <?php endif; ?>
               </div>
@@ -71,10 +71,9 @@ $mathsObj = '';
               </div>
               <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
                 <input type="hidden" name="isSubjective" value="no">
-                <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
                 <div class="mt-4 mb-2">
                   <label for="className">Sub-section Instruction</label>
-                  <input type="text" name="sub_ins" class="form-control form-control-lg" />
+                  <input name="sub_ins" class="form-control form-control-lg" />
                 </div>
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
@@ -87,35 +86,33 @@ $mathsObj = '';
                     <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
                   </div>
                 <?php endif; ?>
-                <?php if ($data['subject'] == 'Maths' || $data['subject'] == 'maths' || $data['subject'] == 'Mathematics' || $data['subject'] == 'mathematics' || $data['subject'] == 'Further Maths' || $data['subject'] == 'further maths' || $data['subject'] == 'Further Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'further mathematics' || $data['subject'] == 'Physics' || $data['subject'] == 'physics') : ?>
-                  <textarea class="tiny" name="question" required><p></p></textarea>
-                  <?php
+                <textarea class="tiny" name="question"><p></p></textarea>
+                <?php
+                if ($data['subject'] == 'Maths') {
                   $mathsObj = 1;
-                  if ($mathsObj == '1') {
-                  ?>
-                    <div class="row my-3">
-                      <p class="col-2 d-lg-none">(A)</p>
-                      <div class="col-10 col-lg-6">
-                        <textarea class="tiny2" type="text" class="tiny" name="opt1"><p></p></textarea>
-                      </div>
-                      <p class="col-2 d-lg-none">(B)</p>
-                      <div class="col-10 col-lg-6">
-                        <textarea class="tiny2" type="text" class="tiny" name="opt2"><p></p></textarea>
-                      </div>
-                      <p class="col-2 d-lg-none">(C)</p>
-                      <div class="col-10 col-lg-6">
-                        <textarea class="tiny2" type="text" class="tiny" name="opt3"><p></p></textarea>
-                      </div>
-                      <p class="col-2 d-lg-none">(D)</p>
-                      <div class="col-10 col-lg-6">
-                        <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
-                      </div>
+                }
+                ?>
+                <?php if ($mathsObj == '1') : ?>
+                  <div class="row my-3">
+                    <p class="col-2 d-lg-none">(A)</p>
+                    <div class="col-10 col-lg-6">
+                      <textarea class="tiny2" type="text" class="tiny" name="opt1"><p></p></textarea>
                     </div>
-                  <?php
-                  }
-                  ?>
+                    <p class="col-2 d-lg-none">(B)</p>
+                    <div class="col-10 col-lg-6">
+                      <textarea class="tiny2" type="text" class="tiny" name="opt2"><p></p></textarea>
+                    </div>
+                    <p class="col-2 d-lg-none">(C)</p>
+                    <div class="col-10 col-lg-6">
+                      <textarea class="tiny2" type="text" class="tiny" name="opt3"><p></p></textarea>
+                    </div>
+                    <p class="col-2 d-lg-none">(D)</p>
+                    <div class="col-10 col-lg-6">
+                      <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
+                    </div>
+                  </div>
+
                 <?php else : ?>
-                  <textarea class="form-control" name="question"><p></p></textarea>
                   <div class="row my-3">
                     <p class="col-2 d-lg-none">(A)</p>
                     <div class="col-10 col-lg-6">
@@ -165,7 +162,7 @@ $mathsObj = '';
                     </div>
                   </div>
                   <div class="col-2">
-                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                    <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                       <i class="bi bi-eye"></i>
                     </a>
                   </div>
@@ -187,11 +184,10 @@ $mathsObj = '';
               <strong>Set Subjective Question</strong>
             </div>
             <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
-              <input type="hidden" name="section_alt" value="<?= $data['section_alt']; ?>">
               <input type="hidden" name="isSubjective" value="yes">
               <div class="mt-4 mb-2">
                 <label for="className">Sub-section Instruction</label>
-                <input type="text" name="sub_ins" class="form-control form-control-lg" />
+                <input name="sub_ins" class="form-control form-control-lg">
               </div>
               <?php if (!empty($_SESSION['daigram'])) : ?>
                 <div class="d-flex justify-content-center">
@@ -204,21 +200,16 @@ $mathsObj = '';
                   <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
                 </div>
               <?php endif; ?>
-              <?php if ($data['subject'] == 'Maths' || $data['subject'] == 'maths' || $data['subject'] == 'Mathematics' || $data['subject'] == 'mathematics' || $data['subject'] == 'Further Maths' || $data['subject'] == 'further maths' || $data['subject'] == 'Further Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'further mathematics' || $data['subject'] == 'Physics' || $data['subject'] == 'physics') : ?>
-                <textarea class="tiny" name="question" required><p></p></textarea>
-                <?php
-                $mathsObj = 1;
-                if ($mathsObj == '1') {
-                ?>
-                  <div class="my-4">
-                    <label for="className">Expected answer</label>
-                    <textarea class="tiny2" name="ans"><p></p></textarea>
-                  </div>
-                <?php
-                }
-                ?>
+
+              <textarea class="tiny" name="question" required><p></p></textarea>
+
+              <?php if ($mathsObj == 1) : ?>
+                <div class="my-4">
+                  <label for="className">Expected answer</label>
+                  <textarea class="tiny2" name="ans"><p></p></textarea>
+                </div>
               <?php else : ?>
-                <textarea class="form-control" name="question"><p></p></textarea>
+                <textarea class="tiny" name="question"><p></p></textarea>
                 <div class="my-4">
                   <label for="className">Expected answer</label>
                   <input type="text" name="ans" class="form-control form-control-lg" data-parsley-trigger="keyup" />
@@ -237,7 +228,7 @@ $mathsObj = '';
                   </div>
                 </div>
                 <div class="col-2">
-                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>&section_alt=<?= $data['section_alt']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                     <i class="bi bi-eye"></i>
                   </a>
                 </div>
@@ -261,91 +252,24 @@ $mathsObj = '';
     });
   });
 </script>
-<?php if ($data['subject'] == 'Maths' || $data['subject'] == 'maths' || $data['subject'] == 'Mathematics' || $data['subject'] == 'mathematics' || $data['subject'] == 'Further Maths' || $data['subject'] == 'further maths' || $data['subject'] == 'Further Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'further mathematics' || $data['subject'] == 'Physics' || $data['subject'] == 'physics') : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea.tiny',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'dash charmap subscript superscript bold',
-      newline_behavior: 'linebreak',
-      setup: (editor) => {
+<script>
+  tinymce.init({
+    selector: 'textarea.tiny',
+    height: 210,
+    plugins: 'charmap emoticon wordcount table pagebreak',
+    menubar: 'edit insert format tools',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
+    newline_behavior: 'linebreak',
+    setup: (editor) => {
 
-        editor.ui.registry.addButton('dash', {
-          text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-        });
+      editor.ui.registry.addButton('dash', {
+        text: '__________',
+        onAction: (_) => editor.insertContent(`__________`)
+      });
 
-      },
-      charmap: [
-        [0x3d, 'equal sign'],
-        [0x2b, 'Plus sign'],
-        [0x2212, 'Minus sign'],
-        [0xd7, 'Multiplication sign'],
-        [0xf7, 'division sign'],
-        [0xb1, 'plus  or minus'],
-        [0x25, 'percent sign'],
-        [0x89, 'per mile sign'],
-        [0xb0, 'degree sign'],
-        [0xb9, 'superscript one'],
-        [0xb2, 'superscript two'],
-        [0xb3, 'superscript three'],
-        [0x221A, 'square root'],
-        [0x221B, 'cube root'],
-        [0x221C, 'fourth root'],
-        [0x3C0, 'pi'],
-        [0x2217, 'asterisk operator'],
-        [0xBD, 'one half'],
-        [0xBC, 'one quarter'],
-        [0xBE, 'three quarter'],
-        [0x2153, 'two third'],
-        [0x2154, 'one third'],
-        [0x2208, 'element of'],
-        [0x220B, 'member'],
-        [0x2209, 'not element of'],
-        [0x2203, 'there exist'],
-        [0x2205, 'empty set'],
-        [0x2207, 'nabla'],
-        [0x221D, 'proportional to'],
-        [0x221E, 'infinity'],
-        [0x2220, 'angle'],
-        [0x2229, 'intersection'],
-        [0x222A, 'union'],
-        [0x2264, 'less or equal to'],
-        [0x2265, 'greater or equal to'],
-        [0x2282, 'subset of'],
-        [0x2283, 'superset of'],
-        [0x2284, 'not a subset of'],
-        [0x2286, 'subset of or equal to'],
-        [0x2287, 'superset of or equal to'],
-        [0x2260, 'not equal to'],
-        [0x222B, 'integral'],
-        [0x2211, 'summation'],
-        [0x2044, 'fraction slash'],
-      ]
-    });
-  </script>
-<?php else : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'dash charmap subscript superscript bold',
-      newline_behavior: 'linebreak',
-      setup: (editor) => {
-
-        editor.ui.registry.addButton('dash', {
-          text: '__________',
-          onAction: (_) => editor.insertContent(`&nbsp;__________&nbsp;`)
-        });
-
-      },
-    });
-  </script>
-<?php endif; ?>
+    },
+  });
+</script>
 <?php if ($mathsObj == '1') : ?>
   <script>
     tinymce.init({
@@ -353,9 +277,8 @@ $mathsObj = '';
       height: 180,
       plugins: 'charmap',
       menubar: '',
+      toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
       newline_behavior: 'linebreak',
-      // toolbar: 'charmap',
-      toolbar: 'dash charmap subscript superscript bold',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -364,52 +287,6 @@ $mathsObj = '';
         });
 
       },
-      charmap: [
-        [0x3d, 'equal sign'],
-        [0x2b, 'Plus sign'],
-        [0x2212, 'Minus sign'],
-        [0xd7, 'Multiplication sign'],
-        [0xf7, 'division sign'],
-        [0xb1, 'plus  or minus'],
-        [0x25, 'percent sign'],
-        [0x89, 'per mile sign'],
-        [0xb0, 'degree sign'],
-        [0xb9, 'superscript one'],
-        [0xb2, 'superscript two'],
-        [0xb3, 'superscript three'],
-        [0x221A, 'square root'],
-        [0x221B, 'cube root'],
-        [0x221C, 'fourth root'],
-        [0x3C0, 'pi'],
-        [0x2217, 'asterisk operator'],
-        [0xBD, 'one half'],
-        [0xBC, 'one quarter'],
-        [0xBE, 'three quarter'],
-        [0x2153, 'two third'],
-        [0x2154, 'one third'],
-        [0x2208, 'element of'],
-        [0x220B, 'member'],
-        [0x2209, 'not element of'],
-        [0x2203, 'there exist'],
-        [0x2205, 'empty set'],
-        [0x2207, 'nabla'],
-        [0x221D, 'proportional to'],
-        [0x221E, 'infinity'],
-        [0x2220, 'angle'],
-        [0x2229, 'intersection'],
-        [0x222A, 'union'],
-        [0x2264, 'less or equal to'],
-        [0x2265, 'greater or equal to'],
-        [0x2282, 'subset of'],
-        [0x2283, 'superset of'],
-        [0x2284, 'not a subset of'],
-        [0x2286, 'subset of or equal to'],
-        [0x2287, 'superset of or equal to'],
-        [0x2260, 'not equal to'],
-        [0x222B, 'integral'],
-        [0x2211, 'summation'],
-        [0x2044, 'fraction slash'],
-      ]
     });
   </script>
 <?php endif; ?>

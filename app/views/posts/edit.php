@@ -129,7 +129,7 @@
                   <i class="bi bi-camera"></i>
                 </a>
                 <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
-                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>&section_alt=<?= $data['params']->section_alt; ?>" class="btn-outline-dark btn">
+                <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
                   <i class="bi bi-chevron-left"></i> Back
                 </a>
               </div>
@@ -205,7 +205,7 @@
                 <i class="bi bi-camera"></i>
               </a>
               <input type="submit" name="submit" value="Save Changes" class="btn btn-outline-primary">
-              <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>&section_alt=<?= $data['params']->section_alt; ?>" class="btn-outline-dark btn">
+              <a href="<?php echo URLROOT; ?>/posts/show/<?php echo $data['params']->paperID; ?>?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn-outline-dark btn">
                 <i class="bi bi-chevron-left"></i> Back
               </a>
             </div>
@@ -230,11 +230,11 @@
   <script>
     tinymce.init({
       selector: 'textarea.tiny',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
+      height: 400,
+      plugins: 'charmap emoticon wordcount table pagebreak',
+      menubar: 'edit insert format tools',
+      toolbar: 'undo redo dash | bold superscript subscript underline strikethrough | lineheight outdent indent | charmap pagebreak',
       newline_behavior: 'linebreak',
-      toolbar: 'dash charmap bold superscript subscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -249,11 +249,11 @@
   <script>
     tinymce.init({
       selector: 'textarea',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
+      height: 400,
+      plugins: 'charmap emoticon wordcount table pagebreak',
+      menubar: 'edit insert format tools',
+      toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
       newline_behavior: 'linebreak',
-      toolbar: 'dash charmap superscript subscript bold',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {
@@ -271,10 +271,10 @@ if ($mathsObj == '1') : ?>
     tinymce.init({
       selector: 'textarea.tiny2',
       height: 180,
-      plugins: 'charmap',
-      menubar: '',
+      plugins: 'charmap emoticon wordcount pagebreak',
+      menubar: 'edit insert format tools table',
+      toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
       newline_behavior: 'linebreak',
-      toolbar: 'dash charmap bold superscript subscript',
       setup: (editor) => {
 
         editor.ui.registry.addButton('dash', {

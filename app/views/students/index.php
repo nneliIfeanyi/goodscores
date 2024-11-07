@@ -59,79 +59,94 @@
 
                             <div class="card-body pb-0">
                                 <h5 class="card-title">Manage | Students</h5>
-                                <!-- Bordered Tabs -->
+                                <?php if ($_SESSION['role'] != 'Admin') : ?>
+                                    <ul class="nav nav-tabs nav-tabs-bordered">
 
-                                <ul class="nav nav-tabs nav-tabs-bordered">
-                                    <li class="nav-item">
-                                        <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#students">All Students</button>
-                                    </li>
-                                    <?php foreach ($data['classes'] as $class) : ?>
-                                        <li class="nav-item">
-                                            <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#class<?= $class->id ?>"><?= $class->classname ?></button>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                                <div class="tab-content pt-2">
-                                    <div class="tab-pane fade profile-overview" id="students">
-                                        <h5 class="card-title">A Total Of <span class="fs-4 fw-bold text-secondary"><?= $data['count'] ?></span> Students</h5>
-                                        <table class="table table-borderless">
-                                            <thead>
-                                                <tr>
+                                        <?php foreach ($data['class'] as $myclass) : ?>
+                                            <li class="nav-item">
+                                                <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#clasz<?= $myclass->id ?>"><?= $myclass->classname ?></button>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                    <div class="tab-content pt-2">
+                                        <?php foreach ($data['class'] as $myclass) :
 
-                                                    <th scope="col">S|N</th>
-                                                    <th scope="col">Photo</th>
-                                                    <th scope="col">Fullname</th>
-                                                    <th scope="col">Class</th>
-                                                    <th scope="col">Passkey</th>
-                                                    <th scope="col">View</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
+                                            if (!empty($this->studentModel->countPerClass($myclass->classname))) {
+                                                $total_per_class = $this->studentModel->countPerClass($myclass->classname);
+                                            } else {
+                                                $total_per_class = 0;
+                                            }
+                                        ?>
 
-                                                <?php
+                                            <div class="tab-pane fade" id="clasz<?= $myclass->id ?>">
 
-                                                if (!empty($this->studentModel->getStudents())) :
-                                                    $students = $this->studentModel->getStudents();
-                                                    $num = 1;
-                                                    foreach ($students as $student) : ?>
+                                                <h5 class="card-title">A Total Of <span class="fs-4 fw-bold text-secondary"><?= $total_per_class ?></span> Students</h5>
+                                                <table class="table table-borderless">
+                                                    <thead>
                                                         <tr>
-                                                            <td><?= $num ?></td>
-                                                            <td>
-                                                                <?php if (empty($student->photo)) : ?>
-                                                                    <i class="bi bi-person fs-2 text-primary"></i>
-                                                                <?php else : ?>
-                                                                    <img src="<?= URLROOT . '/' . $student->photo ?>" height="80" width="90" alt="Student-photo">
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
-                                                            <td><?= $student->class; ?></td>
-                                                            <td><?= $student->passkey; ?></td>
-                                                            <td class="d-flex gap-2">
-                                                                <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
-                                                                <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
-                                                            </td>
+
+                                                            <th scope="col">S|N</th>
+                                                            <th scope="col">Photo</th>
+                                                            <th scope="col">Fullname</th>
+                                                            <th scope="col">Passkey</th>
+                                                            <th scope="col">View</th>
                                                         </tr>
+                                                    </thead>
+                                                    <tbody>
 
-                                                    <?php $num++;
-                                                    endforeach;
-                                                else : ?>
-                                                    <tr>
-                                                        <td class="text-danger">No data set</td>
-                                                    </tr>
-                                                <?php endif; ?>
-                                            </tbody>
-                                        </table>
+                                                        <?php
+
+                                                        if (!empty($this->studentModel->studentsPerClass($myclass->classname))) :
+                                                            $students = $this->studentModel->studentsPerClass($myclass->classname);
+                                                            $num = 1;
+                                                            foreach ($students as $student) : ?>
+                                                                <tr>
+                                                                    <td><?= $num ?></td>
+                                                                    <td>
+                                                                        <?php if (empty($student->photo)) : ?>
+                                                                            <i class="bi bi-person fs-2 text-primary"></i>
+                                                                        <?php else : ?>
+                                                                            <img src="<?= URLROOT . '/' . $student->photo ?>" height="80" width="90" alt="Student-photo">
+                                                                        <?php endif; ?>
+                                                                    </td>
+                                                                    <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
+                                                                    <td><?= $student->passkey; ?></td>
+                                                                    <td class="d-flex gap-2">
+                                                                        <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                                                        <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
+                                                                    </td>
+                                                                </tr>
+
+                                                            <?php $num++;
+                                                            endforeach;
+                                                        else : ?>
+                                                            <tr>
+                                                                <td class="text-danger">No data set</td>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+
+
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
-                                    <?php foreach ($data['classes'] as $class) :
-
-                                        if (!empty($this->studentModel->countPerClass($class->classname))) {
-                                            $total_per_class = $this->studentModel->countPerClass($class->classname);
-                                        } else {
-                                            $total_per_class = 0;
-                                        }
-                                    ?>
-                                        <div class="tab-pane fade profile-overview" id="class<?= $class->id ?>">
-                                            <h5 class="card-title">A Total Of <span class="fs-4 fw-bold text-secondary"><?= $total_per_class ?></span> Students</h5>
+                                <?php endif; ?>
+                                <!-- Bordered Tabs -->
+                                <?php if ($_SESSION['role'] == 'Admin') : ?>
+                                    <ul class="nav nav-tabs nav-tabs-bordered">
+                                        <li class="nav-item">
+                                            <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#students">All Students</button>
+                                        </li>
+                                        <?php foreach ($data['classes'] as $class) : ?>
+                                            <li class="nav-item">
+                                                <button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#class<?= $class->id ?>"><?= $class->classname ?></button>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                    <div class="tab-content pt-2">
+                                        <div class="tab-pane fade profile-overview" id="students">
+                                            <h5 class="card-title">A Total Of <span class="fs-4 fw-bold text-secondary"><?= $data['count'] ?></span> Students</h5>
                                             <table class="table table-borderless">
                                                 <thead>
                                                     <tr>
@@ -139,6 +154,7 @@
                                                         <th scope="col">S|N</th>
                                                         <th scope="col">Photo</th>
                                                         <th scope="col">Fullname</th>
+                                                        <th scope="col">Class</th>
                                                         <th scope="col">Passkey</th>
                                                         <th scope="col">View</th>
                                                     </tr>
@@ -147,8 +163,8 @@
 
                                                     <?php
 
-                                                    if (!empty($this->studentModel->studentsPerClass($class->classname))) :
-                                                        $students = $this->studentModel->studentsPerClass($class->classname);
+                                                    if (!empty($this->studentModel->getStudents())) :
+                                                        $students = $this->studentModel->getStudents();
                                                         $num = 1;
                                                         foreach ($students as $student) : ?>
                                                             <tr>
@@ -161,6 +177,7 @@
                                                                     <?php endif; ?>
                                                                 </td>
                                                                 <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
+                                                                <td><?= $student->class; ?></td>
                                                                 <td><?= $student->passkey; ?></td>
                                                                 <td class="d-flex gap-2">
                                                                     <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
@@ -178,9 +195,65 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    <?php endforeach; ?>
-                                </div><!-- End Bordered Tabs -->
+                                        <?php foreach ($data['classes'] as $class) :
 
+                                            if (!empty($this->studentModel->countPerClass($class->classname))) {
+                                                $total_per_class = $this->studentModel->countPerClass($class->classname);
+                                            } else {
+                                                $total_per_class = 0;
+                                            }
+                                        ?>
+                                            <div class="tab-pane fade profile-overview" id="class<?= $class->id ?>">
+                                                <h5 class="card-title">A Total Of <span class="fs-4 fw-bold text-secondary"><?= $total_per_class ?></span> Students</h5>
+                                                <table class="table table-borderless">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th scope="col">S|N</th>
+                                                            <th scope="col">Photo</th>
+                                                            <th scope="col">Fullname</th>
+                                                            <th scope="col">Passkey</th>
+                                                            <th scope="col">View</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php
+
+                                                        if (!empty($this->studentModel->studentsPerClass($class->classname))) :
+                                                            $students = $this->studentModel->studentsPerClass($class->classname);
+                                                            $num = 1;
+                                                            foreach ($students as $student) : ?>
+                                                                <tr>
+                                                                    <td><?= $num ?></td>
+                                                                    <td>
+                                                                        <?php if (empty($student->photo)) : ?>
+                                                                            <i class="bi bi-person fs-2 text-primary"></i>
+                                                                        <?php else : ?>
+                                                                            <img src="<?= URLROOT . '/' . $student->photo ?>" height="80" width="90" alt="Student-photo">
+                                                                        <?php endif; ?>
+                                                                    </td>
+                                                                    <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
+                                                                    <td><?= $student->passkey; ?></td>
+                                                                    <td class="d-flex gap-2">
+                                                                        <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                                                        <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
+                                                                    </td>
+                                                                </tr>
+
+                                                            <?php $num++;
+                                                            endforeach;
+                                                        else : ?>
+                                                            <tr>
+                                                                <td class="text-danger">No data set</td>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div><!-- End Bordered Tabs -->
+                                <?php endif; ?>
                             </div>
 
                         </div>

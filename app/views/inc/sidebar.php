@@ -35,7 +35,7 @@
              </a>
            </li>
            <li>
-             <a href="<?php echo URLROOT; ?>/#">
+             <a href="<?php echo URLROOT; ?>/students/assessment">
                <i class="bi bi-circle"></i><span>Assessment</span>
              </a>
            </li>

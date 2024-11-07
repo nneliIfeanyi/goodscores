@@ -56,7 +56,7 @@
                             </li> -->
                             <?php if ($data['isCbt'] == '1') : ?>
                                 <li class="nav-item">
-                                    <a href="<?= URLROOT; ?>/pages/advance" class="nav-link">Advance</a>
+                                    <a href="<?= URLROOT; ?>/pages/advance" class="nav-link">Classes</a>
                                 </li>
                             <?php endif; ?>
                             <?php if ($data['role'] == 'Admin') : ?>

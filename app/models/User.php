@@ -149,6 +149,14 @@ class User
 
     return $results;
   }
+  public function getClasses()
+  {
+    $this->db->query("SELECT * FROM classes WHERE sch_id = :id;");
+    $this->db->bind(':id', $_COOKIE['sch_id']);
+    $results = $this->db->resultset();
+
+    return $results;
+  }
 
   // Get class by ID
   public function getSingleClass($id)

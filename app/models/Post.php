@@ -63,14 +63,13 @@ class Post
   }
 
   // Delete all obj
-  public function deleteObjAll($id, $section_alt)
+  public function deleteObjAll($id)
   {
     // Prepare Query
-    $this->db->query('DELETE FROM objectives WHERE paperID = :id AND section_alt = :section_alt');
+    $this->db->query('DELETE FROM objectives WHERE paperID = :id');
 
     // Bind Values
     $this->db->bind(':id', $id);
-    $this->db->bind(':section_alt', $section_alt);
 
     //Execute
     if ($this->db->execute()) {
@@ -213,8 +212,8 @@ class Post
   public function addExamParams($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, section_alt, year, num_rows, instruction, tag) 
-      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :section_alt, :year, :num_rows, :instruction, :tag)');
+    $this->db->query('INSERT INTO params (sch_id, user_id, paperID, class, subject, term, section, year, num_rows, instruction, tag) 
+      VALUES (:sch_id, :user_id, :paperID, :class, :subject, :term, :section, :year, :num_rows, :instruction, :tag)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
@@ -224,7 +223,6 @@ class Post
     $this->db->bind(':subject', $data['subject']);
     $this->db->bind(':term', $data['term']);
     $this->db->bind(':section', $data['section']);
-    $this->db->bind(':section_alt', $data['section_alt']);
     $this->db->bind(':year', $data['year']);
     $this->db->bind(':num_rows', $data['num_rows']);
     $this->db->bind(':instruction', $data['instruction']);
@@ -261,13 +259,12 @@ class Post
   }
 
   //Check Objective Questions RowCount
-  public function checkObjectivesNumRows($paper_id, $section_alt, $sch_id)
+  public function checkObjectivesNumRows($paper_id, $sch_id)
   {
-    $this->db->query("SELECT * FROM objectives WHERE sch_id = :sch_id AND paperID = :paperID AND section_alt = :section_alt;");
+    $this->db->query("SELECT * FROM objectives WHERE sch_id = :sch_id AND paperID = :paperID;");
 
     $this->db->bind(':sch_id', $sch_id);
     $this->db->bind(':paperID', $paper_id);
-    $this->db->bind(':section_alt', $section_alt);
 
     $this->db->resultset();
 
@@ -298,11 +295,10 @@ class Post
   }
 
   //Get Objective Questions
-  public function getObjectives($paper_id, $section_alt)
+  public function getObjectives($paper_id)
   {
-    $this->db->query("SELECT * FROM objectives WHERE sch_id = :sch_id AND paperID = :paperID AND section_alt = :section_alt;");
+    $this->db->query("SELECT * FROM objectives WHERE sch_id = :sch_id AND paperID = :paperID;");
 
-    $this->db->bind(':section_alt', $section_alt);
     $this->db->bind(':paperID', $paper_id);
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
 
@@ -416,14 +412,13 @@ class Post
   public function setQuestions($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, section_alt, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction) 
-      VALUES (:sch_id, :user_id, :paperID, :section_alt, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins)');
+    $this->db->query('INSERT INTO objectives (sch_id, user_id, paperID, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction) 
+      VALUES (:sch_id, :user_id, :paperID, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':paperID', $data['paperID']);
-    $this->db->bind(':section_alt', $data['section_alt']);
     $this->db->bind(':question', $data['question']);
     $this->db->bind(':isSubjective', $data['isSubjective']);
     $this->db->bind(':opt1', $data['opt1']);
@@ -505,12 +500,11 @@ class Post
 
   // Get All Exam params ie. Archives 
   // 
-  public function getArchive()
+  public function getArchive($class)
   {
-    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id ORDER BY id DESC;");
-    //$this->db->bind(':sch_id', $_COOKIE['sch_id']);
+    $this->db->query("SELECT * FROM params WHERE sch_id = :sch_id AND class = :class ORDER BY id DESC;");
     $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-    //$this->db->bind(':user_id', $_SESSION['user_id']);
+    $this->db->bind(':class', $class);
     $this->db->resultset();
     return $this->db->resultset();
   }
@@ -629,7 +623,7 @@ class Post
   public function updateParams($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE params SET subject = :subject, class = :class, tag = :tag, section = :section, num_rows = :num_rows, instruction = :instruction, section_alt = :section_alt WHERE id = :id');
+    $this->db->query('UPDATE params SET subject = :subject, class = :class, tag = :tag, section = :section, num_rows = :num_rows, instruction = :instruction WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
@@ -639,7 +633,6 @@ class Post
     $this->db->bind(':instruction', $data['instruction']);
     $this->db->bind(':tag', $data['tag']);
     $this->db->bind(':section', $data['section']);
-    $this->db->bind(':section_alt', $data['section_alt']);
 
     //Execute
     if ($this->db->execute()) {

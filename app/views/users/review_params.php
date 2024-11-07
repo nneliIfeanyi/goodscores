@@ -1,7 +1,6 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
-<?php //require APPROOT . '/views/inc/navbar.php'; 
-?>
-<?php //require APPROOT . '/views/inc/sidebar.php'; 
+<?php require APPROOT . '/views/inc/header.php';
+require APPROOT . '/views/inc/navbar.php';
+require APPROOT . '/views/inc/sidebar.php';
 ?>
 
 <main id="main" class="main">
@@ -34,17 +33,10 @@
                                 <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
                                 <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
                             </div>
-                            <?php if ($data['section'] == 'others') : ?>
-                                <div class="my-4">
-                                    <label for="className">Section name</label>
-                                    <input type="text" name="section_alt" class="form-control form-control-lg" value="<?= $data['params']->section_alt; ?>" />
-                                </div>
-                            <?php else : ?>
-                                <div class="my-4">
-                                    <label for="className">Section name</label>
-                                    <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section']; ?>" />
-                                </div>
-                            <?php endif; ?>
+                            <div class="my-4">
+                                <label for="className">Section name</label>
+                                <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section']; ?>" />
+                            </div>
                             <div class="my-4">
                                 <select class="form-control form-control-lg" name="class">
                                     <option value="<?php echo $data['params']->class; ?>"><?php echo $data['params']->class; ?></option>
@@ -73,24 +65,16 @@
                                     <label for="className">Exam instruction for this section</label>
                                     <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                                 </div><!--===== Theory section Instruction Ends =====-->
-                            <?php elseif ($data['section'] == 'others') : ?>
-                                <div class="my-4">
-                                    <label for="className">Number of questions</label>
-                                    <input type="number" value="<?= $data['params']->num_rows; ?>" name="num_rows" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                                </div>
-                                <div class="my-4">
-                                    <label for="className">Exam instruction for this section</label>
-                                    <input name="instruction" value="<?= $data['params']->instruction; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                                </div><!--===== Theory section Instruction Ends =====-->
                             <?php endif; ?>
 
                             <div class="d-grid">
                                 <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
                             </div><!--===== Submit Button Ends =====-->
                         </form><!--===== Set Question Form Ends =====-->
-                        <!-- <div class="d-grid mt-3">
-                            <a href="<?= URLROOT; ?>/users/set/others?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Section</a>
-                        </div> -->
+
+                        <div class="d-grid mt-3">
+                            <a href="<?= URLROOT; ?>/users/set/theory_questions?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Theory Section</a>
+                        </div>
                         <div class="d-grid mt-3">
                             <span data-bs-toggle="modal" data-bs-target="#section<?= $data['params']->paperID; ?>" class="btn btn-danger">Delete this section</span>
                         </div>
@@ -110,7 +94,6 @@
                                             <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                                             <form action="<?php echo URLROOT; ?>/posts/delete_section/<?= $data['params']->paperID; ?>" method="POST">
                                                 <input type="hidden" name="section" value="<?= $data['params']->section; ?>">
-                                                <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
                                                 <input class="btn btn-danger" type="submit" name="submit" value="Yes Continue">
                                             </form>
                                         </div>
@@ -153,11 +136,9 @@
                                     <select class="form-control form-control-lg" name="publishAS">
                                         <option value="<?= $data['core']->publishedAS; ?>"><?= $data['core']->publishedAS; ?></option>
                                         <option value="">None</option>
-                                        <option value="1st CA">1st CA</option>
-                                        <option value="2nd CA">2nd CA</option>
-                                        <option value="3rd CA">3rd CA</option>
-                                        <option value="Exam">Exam</option>
-                                        <option value="Take Home Assignment">Take Home Assignment</option>
+                                        <option value="CA1">1st CA</option>
+                                        <option value="CA2">2nd CA</option>
+                                        <option value="exam">Exam</option>
                                     </select>
                                 </div>
                                 <div class="d-grid">

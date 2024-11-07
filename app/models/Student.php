@@ -249,22 +249,69 @@ class Student
 
     public function insertScore($data)
     {
-        // Prepare Query
-        $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, sub_ject, tag, score) 
-      VALUES (:sch_id, :student_id, :paperID, :sub_ject, :tag, :score)');
+        if ($data['cbtTag'] == 'CA1') {
+            // Prepare Query
+            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
 
-        // Bind Values
-        $this->db->bind(':sch_id', $data['sch_id']);
-        $this->db->bind(':student_id', $data['student_id']);
-        $this->db->bind(':paperID', $data['paperID']);
-        $this->db->bind(':sub_ject', $data['subject']);
-        $this->db->bind(':tag', $data['cbtTag']);
-        $this->db->bind(':score', $data['score']);
-        //Execute
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
+            // Bind Values
+            $this->db->bind(':sch_id', $data['sch_id']);
+            $this->db->bind(':student_id', $data['student_id']);
+            $this->db->bind(':paperID', $data['paperID']);
+            $this->db->bind(':class', $data['class']);
+            $this->db->bind(':term', TERM);
+            $this->db->bind(':sub_ject', $data['subject']);
+            $this->db->bind(':CA1', $data['score']);
+            $this->db->bind(':CA2', '');
+            $this->db->bind(':exam', '');
+            //Execute
+            if ($this->db->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } elseif ($data['cbtTag'] == 'CA2') {
+            // Prepare Query
+            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
+
+            // Bind Values
+            $this->db->bind(':sch_id', $data['sch_id']);
+            $this->db->bind(':student_id', $data['student_id']);
+            $this->db->bind(':paperID', $data['paperID']);
+            $this->db->bind(':class', $data['class']);
+            $this->db->bind(':term', TERM);
+            $this->db->bind(':sub_ject', $data['subject']);
+            $this->db->bind(':CA1', '');
+            $this->db->bind(':CA2', $data['score']);
+            $this->db->bind(':exam', '');
+            //Execute
+            if ($this->db->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } elseif ($data['cbtTag'] == 'exam') {
+            // Prepare Query
+            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
+
+            // Bind Values
+            $this->db->bind(':sch_id', $data['sch_id']);
+            $this->db->bind(':student_id', $data['student_id']);
+            $this->db->bind(':paperID', $data['paperID']);
+            $this->db->bind(':class', $data['class']);
+            $this->db->bind(':term', TERM);
+            $this->db->bind(':sub_ject', $data['subject']);
+            $this->db->bind(':CA1', '');
+            $this->db->bind(':CA2', '');
+            $this->db->bind(':exam', $data['score']);
+            //Execute
+            if ($this->db->execute()) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -311,14 +358,13 @@ class Student
     public function setResponse($data)
     {
         // Prepare Query
-        $this->db->query('INSERT INTO responses (sch_id, student_id, paperID, section_alt, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction, response) 
-      VALUES (:sch_id, :student_id, :paperID, :section_alt, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins, :response)');
+        $this->db->query('INSERT INTO responses (sch_id, student_id, paperID, question, isSubjective, opt1, opt2, opt3, opt4, ans, img, subInstruction, response) 
+      VALUES (:sch_id, :student_id, :paperID, :question, :isSubjective, :opt1, :opt2, :opt3, :opt4, :ans, :img, :sub_ins, :response)');
 
         // Bind Values
         $this->db->bind(':sch_id', $data['sch_id']);
         $this->db->bind(':student_id', $data['student_id']);
         $this->db->bind(':paperID', $data['paperID']);
-        $this->db->bind(':section_alt', $data['section_alt']);
         $this->db->bind(':question', $data['question']);
         $this->db->bind(':isSubjective', $data['isSubjective']);
         $this->db->bind(':opt1', $data['opt1']);
@@ -357,5 +403,34 @@ class Student
         $this->db->single();
 
         return $this->db->single();
+    }
+
+    public function getScores($class, $term, $subject)
+    {
+        $this->db->query("SELECT * FROM scores WHERE term =:term AND class =:class AND sub_ject = :sub_ject;");
+        $this->db->bind(':term', $term);
+        $this->db->bind(':sub_ject', $subject);
+        $this->db->bind(':class', $class);
+        $this->db->resultset();
+        if ($this->db->rowCount() > 0) {
+            return $this->db->resultset();
+        } else {
+            return false;
+        }
+    }
+    public function updateScores($id)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE scores SET CA1 = :CA1, CA2 = :CA2, exam =:exam WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
