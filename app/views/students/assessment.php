@@ -107,7 +107,7 @@
                                         <td><span class="ms-2 fw-semibold"><?= $score->CA2; ?></span></td>
                                         <td><span class="ms-2 fw-semibold"><?= $score->exam; ?></span></td>
                                         <td class="d-flex gap-2">
-                                            <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                            <a href="<?= URLROOT ?>/students/scoring/<?= $score->id ?>"><i class="bi bi-pen"></i></a>
                                         </td>
                                     </tr>
 

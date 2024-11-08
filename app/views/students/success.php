@@ -13,18 +13,46 @@ require APPROOT . '/views/students/inc/sidebar.php';
             <div class="pagetitle">
                 <h1 class="text-success fw-bold h1">Success!</h1>
             </div>
-            <div class="card">
-                <div class="card-body pb-3">
-                    <h5 class="card-title"><?= $data['subject']; ?> | CA Test</h5>
+            <?php if ($data['cbtTag'] == 'CA1') : ?>
+                <div class="card">
+                    <div class="card-body pb-3">
+                        <h5 class="card-title"><?= $data['subject']; ?> | 1st CA</h5>
 
-                    <div class="badge rounded-circle p-5 bg-success">
-                        <p class="fw-bold fs-1"><?= $data['score']; ?>%</p>
+                        <div class="badge rounded-circle p-5 bg-success">
+                            <p class="fw-bold fs-1"><?= $data['score']; ?> of 20</p>
+                        </div>
+                        <p><span class="fs-2 fw-bold">PASSED!</span><br /></p>
+
                     </div>
-                    <p><span class="fs-2 fw-bold">PASSED!</span><br /> Based on 50% and above.</p>
 
                 </div>
+            <?php elseif ($data['cbtTag'] == 'CA2') : ?>
+                <div class="card">
+                    <div class="card-body pb-3">
+                        <h5 class="card-title"><?= $data['subject']; ?> | 2nd CA</h5>
 
-            </div>
+                        <div class="badge rounded-circle p-5 bg-success">
+                            <p class="fw-bold fs-1"><?= $data['score']; ?> of 20</p>
+                        </div>
+                        <p><span class="fs-2 fw-bold">PASSED!</span><br /></p>
+
+                    </div>
+
+                </div>
+            <?php elseif ($data['cbtTag'] == 'exam') : ?>
+                <div class="card">
+                    <div class="card-body pb-3">
+                        <h5 class="card-title"><?= $data['subject']; ?> | Exam</h5>
+
+                        <div class="badge rounded-circle p-5 bg-success">
+                            <p class="fw-bold fs-1"><?= $data['score']; ?> of 60</p>
+                        </div>
+                        <p><span class="fs-2 fw-bold">PASSED!</span><br /></p>
+
+                    </div>
+
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <?php

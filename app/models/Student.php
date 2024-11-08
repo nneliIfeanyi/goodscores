@@ -418,13 +418,31 @@ class Student
             return false;
         }
     }
-    public function updateScores($id)
+
+    public function getSingleScores($id)
+    {
+        $this->db->query("SELECT * FROM scores WHERE id = :id;");
+        // $this->db->bind(':term', $term);
+        // $this->db->bind(':sub_ject', $subject);
+        // $this->db->bind(':class', $class);
+        $this->db->bind(':id', $id);
+        $this->db->single();
+        if ($this->db->rowCount() > 0) {
+            return $this->db->single();
+        } else {
+            return false;
+        }
+    }
+    public function updateScores($data)
     {
         // Prepare Query
         $this->db->query('UPDATE scores SET CA1 = :CA1, CA2 = :CA2, exam =:exam WHERE id = :id');
 
         // Bind Values
-        $this->db->bind(':id', $id);
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':CA1', $data['CA1']);
+        $this->db->bind(':CA2', $data['CA2']);
+        $this->db->bind(':exam', $data['exam']);
 
         //Execute
         if ($this->db->execute()) {

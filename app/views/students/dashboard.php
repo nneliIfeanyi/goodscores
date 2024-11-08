@@ -85,8 +85,8 @@
                                         <td><?= $recent->duration ?> min.</td>
                                         <td><span class="badge bg-success">Completed</span></td>
                                         <?php if ($recent->publishedAS == 'CA1') : ?>
-                                            <td><?= $details->CA1; ?>%</td>
-                                            <?php if ($details->CA1 >= 50) : ?>
+                                            <td><?= $details->CA1; ?></td>
+                                            <?php if ($details->CA1 >= 10) : ?>
                                                 <td><span class="badge bg-success">Passed!</span></td>
                                                 <td class="">
                                                     <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> view</a>
@@ -99,8 +99,8 @@
                                             <?php endif; ?>
                                         <?php endif; ?>
                                         <?php if ($recent->publishedAS == 'CA2') : ?>
-                                            <td><?= $details->CA2; ?>%</td>
-                                            <?php if ($details->CA2 >= 50) : ?>
+                                            <td><?= $details->CA2; ?></td>
+                                            <?php if ($details->CA2 >= 10) : ?>
                                                 <td><span class="badge bg-success">Passed!</span></td>
                                                 <td class="">
                                                     <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> view</a>
@@ -113,8 +113,8 @@
                                             <?php endif; ?>
                                         <?php endif; ?>
                                         <?php if ($recent->publishedAS == 'exam') : ?>
-                                            <td><?= $details->exam; ?>%</td>
-                                            <?php if ($details->exam >= 50) : ?>
+                                            <td><?= $details->exam; ?></td>
+                                            <?php if ($details->exam >= 30) : ?>
                                                 <td><span class="badge bg-success">Passed!</span></td>
                                                 <td class="">
                                                     <a href="<?= URLROOT ?>/students/submit_cbt/<?= $recent->paperID ?>" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> view</a>
