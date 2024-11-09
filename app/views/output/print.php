@@ -137,6 +137,12 @@
                     <?php $num++;
                         endforeach; ?><!-- End OBJ foreach -->
                 <?php endif; ?><!-- End Not Empty OBJ questions-->
+                <?php if (!empty($data['theory'])) : ?>
+                    <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
+                        <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
+                        <span><?= $data['params1']->instruction; ?></span>
+                    </div><br />
+                <?php endif; ?>
                     </div><!-- End second col-6 question display -->
             </div>
             <div class="d-grid my-4 mx-5">

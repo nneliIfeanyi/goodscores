@@ -71,10 +71,11 @@ require APPROOT . '/views/inc/sidebar.php';
                                 <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
                             </div><!--===== Submit Button Ends =====-->
                         </form><!--===== Set Question Form Ends =====-->
-
-                        <div class="d-grid mt-3">
-                            <a href="<?= URLROOT; ?>/users/set/theory_questions?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Theory Section</a>
-                        </div>
+                        <?php if ($data['section'] == 'objectives_questions') : ?>
+                            <div class="d-grid mt-3">
+                                <a href="<?= URLROOT; ?>/users/set/theory_questions?class=<?= $data['params']->class; ?>&subject=<?= $data['params']->subject; ?>" class="btn btn-success">Append Theory Section</a>
+                            </div>
+                        <?php endif; ?>
                         <div class="d-grid mt-3">
                             <span data-bs-toggle="modal" data-bs-target="#section<?= $data['params']->paperID; ?>" class="btn btn-danger">Delete this section</span>
                         </div>

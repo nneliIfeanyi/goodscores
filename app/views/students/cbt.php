@@ -229,9 +229,9 @@
                 location.reload();
                 clearInterval(x);
                 display.innerHTML = "EXPIRED";
-            } else if (minutes <= 5) { // 5 minutes warning
+            } else if (minutes < 3) { // 3 minutes warning
                 // Change text color to warning color
-                display.style.color = 'orange';
+                display.style.color = 'tomato';
                 // Add blinking effect
                 display.classList.add('blinking');
             }

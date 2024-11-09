@@ -238,11 +238,12 @@ class Students extends Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!$this->studentModel->checkIfResponseExist($paper_id)) {
                 for ($i = 1; $i <= $cbtRowCount; $i++) {
+                    $ans = strtolower($_POST['ans' . $i]);
                     $data = [
                         'sch_id' => $_COOKIE['sch_id'],
                         'student_id' => $_SESSION['student_id'],
                         'paperID' => $_POST['paperID'],
-                        'response' => $_POST['ans' . $i],
+                        'response' => trim($ans),
                         'question' => $_POST['question' . $i],
                         'opt1' => $_POST[$i . 'optA'],
                         'opt2' => $_POST[$i . 'optB'],
