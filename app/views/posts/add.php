@@ -88,7 +88,7 @@ $mathsObj = '';
                 <?php endif; ?>
                 <textarea class="tiny" name="question"><p></p></textarea>
                 <?php
-                if ($data['subject'] == 'Maths') {
+                if ($data['subject'] == 'Mathematics' || $data['subject'] == 'Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'Further Maths') {
                   $mathsObj = 1;
                 }
                 ?>
@@ -176,68 +176,69 @@ $mathsObj = '';
         </div>
       </div>
       <!-- ===== isSubjective Question ===== -->
-      <?php if ($_COOKIE['cbt'] == '1') : ?>
-        <?php if ($data['num_rows'] < $data['total_subject_num_rows']) : ?>
-          <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
-            <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              <strong>Set Subjective Question</strong>
-            </div>
-            <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
-              <input type="hidden" name="isSubjective" value="yes">
-              <div class="mt-4 mb-2">
-                <label for="className">Sub-section Instruction</label>
-                <input name="sub_ins" class="form-control form-control-lg">
-              </div>
-              <?php if (!empty($_SESSION['daigram'])) : ?>
-                <div class="d-flex justify-content-center">
-                  <div class="mt-2 mb-4">
-                    <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
-                  </div>
-                </div>
-              <?php else : ?>
-                <div class="lead">
-                  <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
-                </div>
-              <?php endif; ?>
-
-              <textarea class="tiny" name="question" required><p></p></textarea>
-
-              <?php if ($mathsObj == 1) : ?>
-                <div class="my-4">
-                  <label for="className">Expected answer</label>
-                  <textarea class="tiny2" name="ans"><p></p></textarea>
-                </div>
-              <?php else : ?>
-                <textarea class="tiny" name="question"><p></p></textarea>
-                <div class="my-4">
-                  <label for="className">Expected answer</label>
-                  <input type="text" name="ans" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                </div>
-
-              <?php endif; ?>
-              <div class="row">
-                <div class="col-2">
-                  <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
-                    <i class="bi bi-camera"></i>
-                  </a>
-                </div>
-                <div class="col-8">
-                  <div class="d-grid">
-                    <input type="submit" id="submit" value="SET" class="btn btn-outline-primary">
-                  </div>
-                </div>
-                <div class="col-2">
-                  <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
-                    <i class="bi bi-eye"></i>
-                  </a>
-                </div>
-              </div>
-            </form>
+      <?php if ($data['num_rows'] < $data['total_subject_num_rows']) : ?>
+        <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
+          <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <strong>Set Subjective Question</strong>
           </div>
-        <?php endif; ?>
-        <!-- ===== End isSubjective Question ===== -->
+          <form method="POST" action="<?= URLROOT; ?>/processing/add/<?= $data['paperID']; ?>">
+            <input type="hidden" name="isSubjective" value="yes">
+            <div class="mt-4 mb-2">
+              <label for="">Sub-section Instruction</label>
+              <input name="sub_ins" class="form-control form-control-lg">
+            </div>
+            <?php if (!empty($_SESSION['daigram'])) : ?>
+              <div class="d-flex justify-content-center">
+                <div class="mt-2 mb-4">
+                  <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
+                </div>
+              </div>
+            <?php else : ?>
+              <div class="lead">
+                <label style="font-size: small;">If question has daigram | Use camera icon before set question.</label>
+              </div>
+            <?php endif; ?>
+
+            <textarea class="tiny" name="question" required><p></p></textarea>
+            <?php
+            if ($data['subject'] == 'Mathematics' || $data['subject'] == 'Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'Further Maths') {
+              $mathsObj = 1;
+            }
+            ?>
+            <?php if ($mathsObj == 1) : ?>
+              <div class="my-4">
+                <label for="className">Expected answer</label>
+                <textarea class="tiny2" name="ans"><p></p></textarea>
+              </div>
+            <?php else : ?>
+              <div class="my-4">
+                <label for="className">Expected answer</label>
+                <input type="text" name="ans" class="form-control form-control-lg" data-parsley-trigger="keyup" />
+              </div>
+
+            <?php endif; ?>
+            <div class="row">
+              <div class="col-2">
+                <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
+                  <i class="bi bi-camera"></i>
+                </a>
+              </div>
+              <div class="col-8">
+                <div class="d-grid">
+                  <input type="submit" id="submit" value="SET" class="btn btn-outline-primary">
+                </div>
+              </div>
+              <div class="col-2">
+                <a href="<?php echo URLROOT; ?>/posts/show/<?= $data['paperID']; ?>?class=<?= $data['class']; ?>&subject=<?= $data['subject']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
       <?php endif; ?>
+      <!-- ===== End isSubjective Question ===== -->
     </div>
   </section>
 
