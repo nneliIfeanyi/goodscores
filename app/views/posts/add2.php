@@ -76,7 +76,14 @@
             <?php endif; ?>
             <div class="row mb-2">
               <div class="col-12"><!-- Question  input -->
-                <textarea class="tiny" name="question"><p></p></textarea>
+                <label class="ms-3 mt-2 border-start border-top border-end px-2">Question <b><?= $data['num_rows'] + (1); ?></b>a</label>
+                <textarea class="tiny" name="questionA"><p></p></textarea>
+                <label class="ms-3 mt-2 border-start border-top border-end px-2">Question <b><?= $data['num_rows'] + (1); ?></b>b</label>
+                <textarea class="tiny" name="questionB"><p></p></textarea>
+                <label class="ms-3 mt-2 border-start border-top border-end px-2">Question <b><?= $data['num_rows'] + (1); ?></b>c</label>
+                <textarea class="tiny" name="questionC"><p></p></textarea>
+                <label class="ms-3 mt-2 border-start border-top border-end px-2">Question <b><?= $data['num_rows'] + (1); ?></b>d</label>
+                <textarea class="tiny" name="questionD"><p></p></textarea>
               </div>
             </div>
 
@@ -121,7 +128,7 @@
 <script>
   tinymce.init({
     selector: 'textarea.tiny',
-    height: 400,
+    height: 230,
     plugins: 'charmap emoticon code wordcount table pagebreak',
     menubar: 'edit insert format tools table',
     toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap table',

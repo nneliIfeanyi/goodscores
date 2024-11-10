@@ -372,7 +372,10 @@ class Submissions extends Controller
 
       $data = [
         'id' => $id,
-        'question-A' => trim($_POST['question']),
+        'questionA' => trim($_POST['questionA']),
+        'questionB' => trim($_POST['questionB']),
+        'questionC' => trim($_POST['questionC']),
+        'questionD' => trim($_POST['questionD']),
       ];
       if (empty($_SESSION['daigram'])) { // Update has no diagram
         $data['daigram'] = $_POST['daigram'];

@@ -75,7 +75,10 @@ class Processing extends Controller
                 'section' => 'theory_questions',
                 'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
-                'question-A' => trim($_POST['question']),
+                'questionA' => trim($_POST['questionA']),
+                'questionB' => trim($_POST['questionB']),
+                'questionC' => trim($_POST['questionC']),
+                'questionD' => trim($_POST['questionD']),
             ];
 
             if (empty($_SESSION['daigram'])) { // Question has no daigram

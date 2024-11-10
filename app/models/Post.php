@@ -466,15 +466,18 @@ class Post
   public function setQuestions2($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO theory (sch_id, user_id, paperID, questionID, questionA, img) 
-      VALUES (:sch_id, :user_id, :paperID, :questionID, :questionA, :img)');
+    $this->db->query('INSERT INTO theory (sch_id, user_id, paperID, questionID, questionA, questionB, questionC, questionD, img) 
+      VALUES (:sch_id, :user_id, :paperID, :questionID, :questionA, :questionB, :questionC, :questionD, :img)');
 
     // Bind Values
     $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':paperID', $data['paperID']);
     $this->db->bind(':questionID', $data['questionID']);
-    $this->db->bind(':questionA', $data['question-A']);
+    $this->db->bind(':questionA', $data['questionA']);
+    $this->db->bind(':questionB', $data['questionB']);
+    $this->db->bind(':questionC', $data['questionC']);
+    $this->db->bind(':questionD', $data['questionD']);
     $this->db->bind(':img', $data['img']);
     if ($this->db->execute()) {
       return true;
@@ -646,11 +649,14 @@ class Post
   public function updateTheory($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE theory SET questionA = :questionA, img = :img WHERE id = :id');
+    $this->db->query('UPDATE theory SET questionA = :questionA, questionB = :questionB, questionC = :questionC, questionD = :questionD, img = :img WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
-    $this->db->bind(':questionA', $data['question-A']);
+    $this->db->bind(':questionA', $data['questionA']);
+    $this->db->bind(':questionB', $data['questionB']);
+    $this->db->bind(':questionC', $data['questionC']);
+    $this->db->bind(':questionD', $data['questionD']);
     $this->db->bind(':img', $data['daigram']);
 
     //Execute

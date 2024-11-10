@@ -203,7 +203,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-10">
         <?php if (!empty($data['post']->img) && empty($_SESSION['daigram'])) : ?>
           <div class="d-flex justify-content-center">
             <div class="mt-2 mb-4">
@@ -236,10 +236,34 @@
 
           <div class="row mb-2">
             <div class="col-1"> <!-- Numbering badge -->
-              <p class="badge bg-secondary"><?= $data['post']->questionID; ?></p>
+              <p class="badge bg-secondary"><?= $data['post']->questionID; ?>a</p>
             </div>
             <div class="col-11"><!-- Question  input -->
-              <textarea class="tiny" name="question"><?= $data['post']->questionA; ?></textarea>
+              <textarea class="tiny" name="questionA"><?= $data['post']->questionA; ?></textarea>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-1"> <!-- Numbering badge -->
+              <p class="badge bg-secondary"><?= $data['post']->questionID; ?>b</p>
+            </div>
+            <div class="col-11"><!-- Question  input -->
+              <textarea class="tiny" name="questionB"><?= $data['post']->questionB; ?></textarea>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-1"> <!-- Numbering badge -->
+              <p class="badge bg-secondary"><?= $data['post']->questionID; ?>c</p>
+            </div>
+            <div class="col-11"><!-- Question  input -->
+              <textarea class="tiny" name="questionC"><?= $data['post']->questionC; ?></textarea>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-1"> <!-- Numbering badge -->
+              <p class="badge bg-secondary"><?= $data['post']->questionID; ?>d</p>
+            </div>
+            <div class="col-11"><!-- Question  input -->
+              <textarea class="tiny" name="questionD"><?= $data['post']->questionD; ?></textarea>
             </div>
           </div>
           <div class="row my-3">
@@ -286,7 +310,7 @@
 <script>
   tinymce.init({
     selector: 'textarea.tiny',
-    height: 400,
+    height: 220,
     plugins: 'charmap emoticon wordcount pagebreak table',
     menubar: 'edit insert format tools table',
     toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap table',
