@@ -1,11 +1,40 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
-<?php // require APPROOT . '/views/inc/navbar.php';
-?>
-<?php // require APPROOT . '/views/inc/sidebar.php';
-?>
+<!DOCTYPE html>
+<html lang="en">
 
-<main id="main" class="main">
-    <style>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title><?php echo SITENAME; ?></title>
+    <meta name="keyword" content="Online exam creation for teachers, Automated grading system for educators, Exam management software for schools, Online quiz platform for students, Educational assessment tools for teachers, Educational technology, Student evaluation, Create online exams" />
+    <meta name="description" content="Goodscores - The ultimate tool for teachers to create, manage and grade exams/assessments online. The leading online platform for educators." />
+    <meta name="robots" content="index, nofollow" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="apple-mobile-web-app-title" content="goodscores" />
+    <meta name="application-name" content="Goodscores" />
+    <meta name="msapplication-TileName" content="Goodscores" />
+    <meta name="msapplication-TileImage" content="<?php echo URLROOT; ?>/icons/mask3.png" width="20" height="20" />
+    <!-- Site Manifest -->
+    <link href="<?php echo URLROOT; ?>/site.webmanifest" rel="manifest">
+    <meta name="apple-mobile-web-app-status-bar" content="#0d6efd">
+    <meta name="theme-color" content="#0d6efd">
+    <!-- Favicons -->
+    <link href="<?php echo URLROOT; ?>/icons/mask3.png" rel="icon">
+    <link href="<?php echo URLROOT; ?>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="<?php echo URLROOT; ?>/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo URLROOT; ?>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="<?php echo URLROOT; ?>/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="<?php echo URLROOT; ?>/assets/css/style.css" rel="stylesheet">
+    <link href="<?php echo URLROOT; ?>/assets/css/styles.css" rel="stylesheet">
+    <style type="text/css">
         @media print {
             @page {
                 margin: 0mm;
@@ -31,23 +60,15 @@
             }
         }
     </style>
-    <!-- <div class="pagetitle">
-        <h1>Exam Paper Print</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/users/dashboard">Home</a></li>
-                <li class="breadcrumb-item">Paper Crosscheck</li>
-            </ol>
-        </nav>
-    </div> -->
-    <!-- End Page Title -->
+</head>
 
-    <div id="print" class="row">
-        <div class="col-lg-9">
-            <div class="">
+<body>
+    <main class="row">
+        <div class="shadow col-lg-7 mx-auto">
+            <div id="print" class="m-3 p-2">
                 <div class="row">
                     <div class="text-center col-12">
-                        <h3 class="fw-light fst-italic h2 m-0 mt-3">
+                        <h3 class="fw-light fst-italic h2 m-0 mt-2">
                             <b><?= $data['sch']->name; ?></b><br />
                         </h3>
                         <span class="fs-5"><?= (empty($data['sch']->motto)) ? '' : $data['sch']->motto; ?></span>
@@ -153,19 +174,49 @@
                             foreach ($data['theory'] as $theory) : ?>
                                 <div class="w-100 d-flex">
                                     <?php
-                                    $question = str_replace('<p>', '', $theory->questionA);
-                                    $question = str_replace('</p>', '', $question);
+                                    $questionA = str_replace('<p>', '', $theory->questionA);
+                                    $questionA = str_replace('</p>', '', $questionA);
                                     ?>
-                                    <span><b><?= $n; ?>)&nbsp;&nbsp;</b></span>
-                                    <span style="font-size: 14px;"><?= $question; ?></span>
+                                    <span><b><?= $n; ?>)a&nbsp;&nbsp;</b></span>
+                                    <span style="font-size: 14px;"><?= $questionA; ?></span>
                                 </div>
+                                <?php if (!empty($theory->questionB)) : ?>
+                                    <div class="w-100 d-flex">
+                                        <?php
+                                        $questionB = str_replace('<p>', '', $theory->questionB);
+                                        $questionB = str_replace('</p>', '', $questionB);
+                                        ?>
+                                        <span><b><?= $n; ?>)b&nbsp;&nbsp;</b></span>
+                                        <span style="font-size: 14px;"><?= $questionB; ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($theory->questionC)) : ?>
+                                    <div class="w-100 d-flex">
+                                        <?php
+                                        $questionC = str_replace('<p>', '', $theory->questionC);
+                                        $questionC = str_replace('</p>', '', $questionC);
+                                        ?>
+                                        <span><b><?= $n; ?>)c&nbsp;&nbsp;</b></span>
+                                        <span style="font-size: 14px;"><?= $questionC; ?></span>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($theory->questionD)) : ?>
+                                    <div class="w-100 d-flex">
+                                        <?php
+                                        $questionD = str_replace('<p>', '', $theory->questionD);
+                                        $questionD = str_replace('</p>', '', $questionD);
+                                        ?>
+                                        <span><b><?= $n; ?>)d&nbsp;&nbsp;</b></span>
+                                        <span style="font-size: 14px;"><?= $questionD; ?></span>
+                                    </div>
+                                <?php endif; ?>
                             <?php $n++;
                             endforeach; ?>
                         <?php endif; ?>
                     </div><!-- End col-12 question display -->
                 </div>
 
-            </div><!-- End card card-body display -->
+            </div><!-- End printable div -->
             <div class="d-grid my-4 mx-5">
                 <button id="printBtn" class="btn btn-outline-primary me-3 mb-3">
                     Print Exam Paper
@@ -173,16 +224,15 @@
                 <a href="<?= URLROOT; ?>/output/print/<?= $data['paperID']; ?>" class="btn btn-outline-secondary">Switch Paper</a>
             </div>
         </div>
-    </div>
-</main>
-<?php require APPROOT . '/views/inc/footer.php'; ?>
-<script>
-    var button = document.getElementById('printBtn');
-    button.addEventListener('click', () => {
-        print();
-    })
-</script>
-<!--
+    </main>
+    <?php require APPROOT . '/views/inc/footer.php'; ?>
+    <script>
+        var button = document.getElementById('printBtn');
+        button.addEventListener('click', () => {
+            print();
+        })
+    </script>
+    <!--
     
       charmap: [
         [0x3d, 'equal sign'],

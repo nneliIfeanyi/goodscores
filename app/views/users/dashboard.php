@@ -235,60 +235,47 @@
 
                                       <td><span class="badge bg-warning">Pending</span></td>
                                       <td scope="row" class="d-flex gap-2">
-                                        <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                        <!-- <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                           <i class="bi bi-eye"></i>
-                                        </a>
+                                        </a> -->
                                         <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
                                           <i class="bi bi-printer"></i>
                                         </a>
-                                        <!-- <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                    <i class="bi bi-file-pdf"></i>
-                                  </a> -->
                                       </td>
                                     <?php else : ?>
                                       <td><span class="badge bg-success">Completed</span></td>
                                       <td scope="row" class="d-flex gap-2">
-                                        <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                        <!-- <a href="<?php echo URLROOT; ?>/posts/show/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                           <i class="bi bi-eye"></i>
-                                        </a>
+                                        </a> -->
                                         <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
                                           <i class="bi bi-printer"></i>
                                         </a>
-
-                                        <!-- <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                    <i class="bi bi-file-pdf"></i>
-                                  </a> -->
                                       </td>
                                     <?php endif; ?>
                                   <?php elseif ($recent->section == 'theory_questions') : ?>
                                     <?php if ($recent->num_rows > $theory_num_rows) : ?>
                                       <td><span class="badge bg-warning">Pending</span></td>
                                       <td scope="row" class="d-flex gap-2">
-                                        <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                        <!-- <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                           <i class="bi bi-eye"></i>
-                                        </a>
+                                        </a> -->
                                         <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
                                           <i class="bi bi-printer"></i>
                                         </a>
-                                        <!-- <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                    <i class="bi bi-file-pdf"></i>
-                                  </a> -->
                                       </td>
                                     <?php else : ?>
                                       <td><span class="badge bg-success">Completed</span></td>
                                       <td scope="row" class="d-flex gap-2">
-                                        <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
+                                        <!-- <a href="<?php echo URLROOT; ?>/posts/show2/<?= $recent->paperID; ?>?class=<?= $recent->class; ?>&subject=<?= $recent->subject; ?>" class="btn btn-sm btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Preview">
                                           <i class="bi bi-eye"></i>
-                                        </a>
+                                        </a> -->
                                         <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
                                           <i class="bi bi-printer"></i>
                                         </a>
-                                        <!-- <a class="btn btn-sm btn-outline-success" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                    <i class="bi bi-file-pdf"></i>
-                                  </a> -->
                                       </td>
                                     <?php endif; ?>
-                                  <?php elseif ($recent->section == 'custom') : ?>
+                                    <!-- <?php elseif ($recent->section == 'custom') : ?>
 
                                     <td><span class="badge bg-success"></span></td>
                                     <td scope="row" class="d-flex gap-2">
@@ -299,8 +286,8 @@
                                         <i class="bi bi-file-pdf"></i>
                                       </a>
                                     </td>
-                                  <?php endif; ?>
-                                  <!-- Document status cell ends -->
+                                  <?php endif; ?> -->
+                                    <!-- Document status cell ends -->
                                 </tr>
 
                               <?php $n++;
