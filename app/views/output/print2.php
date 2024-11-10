@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<?php require APPROOT . '/views/inc/navbar.php';
+<?php // require APPROOT . '/views/inc/navbar.php';
 ?>
-<?php require APPROOT . '/views/inc/sidebar.php';
+<?php // require APPROOT . '/views/inc/sidebar.php';
 ?>
 
 <main id="main" class="main">
@@ -31,7 +31,7 @@
             }
         }
     </style>
-    <div class="pagetitle">
+    <!-- <div class="pagetitle">
         <h1>Exam Paper Print</h1>
         <nav>
             <ol class="breadcrumb">
@@ -39,12 +39,12 @@
                 <li class="breadcrumb-item">Paper Crosscheck</li>
             </ol>
         </nav>
-    </div>
+    </div> -->
     <!-- End Page Title -->
 
-    <div id="print" class="row" style="margin-top: -46px;">
+    <div id="print" class="row">
         <div class="col-lg-9">
-            <div class="card card-body">
+            <div class="">
                 <div class="row">
                     <div class="text-center col-12">
                         <h3 class="fw-light fst-italic h2 m-0 mt-3">
@@ -145,10 +145,22 @@
                             endforeach; ?><!-- End OBJ foreach -->
                         <?php endif; ?><!-- End Not Empty OBJ questions-->
                         <?php if (!empty($data['theory'])) : ?>
-                            <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
+                            <div class="text-center mt-3 m-0" style="font-weight: lighter;font-size:small;">
                                 <p class="m-0 fw-bold"><?= $data['params2']->tag; ?> | <?= $data['params2']->section; ?></p>
-                                <span><?= $data['params2']->instruction; ?></span>
-                            </div><br />
+                                <span style="text-decoration: underline;"><?= $data['params2']->instruction; ?></span>
+                            </div>
+                            <?php $n = 1;
+                            foreach ($data['theory'] as $theory) : ?>
+                                <div class="w-100 d-flex">
+                                    <?php
+                                    $question = str_replace('<p>', '', $theory->questionA);
+                                    $question = str_replace('</p>', '', $question);
+                                    ?>
+                                    <span><b><?= $n; ?>)&nbsp;&nbsp;</b></span>
+                                    <span style="font-size: 14px;"><?= $question; ?></span>
+                                </div>
+                            <?php $n++;
+                            endforeach; ?>
                         <?php endif; ?>
                     </div><!-- End col-12 question display -->
                 </div>

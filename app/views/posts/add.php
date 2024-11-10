@@ -176,7 +176,7 @@ $mathsObj = '';
         </div>
       </div>
       <!-- ===== isSubjective Question ===== -->
-      <?php if ($data['num_rows'] < $data['total_subject_num_rows']) : ?>
+      <?php if ($data['num_rows'] <= $data['total_subject_num_rows']) : ?>
         <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
           <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

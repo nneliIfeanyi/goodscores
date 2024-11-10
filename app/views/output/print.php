@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<?php require APPROOT . '/views/inc/navbar.php';
+<?php //require APPROOT . '/views/inc/navbar.php';
 ?>
-<?php require APPROOT . '/views/inc/sidebar.php';
+<?php //require APPROOT . '/views/inc/sidebar.php';
 ?>
 
 <main id="main" class="main">
@@ -22,7 +22,7 @@
             }
         }
     </style>
-    <div class="pagetitle">
+    <!-- <div class="pagetitle">
         <h1>Exam Paper Print</h1>
         <nav>
             <ol class="breadcrumb">
@@ -30,9 +30,9 @@
                 <li class="breadcrumb-item">Paper Crosscheck</li>
             </ol>
         </nav>
-    </div>
+    </div> -->
     <!-- End Page Title -->
-    <div id="print" class="row" style="margin-top: -46px;">
+    <div id="print" class="row" style="margin-top: -26px;">
         <div class="col-lg-9">
             <div class="row">
                 <div class="text-center col-12">
@@ -80,7 +80,7 @@
                         <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
                         <span><?= $data['params1']->instruction; ?></span>
                     </div><br />
-                    <div class="col-6 border-end pe-1" style="overflow-x: hidden;">
+                    <div class="col-6 pe-1" style="overflow-x: hidden;">
 
                         <?php foreach ($data['obj'] as $obj) : ?>
                             <?php
@@ -133,17 +133,33 @@
                             </div><!-- End OBJ Options Display -->
 
                     </div><!-- End first col-6 question display -->
-                    <div class="col-6 border-start mt-2 pe-1" style="overflow-x: hidden;">
+                    <div class="col-6 mt-2 pe-1" style="overflow-x: hidden;">
                     <?php $num++;
                         endforeach; ?><!-- End OBJ foreach -->
                 <?php endif; ?><!-- End Not Empty OBJ questions-->
-                <?php if (!empty($data['theory'])) : ?>
-                    <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
-                        <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
-                        <span><?= $data['params1']->instruction; ?></span>
-                    </div><br />
-                <?php endif; ?>
                     </div><!-- End second col-6 question display -->
+                    <div class="col-6 pe-1" style="overflow-x: hidden;">
+                        <?php if (!empty($data['theory'])) : ?>
+                            <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
+                                <p class="m-0 fw-bold"><?= $data['params2']->tag; ?> | <?= $data['params2']->section; ?></p>
+                                <span style="text-decoration: underline;"><?= $data['params2']->instruction; ?></span>
+                            </div><br />
+                            <?php $n = 1;
+                            foreach ($data['theory'] as $theory) : ?>
+                                <div class="w-100 d-flex">
+                                    <?php
+                                    $question = str_replace('<p>', '', $theory->questionA);
+                                    $question = str_replace('</p>', '', $question);
+                                    ?>
+                                    <span><b><?= $n; ?>)&nbsp;&nbsp;</b></span>
+                                    <span style="font-size: 14px;"><?= $question; ?></span>
+                                </div>
+                    </div>
+                    <div class="col-6 pe-1" style="overflow-x: hidden;">
+                    <?php $n++;
+                            endforeach; ?>
+                <?php endif; ?>
+                    </div>
             </div>
             <div class="d-grid my-4 mx-5">
                 <button id="printBtn" class="btn me-3 mb-3 btn-outline-primary">
