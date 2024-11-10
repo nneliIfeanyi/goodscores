@@ -259,7 +259,7 @@ $mathsObj = '';
     height: 210,
     plugins: 'charmap emoticon wordcount table pagebreak',
     menubar: 'edit insert format tools',
-    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
     setup: (editor) => {
 

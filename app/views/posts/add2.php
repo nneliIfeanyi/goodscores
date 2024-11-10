@@ -76,10 +76,7 @@
             <?php endif; ?>
             <div class="row mb-2">
               <div class="col-12"><!-- Question  input -->
-                <textarea class="tiny" name="question">
-                    <b>a)</b>&nbsp;<br/>
-                    <b>b)</b>&nbsp;<br/>
-                    </textarea>
+                <textarea class="tiny" name="question"><p></p></textarea>
               </div>
             </div>
 
@@ -125,10 +122,19 @@
   tinymce.init({
     selector: 'textarea.tiny',
     height: 400,
-    plugins: 'charmap emoticon wordcount table pagebreak',
+    plugins: 'charmap emoticon code wordcount table pagebreak',
     menubar: 'edit insert format tools table',
-    toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap pagebreak',
+    toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
+    table_row_class_list: [{
+      title: 'None',
+      value: '',
+    }, {
+      title: 'Grey border',
+      value: 'table_cell_grey_border',
+    }, ],
+    table_sizing_mode: 'relative',
+
     setup: (editor) => {
 
       editor.ui.registry.addButton('dash', {
