@@ -56,7 +56,7 @@
             }
 
             #print {
-                margin: 0.1cm;
+                margin: 0.2cm;
             }
         }
     </style>
@@ -68,7 +68,7 @@
             <div id="print" class="m-3 p-2">
                 <div class="row">
                     <div class="text-center col-12">
-                        <h3 class="fw-light fst-italic h2 m-0 mt-2">
+                        <h3 class="fw-light fst-italic h2 m-0">
                             <b><?= $data['sch']->name; ?></b><br />
                         </h3>
                         <span class="fs-5"><?= (empty($data['sch']->motto)) ? '' : $data['sch']->motto; ?></span>
@@ -172,6 +172,13 @@
                             </div>
                             <?php $n = 1;
                             foreach ($data['theory'] as $theory) : ?>
+                                <?php if (!empty($theory->img)) : ?>
+                                    <div class="">
+                                        <div class="my-1 mx-3">
+                                            <img src="<?php echo URLROOT . '/' . $theory->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="w-100 d-flex">
                                     <?php
                                     $questionA = str_replace('<p>', '', $theory->questionA);

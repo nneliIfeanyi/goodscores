@@ -36,7 +36,16 @@
                 <?php endif; ?>
 
                 <div class="d-flex">
-                  <p class="">(<?= $numberin; ?>)</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
+                  <p class="">(<?= $numberin; ?>)a</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
+                </div>
+                <div class="d-flex">
+                  <p class="">(<?= $numberin; ?>)b</p>&nbsp;&nbsp;<?= $theory->questionB; ?>
+                </div>
+                <div class="d-flex">
+                  <p class="">(<?= $numberin; ?>)c</p>&nbsp;&nbsp;<?= $theory->questionC; ?>
+                </div>
+                <div class="d-flex">
+                  <p class="">(<?= $numberin; ?>)d</p>&nbsp;&nbsp;<?= $theory->questionD; ?>
                 </div>
 
                 <div class="d-flex justify-content-center mb-2">
