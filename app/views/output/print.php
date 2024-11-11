@@ -179,11 +179,13 @@
                             <div class="col-6 pe-1" style="overflow-x: hidden;">
                                 <?php $n = 1;
                                 foreach ($data['theory'] as $theory) : ?>
-                                    <div class="">
-                                        <div class="my-1 mx-3">
-                                            <img src="<?php echo URLROOT . '/' . $theory->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
+                                    <?php if (!empty($theory->img)) : ?>
+                                        <div class="">
+                                            <div class="my-1 mx-3">
+                                                <img src="<?php echo URLROOT . '/' . $theory->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php endif; ?>
                                     <div class="w-100 d-flex">
                                         <?php
                                         $questionA = str_replace('<p>', '', $theory->questionA);
