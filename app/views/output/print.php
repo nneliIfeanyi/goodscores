@@ -37,7 +37,7 @@
     <style type="text/css">
         @media print {
             @page {
-                margin: 0mm;
+                margin: 10mm 0mm 0mm 0mm;
             }
 
             /* 
