@@ -115,6 +115,7 @@ class Submissions extends Controller
         'role' => val_entry($_POST['role'])
       ];
       if ($this->userModel->editProfile($data)) {
+        $_SESSION['role'] = $data['role'];
         // Redirect to classes
         flash('msg', 'Changes saved successfully');
         $redirect = URLROOT . '/users/profile/' . $id;

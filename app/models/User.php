@@ -439,4 +439,20 @@ class User
       return false;
     }
   }
+  public function setDuration($data)
+  {
+    // Prepare Query
+    $this->db->query('UPDATE core SET duration = :duration WHERE paperID = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $data['id']);
+    $this->db->bind(':duration', $data['duration']);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

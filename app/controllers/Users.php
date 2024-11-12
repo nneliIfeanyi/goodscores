@@ -117,6 +117,24 @@ class Users extends Controller
     }
   }
 
+  public function duration($paper_id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST
+
+      $data = [
+        'id' => $paper_id,
+        'duration' => val_entry($_POST['duration']),
+        'section' => $_POST['section']
+      ];
+      $this->userModel->setDuration($data);
+      flash('msg', 'Changes saved successfully');
+      redirect('users/review_params?paperID=' . $paper_id . '&section=' . $data['section']);
+    } else {
+      die('Something went wrong');
+    }
+  }
+
   public function edit_class($id)
   {
     if (!$this->isLoggedIn()) {

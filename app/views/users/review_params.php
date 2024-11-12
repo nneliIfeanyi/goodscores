@@ -106,6 +106,27 @@ require APPROOT . '/views/inc/sidebar.php';
                     </div>
                 </div>
             </div>
+            <?php if ($_COOKIE['cbt'] != '1') : ?>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
+                                <strong>Set Exam Duration</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <form action="<?php echo URLROOT; ?>/users/duration/<?= $data['params']->paperID; ?>" method="POST">
+                                <input type="hidden" name="section" value="<?= $data['section'] ?>">
+                                <div class="my-4">
+                                    <label for="className">Time</label>
+                                    <input type="text" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                </div>
+                                <input type="submit" value="Set Exam Time" class="btn btn-primary mx-4">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
             <div class="col-lg-6">
                 <?php if ($_COOKIE['cbt'] == '1') : ?>
                     <div class="card">

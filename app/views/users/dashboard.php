@@ -275,19 +275,8 @@
                                         </a>
                                       </td>
                                     <?php endif; ?>
-                                    <!-- <?php elseif ($recent->section == 'custom') : ?>
-
-                                    <td><span class="badge bg-success"></span></td>
-                                    <td scope="row" class="d-flex gap-2">
-                                      <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/print/<?php echo $recent->paperID; ?>">
-                                        <i class="bi bi-printer"></i>
-                                      </a>
-                                      <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/output/pdf/<?php echo $recent->paperID; ?>">
-                                        <i class="bi bi-file-pdf"></i>
-                                      </a>
-                                    </td>
-                                  <?php endif; ?> -->
-                                    <!-- Document status cell ends -->
+                                  <?php endif; ?>
+                                  <!-- Document status cell ends -->
                                 </tr>
 
                               <?php $n++;
