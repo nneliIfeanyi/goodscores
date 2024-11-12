@@ -45,9 +45,9 @@
                 margin: 0px;
             }*/
 
-            body {
+            /* body {
                 margin: 10mm 0mm 0mm 0mm;
-            }
+            } */
 
             .pagetitle *,
             .header *,
@@ -56,7 +56,7 @@
             }
 
             #print {
-                margin: 0.1cm;
+                margin: 0.4cm 0.1cm 0.1cm 0.1cm;
             }
         }
     </style>
