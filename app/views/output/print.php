@@ -64,7 +64,7 @@
 
 <body>
     <main class="row">
-        <div class="shadow col-lg-7 mx-auto">
+        <div class="col-lg-7 mx-auto">
             <div id="print" class="m-3 p-2">
                 <div class="row">
                     <div class="text-center col-12">
@@ -191,8 +191,13 @@
                                         $questionA = str_replace('<p>', '', $theory->questionA);
                                         $questionA = str_replace('</p>', '', $questionA);
                                         ?>
-                                        <span><b><?= $n; ?>)a&nbsp;&nbsp;</b></span>
-                                        <span style="font-size: 14px;"><?= $questionA; ?></span>
+                                        <?php if (empty($theory->questionB)) : ?>
+                                            <span><b><?= $n; ?>)&nbsp;&nbsp;</b></span>
+                                            <span style="font-size: 14px;"><?= $questionA; ?></span>
+                                        <?php else : ?>
+                                            <span><b><?= $n; ?>)a&nbsp;&nbsp;</b></span>
+                                            <span style="font-size: 14px;"><?= $questionA; ?></span>
+                                        <?php endif; ?>
                                     </div>
                                     <?php if (!empty($theory->questionB)) : ?>
                                         <div class="w-100 d-flex">

@@ -36,7 +36,12 @@
                 <?php endif; ?>
 
                 <div class="d-flex">
-                  <p class="">(<?= $numberin; ?>)a</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
+                  <?php if (empty($theory->questionB)) : ?>
+                    <p class="">(<?= $numberin; ?>)</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
+                  <?php else : ?>
+                    <p class="">(<?= $numberin; ?>)a</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
+                  <?php endif; ?>
+
                 </div>
                 <?php if (!empty($theory->questionB)) : ?>
                   <div class="d-flex">
