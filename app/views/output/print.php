@@ -56,7 +56,7 @@
             }
 
             #print {
-                margin: 0.4cm 0.1cm 0.1cm 0.1cm;
+                margin: 0.4cm;
             }
         }
     </style>
