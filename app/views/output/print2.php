@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title><?php echo SITENAME; ?></title>
+    <title><?php echo $data['sch']->name; ?></title>
     <meta name="keyword" content="Online exam creation for teachers, Automated grading system for educators, Exam management software for schools, Online quiz platform for students, Educational assessment tools for teachers, Educational technology, Student evaluation, Create online exams" />
     <meta name="description" content="Goodscores - The ultimate tool for teachers to create, manage and grade exams/assessments online. The leading online platform for educators." />
     <meta name="robots" content="index, nofollow" />
@@ -37,7 +37,7 @@
     <style type="text/css">
         @media print {
             @page {
-                margin: 0mm;
+                margin: 10mm 10mm 0mm 10mm;
             }
 
             /* 
@@ -56,7 +56,7 @@
             }
 
             #print {
-                margin: 0.2cm;
+                margin: 0.1cm;
             }
         }
     </style>
