@@ -38,16 +38,21 @@
                 <div class="d-flex">
                   <p class="">(<?= $numberin; ?>)a</p>&nbsp;&nbsp;<?= $theory->questionA; ?>
                 </div>
-                <div class="d-flex">
-                  <p class="">(<?= $numberin; ?>)b</p>&nbsp;&nbsp;<?= $theory->questionB; ?>
-                </div>
-                <div class="d-flex">
-                  <p class="">(<?= $numberin; ?>)c</p>&nbsp;&nbsp;<?= $theory->questionC; ?>
-                </div>
-                <div class="d-flex">
-                  <p class="">(<?= $numberin; ?>)d</p>&nbsp;&nbsp;<?= $theory->questionD; ?>
-                </div>
-
+                <?php if (!empty($theory->questionB)) : ?>
+                  <div class="d-flex">
+                    <p class="">(<?= $numberin; ?>)b</p>&nbsp;&nbsp;<?= $theory->questionB; ?>
+                  </div>
+                <?php endif; ?>
+                <?php if (!empty($theory->questionC)) : ?>
+                  <div class="d-flex">
+                    <p class="">(<?= $numberin; ?>)c</p>&nbsp;&nbsp;<?= $theory->questionC; ?>
+                  </div>
+                <?php endif; ?>
+                <?php if (!empty($theory->questionD)) : ?>
+                  <div class="d-flex">
+                    <p class="">(<?= $numberin; ?>)d</p>&nbsp;&nbsp;<?= $theory->questionD; ?>
+                  </div>
+                <?php endif; ?>
                 <div class="d-flex justify-content-center mb-2">
                   <a href="<?php echo URLROOT; ?>/posts/edit2/<?php echo $theory->id; ?>" class="btn btn-success btn-sm mt-3 rounded-0"><i class="bi bi-pen"></i> Edit</a>
                   <form action="<?php echo URLROOT; ?>/posts/delete2/<?php echo $theory->id; ?>" method="POST">

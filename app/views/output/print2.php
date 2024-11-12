@@ -224,11 +224,14 @@
                 </div>
 
             </div><!-- End printable div -->
-            <div class="d-grid my-4 mx-5">
-                <button id="printBtn" class="btn btn-outline-primary me-3 mb-3">
-                    Print Exam Paper
-                </button>
-                <a href="<?= URLROOT; ?>/output/print/<?= $data['paperID']; ?>" class="btn btn-outline-secondary">Switch Paper</a>
+            <div class="d-grid">
+                <div class="d-flex justify-content-center my-4">
+                    <button id="printBtn" class="btn me-3 btn-outline-primary">
+                        Print Exam Paper
+                    </button>
+                    <a href="<?= URLROOT; ?>/output/print/<?= $data['paperID']; ?>" class="btn me-3 btn-outline-secondary">Switch Paper</a>
+                    <a href="<?= URLROOT; ?>/users/dashboard" class="btn me-3 btn-secondary"><i class="bi bi-chevron-left"></i> Back</a>
+                </div>
             </div>
         </div>
     </main>

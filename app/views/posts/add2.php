@@ -131,7 +131,7 @@
     height: 230,
     plugins: 'charmap emoticon code wordcount table pagebreak',
     menubar: 'edit insert format tools table',
-    toolbar: 'undo redo dash | bold underline strikethrough | lineheight outdent indent | charmap table',
+    toolbar: 'undo redo superscript subscript | bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
     table_row_class_list: [{
       title: 'None',
@@ -141,14 +141,5 @@
       value: 'table_cell_grey_border',
     }, ],
     table_sizing_mode: 'relative',
-
-    setup: (editor) => {
-
-      editor.ui.registry.addButton('dash', {
-        text: '__________',
-        onAction: (_) => editor.insertContent(`__________`)
-      });
-
-    },
   });
 </script>
