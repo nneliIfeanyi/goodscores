@@ -43,11 +43,11 @@
             /* 
             html {
                 margin: 0px;
-            }
+            }*/
 
             body {
-                margin: 10mm 15mm 10mm 15mm;
-            } */
+                margin: 10mm 0mm 0mm 0mm;
+            }
 
             .pagetitle *,
             .header *,
@@ -68,7 +68,7 @@
             <div id="print" class="m-3 p-2">
                 <div class="row">
                     <div class="text-center col-12">
-                        <h3 class="fw-light fst-italic h2 m-0 mt-2">
+                        <h3 class="fw-light fst-italic h2 m-0">
                             <b><?= $data['sch']->name; ?></b><br />
                         </h3>
                         <span class="fs-5"><?= (empty($data['sch']->motto)) ? '' : $data['sch']->motto; ?></span>
