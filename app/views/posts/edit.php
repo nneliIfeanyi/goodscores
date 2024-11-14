@@ -56,34 +56,29 @@
               <input type="hidden" name="isSubjective" value="no">
               <div class="my-4">
                 <label for="className">Sub Instruction</label>
-                <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
+                <textarea class="tiny2" name="sub_ins" required><?php echo $data['post']->subInstruction; ?></textarea>
               </div>
               <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
-              <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics') {
-                $mathsObj = 1;
-              }
-              ?>
-              <?php if ($mathsObj == '1') : ?>
-                <div class="row my-3">
-                  <p class="col-2 d-lg-none">(A)</p>
-                  <div class="col-10 col-lg-6">
-                    <textarea class="tiny2" type="text" class="tiny" name="opt1"><?php echo $data['post']->opt1; ?></textarea>
-                  </div>
-                  <p class="col-2 d-lg-none">(B)</p>
-                  <div class="col-10 col-lg-6">
-                    <textarea class="tiny2" type="text" class="tiny" name="opt2"><?php echo $data['post']->opt2; ?></textarea>
-                  </div>
-                  <p class="col-2 d-lg-none">(C)</p>
-                  <div class="col-10 col-lg-6">
-                    <textarea class="tiny2" type="text" class="tiny" name="opt3"><?php echo $data['post']->opt3; ?></textarea>
-                  </div>
-                  <p class="col-2 d-lg-none">(D)</p>
-                  <div class="col-10 col-lg-6">
-                    <textarea class="tiny2" type="text" class="tiny" name="opt4"><?php echo $data['post']->opt4; ?></textarea>
-                  </div>
+              <div class="row my-3">
+                <p class="col-2 d-lg-none">(A)</p>
+                <div class="col-10 col-lg-6">
+                  <textarea class="tiny2" type="text" class="tiny" name="opt1"><?php echo $data['post']->opt1; ?></textarea>
                 </div>
+                <p class="col-2 d-lg-none">(B)</p>
+                <div class="col-10 col-lg-6">
+                  <textarea class="tiny2" type="text" class="tiny" name="opt2"><?php echo $data['post']->opt2; ?></textarea>
+                </div>
+                <p class="col-2 d-lg-none">(C)</p>
+                <div class="col-10 col-lg-6">
+                  <textarea class="tiny2" type="text" class="tiny" name="opt3"><?php echo $data['post']->opt3; ?></textarea>
+                </div>
+                <p class="col-2 d-lg-none">(D)</p>
+                <div class="col-10 col-lg-6">
+                  <textarea class="tiny2" type="text" class="tiny" name="opt4"><?php echo $data['post']->opt4; ?></textarea>
+                </div>
+              </div>
 
-              <?php else : ?>
+              <!-- 
                 <div class="row my-3">
                   <p class="col-2 d-lg-none">(A)</p>
                   <div class="col-10 col-lg-6">
@@ -101,8 +96,7 @@
                   <div class="col-10 col-lg-6">
                     <input type="text" class="form-control form-control-lg" value="<?php echo $data['post']->opt4; ?>" placeholder="Option D" name="opt4">
                   </div>
-                </div>
-              <?php endif ?>
+                </div> -->
               <div class="d-flex flex-row gap-3 py-3">
                 <div class="form-check border border-secondary">
                   <input type="radio" name="ans" value="a" <?php echo ($data['post']->ans == 'a') ? 'checked' : ''; ?> class="form-check-input" id="A">
@@ -172,28 +166,13 @@
           <input type="hidden" name="isSubjective" value="yes">
           <div class="my-4">
             <label for="className">Sub Instruction</label>
-            <input type="text" name="sub_ins" value="<?php echo $data['post']->subInstruction; ?>" class="form-control form-control-lg" />
+            <textarea class="tiny2" name="sub_ins" required><?php echo $data['post']->subInstruction; ?></textarea>
           </div>
-          <?php if ($data['params']->subject == 'Maths' || $data['params']->subject == 'maths' || $data['params']->subject == 'Mathematics' || $data['params']->subject == 'mathematics' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'further maths' || $data['params']->subject == 'Further Maths' || $data['params']->subject == 'Further Mathematics' || $data['params']->subject == 'further mathematics' || $data['params']->subject == 'Physics' || $data['params']->subject == 'physics') : ?>
-            <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
-            <?php
-            $mathsObj = 1;
-            if ($mathsObj == '1') {
-            ?>
-              <div class="my-4">
-                <label for="className">Expected answer</label>
-                <textarea class="tiny2" name="ans"><?= $data['post']->ans; ?></textarea>
-              </div>
-            <?php
-            }
-            ?>
-          <?php else : ?>
-            <div class="my-4">
-              <label for="className">Expected answer</label>
-              <input type="text" name="ans" value="<?= $data['post']->ans; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-            </div>
-
-          <?php endif; ?>
+          <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
+          <div class="my-4">
+            <label for="className">Expected answer</label>
+            <textarea class="tiny2" name="ans"><?= $data['post']->ans; ?></textarea>
+          </div>
           <div class="d-flex gap-2">
             <a href="<?php echo URLROOT; ?>/posts/daigram/<?php echo $data['post']->paperID; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Change diagram">
               <i class="bi bi-camera"></i>
@@ -237,23 +216,21 @@
     },
   });
 </script>
-<?php if ($mathsObj == '1') : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea.tiny2',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
-      newline_behavior: 'linebreak',
-      setup: (editor) => {
+<script>
+  tinymce.init({
+    selector: 'textarea.tiny2',
+    height: 180,
+    plugins: 'charmap',
+    menubar: '',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
+    newline_behavior: 'linebreak',
+    setup: (editor) => {
 
-        editor.ui.registry.addButton('dash', {
-          text: '=',
-          onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
-        });
+      editor.ui.registry.addButton('dash', {
+        text: '=',
+        onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
+      });
 
-      },
-    });
-  </script>
-<?php endif; ?>
+    },
+  });
+</script>

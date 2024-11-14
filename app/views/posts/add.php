@@ -2,7 +2,6 @@
 <?php require APPROOT . '/views/inc/navbar.php';
 ?>
 <?php require APPROOT . '/views/inc/sidebar.php';
-$mathsObj = '';
 ?>
 
 <main id="main" class="main">
@@ -73,7 +72,8 @@ $mathsObj = '';
                 <input type="hidden" name="isSubjective" value="no">
                 <div class="mt-4 mb-2">
                   <label for="className">Sub-section Instruction</label>
-                  <input name="sub_ins" class="form-control form-control-lg" />
+                  <textarea class="tiny2" name="sub_ins"><p></p></textarea>
+                  <!-- <input name="sub_ins" class="form-control form-control-lg" /> -->
                 </div>
                 <?php if (!empty($_SESSION['daigram'])) : ?>
                   <div class="d-flex justify-content-center">
@@ -82,38 +82,32 @@ $mathsObj = '';
                     </div>
                   </div>
                 <?php else : ?>
-                  <div class="lead">
-                    <label style="font-size: x-small;">If question has daigram | Use camera icon before set question.</label>
+                  <div class="lead ms-2">
+                    <label style="font-size: medium;">If question has daigram | Use camera icon before set question.</label>
                   </div>
                 <?php endif; ?>
                 <textarea class="tiny" name="question"><p></p></textarea>
-                <?php
-                if ($data['subject'] == 'Mathematics' || $data['subject'] == 'Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'Further Maths') {
-                  $mathsObj = 1;
-                }
-                ?>
-                <?php if ($mathsObj == '1') : ?>
-                  <div class="row my-3">
-                    <p class="col-2 d-lg-none">(A)</p>
-                    <div class="col-10 col-lg-6">
-                      <textarea class="tiny2" type="text" class="tiny" name="opt1"><p></p></textarea>
-                    </div>
-                    <p class="col-2 d-lg-none">(B)</p>
-                    <div class="col-10 col-lg-6">
-                      <textarea class="tiny2" type="text" class="tiny" name="opt2"><p></p></textarea>
-                    </div>
-                    <p class="col-2 d-lg-none">(C)</p>
-                    <div class="col-10 col-lg-6">
-                      <textarea class="tiny2" type="text" class="tiny" name="opt3"><p></p></textarea>
-                    </div>
-                    <p class="col-2 d-lg-none">(D)</p>
-                    <div class="col-10 col-lg-6">
-                      <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
-                    </div>
-                  </div>
 
-                <?php else : ?>
-                  <div class="row my-3">
+                <div class="row my-3">
+                  <div class="col-lg-6">
+                    <label for="A">(A)</label>
+                    <textarea id="A" class="tiny2" type="text" class="tiny" name="opt1"><p></p></textarea>
+                  </div>
+                  <div class="col-lg-6">
+                    <label for="A">(B)</label>
+                    <textarea class="tiny2" type="text" class="tiny" name="opt2"><p></p></textarea>
+                  </div>
+                  <div class="col-lg-6">
+                    <label for="A">(C)</label>
+                    <textarea class="tiny2" type="text" class="tiny" name="opt3"><p></p></textarea>
+                  </div>
+                  <div class="col-lg-6">
+                    <label for="A">(D)</label>
+                    <textarea class="tiny2" type="text" class="tiny" name="opt4"><p></p></textarea>
+                  </div>
+                </div>
+
+                <!-- <div class="row my-3">
                     <p class="col-2 d-lg-none">(A)</p>
                     <div class="col-10 col-lg-6">
                       <input type="text" class="form-control form-control-lg" placeholder="Option A" name="opt1">
@@ -130,8 +124,7 @@ $mathsObj = '';
                     <div class="col-10 col-lg-6">
                       <input type="text" class="form-control form-control-lg" placeholder="Option D" name="opt4">
                     </div>
-                  </div>
-                <?php endif; ?>
+                  </div> -->
                 <div class="d-flex flex-row gap-3 py-3">
                   <div class="form-check border border-secondary">
                     <input type="radio" name="ans" value="A" class="form-check-input" id="A">
@@ -177,7 +170,7 @@ $mathsObj = '';
       </div>
       <!-- ===== isSubjective Question ===== -->
       <?php if ($data['num_rows'] <= $data['total_subject_num_rows']) : ?>
-        <div class="col-md-10 col-lg-5 alert alert-dismissible p-0 fade show" role="alert">
+        <div class="col-md-10 col-lg-8 alert alert-dismissible p-0 fade show" role="alert">
           <div class="bg-secondary mt-5 text-light border-0 p-3 rounded-3">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             <strong>Set Subjective Question</strong>
@@ -186,7 +179,7 @@ $mathsObj = '';
             <input type="hidden" name="isSubjective" value="yes">
             <div class="mt-4 mb-2">
               <label for="">Sub-section Instruction</label>
-              <input name="sub_ins" class="form-control form-control-lg">
+              <textarea class="tiny2" name="sub_ins"><p></p></textarea>
             </div>
             <?php if (!empty($_SESSION['daigram'])) : ?>
               <div class="d-flex justify-content-center">
@@ -201,23 +194,15 @@ $mathsObj = '';
             <?php endif; ?>
 
             <textarea class="tiny" name="question" required><p></p></textarea>
-            <?php
-            if ($data['subject'] == 'Mathematics' || $data['subject'] == 'Maths' || $data['subject'] == 'Further Mathematics' || $data['subject'] == 'Further Maths') {
-              $mathsObj = 1;
-            }
-            ?>
-            <?php if ($mathsObj == 1) : ?>
-              <div class="my-4">
-                <label for="className">Expected answer</label>
-                <textarea class="tiny2" name="ans"><p></p></textarea>
-              </div>
-            <?php else : ?>
-              <div class="my-4">
+
+            <div class="my-4">
+              <label for="className">Expected answer</label>
+              <textarea class="tiny2" name="ans"><p></p></textarea>
+            </div>
+            <!-- <div class="my-4">
                 <label for="className">Expected answer</label>
                 <input type="text" name="ans" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-              </div>
-
-            <?php endif; ?>
+              </div> -->
             <div class="row">
               <div class="col-2">
                 <a href="<?php echo URLROOT; ?>/posts/daigram/<?= $data['paperID']; ?>" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-title="Append diagram">
@@ -271,23 +256,21 @@ $mathsObj = '';
     },
   });
 </script>
-<?php if ($mathsObj == '1') : ?>
-  <script>
-    tinymce.init({
-      selector: 'textarea.tiny2',
-      height: 180,
-      plugins: 'charmap',
-      menubar: '',
-      toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
-      newline_behavior: 'linebreak',
-      setup: (editor) => {
+<script>
+  tinymce.init({
+    selector: 'textarea.tiny2',
+    height: 180,
+    plugins: 'charmap',
+    menubar: '',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
+    newline_behavior: 'linebreak',
+    setup: (editor) => {
 
-        editor.ui.registry.addButton('dash', {
-          text: '=',
-          onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
-        });
+      editor.ui.registry.addButton('dash', {
+        text: '=',
+        onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
+      });
 
-      },
-    });
-  </script>
-<?php endif; ?>
+    },
+  });
+</script>
