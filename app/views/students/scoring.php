@@ -33,19 +33,19 @@ require APPROOT . '/views/inc/sidebar.php';
                                     <!-- <label for="">Enter Duration</label> -->
                                     <div class="col-6">
                                         <div class="input-group mb-3">
-                                            <input type="number" value="<?= (empty($data['CA1'])) ? '' : $data['CA1']; ?>" min="0" max="20" name="CA1" required class="form-control form-control-lg" />
+                                            <input type="number" value="<?= (empty($data['CA1'])) ? '' : $data['CA1']; ?>" min="0" max="20" name="CA1" class="form-control form-control-lg" />
                                             <span class="input-group-text" id="basic-addon2">1st CA</span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group mb-3">
-                                            <input type="number" value="<?= (empty($data['CA2'])) ? '' : $data['CA2']; ?>" name="CA2" min="0" max="20" required class="form-control form-control-lg" />
+                                            <input type="number" value="<?= (empty($data['CA2'])) ? '' : $data['CA2']; ?>" name="CA2" min="0" max="20" class="form-control form-control-lg" />
                                             <span class="input-group-text" id="basic-addon2">2nd CA</span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group mb-3">
-                                            <input type="number" value="<?= (empty($data['exam'])) ? '' : $data['exam']; ?>" name="exam" min="0" max="60" required class="form-control form-control-lg" />
+                                            <input type="number" value="<?= (empty($data['exam'])) ? '' : $data['exam']; ?>" name="exam" min="0" max="60" class="form-control form-control-lg" />
                                             <span class="input-group-text" id="basic-addon2">Exam</span>
                                         </div>
                                     </div>

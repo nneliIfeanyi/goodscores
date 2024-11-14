@@ -161,11 +161,9 @@ class Students extends Controller
             redirect('students/login');
         }
         $details = $this->studentModel->findStudentById($_SESSION['student_id']);
-        $params = $this->studentModel->getCbtParams($details->class);
-        $param = $this->studentModel->getCbtParam($details->class);
+        $params = $this->studentModel->getCbtParams($details->class); //From Core where published is true
         $data = [
             'recent' => $params,
-            'param' => $param
         ];
 
         // Load view
@@ -190,26 +188,16 @@ class Students extends Controller
         ];
 
         // Load view
-        if (!$this->studentModel->checkIfExamTaken($paper_id)) {
-            // Pull Time Records
-            $loggedEndTime = $duration->endTime;
-            $data['duration'] = $loggedEndTime;
-            $now = date('H:i:s');
-            if ($now < $loggedEndTime) {
-                $this->view('students/cbt', $data);
-            } else {
-                $this->view('students/timeUp', $data);
-            }
-            //
+        // Pull Time Records
+        $loggedEndTime = $duration->endTime;
+        $data['duration'] = $loggedEndTime;
+        $now = date('H:i:s');
+        if ($now < $loggedEndTime) {
+            $this->view('students/cbt', $data);
         } else {
-            flash('msg', 'You already sat for this exam');
-            $details = $this->studentModel->checkIfExamTaken($paper_id);
-            if ($details->score >= 50) {
-                redirect('students/success/' . $details->score);
-            } else {
-                redirect('students/failed/' . $details->score);
-            }
+            $this->view('students/timeUp', $data);
         }
+        //
     }
     public function timeCalc($paper_id)
     {
@@ -278,161 +266,50 @@ class Students extends Controller
                     'paperID' => $_POST['paperID'],
                     'percent' => $result,
                     'cbtTag' => $_POST['cbtTag'],
+                    'term' => $core->term,
                     'cbt' => $cbt,
                     'response' => $_POST['ans' . $i],
                     'rowcount' => $cbtRowCount
                 ];
-                if (!$this->studentModel->checkIfExamTaken($paper_id)) {
-                    // Insert Score To DB
+                $row = $this->studentModel->checkRowExist($data['subject'], $data['class'], $data['term']);
+                if ($row) {
+                    //update row
                     if ($data['cbtTag'] == 'CA1') {
-                        $mark = $result / 100 * 20;
-                        $data['score'] = $mark;
-                    } else if ($data['cbtTag'] == 'CA2') {
-                        $mark = $result / 100 * 20;
-                        $data['score'] = $mark;
-                    } else if ($data['cbtTag'] == 'exam') {
-                        $mark = $result / 100 * 60;
-                        $data['score'] = $mark;
+                        $score = ($data['percent'] / 100 * 20);
+                        $this->studentModel->updateScoreRow1($row->id, $score);
+                    } elseif ($data['cbtTag'] == 'CA2') {
+                        $score = ($data['percent'] / 100 * 20);
+                        $this->studentModel->updateScoreRow2($row->id, $score);
+                    } elseif ($data['cbtTag'] == 'exam') {
+                        $score = ($data['percent'] / 100 * 20);
+                        $this->studentModel->updateScoreRow3($row->id, $score);
                     }
+                    $examTaken = $this->studentModel->checkRowExist($core->subject, $core->class, $core->term);
+                    $data['score'] = $examTaken;
+                    $this->view('students/success', $data);
+                } else {
+                    // Insert Score To DB
                     $this->studentModel->insertScore($data);
+                    $examTaken = $this->studentModel->checkRowExist($core->subject, $core->class, $core->term);
+                    $data['score'] = $examTaken;
+                    $this->view('students/success', $data);
                 }
-                redirect('students/dashboard');
             }
             redirect('students/dashboard');
         } else { // Post Request Ends ................................
             $cbt = $this->studentModel->getResponse($paper_id);
-            $examTaken = $this->studentModel->checkIfExamTaken($paper_id);
-            $param = $this->studentModel->getCbtCore($paper_id);
-            if (!$examTaken) {
-                $data = [
-                    'sch_id' => $_COOKIE['sch_id'],
-                    'student_id' => $_SESSION['student_id'],
-                    'subject' => $core->subject,
-                    'paperID' => $paper_id,
-                    'class' => $core->class,
-                    'score' => '',
-                    'cbtTag' => $core->publishedAS,
-                    'cbt' => ''
-                ];
-                $result =  5;
-                $data['score'] = $result;
-                // Insert Score To DB
-                if ($data['cbtTag'] == 'CA1') {
-                    $mark = $result / 100 * 20;
-                    $data['score'] = $mark;
-                } else if ($data['cbtTag'] == 'CA2') {
-                    $mark = $result / 100 * 20;
-                    $data['score'] = $mark;
-                } else if ($data['cbtTag'] == 'exam') {
-                    $mark = $result / 100 * 60;
-                    $data['score'] = $mark;
-                }
-                $this->studentModel->insertScore($data);
-                // load view 
-                if ($param->publishedAS == 'CA1') {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->CA1,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->CA1 >= 10) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                } elseif (
-                    $param->publishedAS == 'CA2'
-                ) {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->CA2,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->CA2 >= 10) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                } elseif (
-                    $param->publishedAS == 'exam'
-                ) {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->exam,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->exam >= 30) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                }
-            } else { // Exam is taken
-                if ($param->publishedAS == 'CA1') {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->CA1,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->CA1 >= 10) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                } elseif ($param->publishedAS == 'CA2') {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->CA2,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->CA2 >= 10) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                } elseif ($param->publishedAS == 'exam') {
-                    $data = [
-                        'sch_id' => $_COOKIE['sch_id'],
-                        'student_id' => $_SESSION['student_id'],
-                        'subject' => $core->subject,
-                        'paperID' => $paper_id,
-                        'score' => $examTaken->exam,
-                        'cbtTag' => $core->publishedAS,
-                        'cbt' => $cbt,
-                        'rowcount' => $cbtRowCount
-                    ];
-                    if ($examTaken->exam >= 30) {
-                        $this->view('students/success', $data);
-                    } else {
-                        $this->view('students/failed', $data);
-                    }
-                }
-            }
+            $examTaken = $this->studentModel->checkRowExist($core->subject, $core->class, $core->term);
+            $data = [
+                'sch_id' => $_COOKIE['sch_id'],
+                'student_id' => $_SESSION['student_id'],
+                'subject' => $core->subject,
+                'paperID' => $paper_id,
+                'score' => $examTaken,
+                'cbtTag' => $core->publishedAS,
+                'cbt' => $cbt,
+                'rowcount' => $cbtRowCount
+            ];
+            $this->view('students/success', $data);
         }
     }
     public function success($score)
@@ -512,8 +389,10 @@ class Students extends Controller
                 'exam' => val_entry($_POST['exam']),
             ];
             if ($this->studentModel->updateScores($data)) {
-                flash('msg', 'Sucessfull!');
-                redirect('students/scoring/' . $id);
+                flash('msg', 'Scores updated!');
+                echo "<script>
+                history.go(-2)
+          </script>";
             }
         } else {
             $scores = $this->studentModel->getSingleScores($id);

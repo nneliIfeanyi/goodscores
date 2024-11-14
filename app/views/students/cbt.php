@@ -116,25 +116,25 @@
                             if (!empty($data['cbt'])) :
                                 $n = 1;
                                 foreach ($data['cbt'] as $recent) : ?>
-                                    <div class="border-bottom mb-2">
+                                    <div class="mb-3">
                                         <input type="hidden" name="img<?= $n; ?>" value="<?= $recent->img; ?>">
                                         <input type="hidden" name="subInstruction<?= $n; ?>" value="<?= $recent->subInstruction; ?>">
                                         <input type="hidden" name="isSubjective<?= $n; ?>" value="<?= $recent->isSubjective; ?>">
                                         <?php if (!empty($recent->img)) : ?>
                                             <div class="">
-                                                <div class="mt-2 me-5">
+                                                <div class="mt-2 me-4">
                                                     <img src="<?php echo URLROOT . '/' . $recent->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
                                                 </div>
                                             </div>
                                         <?php endif; ?>
                                         <!-- Question Div -->
-                                        <div class="d-flex flex-row gap-2 m-0">
-                                            <p class="badge bg-primary fw-bold"><?= $n; ?> </p>
+                                        <div class="d-flex flex-row m-0">
+                                            <p class="fw-bold me-2"><?= $n; ?> </p>
                                             <?= $recent->question; ?>
                                             <input type="hidden" name="question<?= $n; ?>" value="<?= $recent->question; ?>">
                                         </div>
                                         <!-- OPtions Div -->
-                                        <div class="d-flex flex-wrap fw-bold m-0 py-3" style="font-size: 14px;">
+                                        <div class="fw-bold m-0" style="font-size: 14px;margin-top: -9px;">
 
                                             <input type="hidden" name="default<?= $n; ?>" value="<?= $recent->ans; ?>">
                                             <?php if ($recent->isSubjective == 'yes') : ?>
@@ -149,38 +149,40 @@
                                             <?php endif; ?>
                                             <div class="mx-3 my-1">
                                                 <?php if (!empty($recent->opt1)) : ?>
-                                                    <div class="form-check border pe-1">
-                                                        <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="a" class="form-check-input fs-2" id="A">
-                                                        <label style="margin-left: -11px;" for="A" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
+                                                    <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
+                                                    <div class=" border pe-1">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="a" class="form-check-input fs-2" id="A<?= $n; ?>">
+                                                        <label for="A<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="mx-3 my-1">
                                                 <?php if (!empty($recent->opt2)) : ?>
-                                                    <div class="form-check border pe-1">
-                                                        <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="b" class="form-check-input fs-2" id="B">
-                                                        <label style="margin-left: -11px;" for="B" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
+                                                    <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
+                                                    <div class=" border pe-1">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="b" class="form-check-input fs-2" id="B<?= $n; ?>">
+                                                        <label for="B<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="mx-3 my-1">
                                                 <?php if (!empty($recent->opt3)) : ?>
-                                                    <div class="form-check border  pe-1">
-                                                        <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="c" class="form-check-input fs-2" id="C">
-                                                        <label style="margin-left: -11px;" for="C" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
+                                                    <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
+                                                    <div class=" border  pe-1">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="c" class="form-check-input fs-2" id="C<?= $n; ?>">
+                                                        <label for="C<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="mx-3 my-1">
                                                 <?php if (!empty($recent->opt4)) : ?>
-                                                    <div class="form-check border  pe-1">
-                                                        <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="d" class="form-check-input fs-2" id="D">
-                                                        <label style="margin-left: -11px;" for="D" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
+                                                    <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
+                                                    <div class="border  pe-1">
+                                                        <input type="radio" name="ans<?= $n; ?>" value="d" class="form-check-input fs-2" id="D<?= $n; ?>">
+                                                        <label for="D<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
                                                     </div>
+                                                <?php else: ?>
+                                                    <input type="hidden" name="<?= $n; ?>optD" value="">
                                                 <?php endif; ?>
                                             </div>
                                         </div>
@@ -203,6 +205,14 @@
         </div>
     </section>
     <?php require APPROOT . '/views/inc/footer.php'; ?>
+    <!-- Page loader fade in on form submit -->
+    <script>
+        $(':submit').each(function() {
+            $(this).click(function() {
+                $('#loader').fadeIn();
+            });
+        });
+    </script>
     <script>
         // Set the date we're counting down to
         var countDownDate = new Date("<?= date('M d'); ?>, <?= date('Y'); ?> <?= $data['duration']; ?>").getTime();
@@ -244,14 +254,14 @@
         // subscribe to visibility change events
         document.addEventListener('visibilitychange', function() {
             // fires when user switches tabs, apps, goes to homescreen, etc.
-            if (document.visibilityState == 'hidden') {
-                let url = '<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>';
-                setTimeout(submitCBT, 60000);
+            // if (document.visibilityState == 'hidden') {
+            //   let url = '<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>';
+            //  setTimeout(submitCBT, 60000);
 
-                function submitCBT() {
-                    location.href = url;
-                }
-            }
+            //  function submitCBT() {
+            //     location.href = url;
+            //   }
+            // }
 
             // fires when app transitions from prerender, user returns to the app / tab.
             // if (document.visibilityState == 'visible') {

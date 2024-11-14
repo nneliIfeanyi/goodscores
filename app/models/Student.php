@@ -250,14 +250,14 @@ class Student
     public function insertScore($data)
     {
         if ($data['cbtTag'] == 'CA1') {
+            $data['score'] = ($data['percent'] / 100 * 20);
             // Prepare Query
-            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
-      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
+            $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
 
             // Bind Values
             $this->db->bind(':sch_id', $data['sch_id']);
             $this->db->bind(':student_id', $data['student_id']);
-            $this->db->bind(':paperID', $data['paperID']);
             $this->db->bind(':class', $data['class']);
             $this->db->bind(':term', TERM);
             $this->db->bind(':sub_ject', $data['subject']);
@@ -271,14 +271,14 @@ class Student
                 return false;
             }
         } elseif ($data['cbtTag'] == 'CA2') {
+            $data['score'] = ($data['percent'] / 100 * 20);
             // Prepare Query
-            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
-      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
+            $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
 
             // Bind Values
             $this->db->bind(':sch_id', $data['sch_id']);
             $this->db->bind(':student_id', $data['student_id']);
-            $this->db->bind(':paperID', $data['paperID']);
             $this->db->bind(':class', $data['class']);
             $this->db->bind(':term', TERM);
             $this->db->bind(':sub_ject', $data['subject']);
@@ -292,14 +292,14 @@ class Student
                 return false;
             }
         } elseif ($data['cbtTag'] == 'exam') {
+            $data['score'] = ($data['percent'] / 100 * 60);
             // Prepare Query
-            $this->db->query('INSERT INTO scores (sch_id, student_id, paperID, class, term, sub_ject, CA1, CA2, exam) 
-      VALUES (:sch_id, :student_id, :paperID, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
+            $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
+      VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
 
             // Bind Values
             $this->db->bind(':sch_id', $data['sch_id']);
             $this->db->bind(':student_id', $data['student_id']);
-            $this->db->bind(':paperID', $data['paperID']);
             $this->db->bind(':class', $data['class']);
             $this->db->bind(':term', TERM);
             $this->db->bind(':sub_ject', $data['subject']);
@@ -317,14 +317,34 @@ class Student
 
     public function checkIfExamTaken($paper_id)
     {
-        $this->db->query("SELECT * FROM scores WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
+        $this->db->query("SELECT * FROM responses WHERE sch_id = :sch_id AND student_id = :student_id AND paperID = :id;");
         $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $this->db->bind(':student_id', $_SESSION['student_id']);
         $this->db->bind(':id', $paper_id);
-        $this->db->single();
-
-        return $this->db->single();
+        $this->db->resultset();
+        if ($this->db->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    public function checkRowExist($subject, $class, $term)
+    {
+        $this->db->query("SELECT * FROM scores WHERE sch_id = :sch_id AND student_id = :student_id AND sub_ject = :sub_ject AND class = :class AND term = :term;");
+        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
+        $this->db->bind(':student_id', $_SESSION['student_id']);
+        $this->db->bind(':sub_ject', $subject);
+        $this->db->bind(':class', $class);
+        $this->db->bind(':term', $term);
+        $row = $this->db->single();
+        if ($this->db->rowCount() > 0) {
+            return $row;
+        } else {
+            return false;
+        }
+    }
+
     public function initTime($data)
     {
         // Prepare Query
@@ -429,6 +449,55 @@ class Student
         $this->db->single();
         if ($this->db->rowCount() > 0) {
             return $this->db->single();
+        } else {
+            return false;
+        }
+    }
+
+    public function updateScoreRow3($id, $score)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE scores SET exam =:exam WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+        $this->db->bind(':exam', $score);
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function updateScoreRow2($id, $score)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE scores SET CA2 =:CA2 WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+        $this->db->bind(':CA2', $score);
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function updateScoreRow1($id, $score)
+    {
+        // Prepare Query
+        $this->db->query('UPDATE scores SET CA1 =:CA1 WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+        $this->db->bind(':CA1', $score);
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
         } else {
             return false;
         }
