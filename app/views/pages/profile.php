@@ -60,6 +60,11 @@
                                 </li>
                             <?php endif; ?>
                             <?php if ($data['role'] == 'Admin') : ?>
+                                <?php if ($data['user']->isPaid == '1' && $data['user']->isCbt == '0') : ?>
+                                    <li class="nav-item">
+                                        <a href="<?= URLROOT; ?>/pages/iscbt" class="nav-link">Activate CBT</a>
+                                    </li>
+                                <?php endif ?>
                                 <li class="nav-item">
                                     <a href="<?= URLROOT; ?>/pages/logout" class="nav-link">Logout</a>
                                 </li>

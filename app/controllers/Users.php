@@ -373,11 +373,11 @@ class Users extends Controller
             <i class='bi bi-check-circle'></i>  &nbsp;User not found!
           </p>
         ";
-        // $data['username_err'] = 'User Not Found.';
+        // $data['username_err'] = 'User Not Found.'; 
         // $this->view('users/login', $data);
       } else {
 
-        $loggedInUser = $this->userModel->login($data['username'], $data['sch_id'], $data['password']);
+        $loggedInUser = $this->userModel->login($data['username'], $data['password']);
 
         if ($loggedInUser) {
           // User Authenticated!
