@@ -1,4 +1,4 @@
-<label onclick="goTop()" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></label>
+<!-- <label onclick="goTop()" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></label> -->
 
 <!-- JQUERY JS File -->
 <script src="<?php echo URLROOT; ?>/assets/js/jquery.js"></script>

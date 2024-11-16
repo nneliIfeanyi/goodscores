@@ -56,7 +56,7 @@
               <input type="hidden" name="isSubjective" value="no">
               <div class="my-4">
                 <label for="className">Sub Instruction</label>
-                <textarea class="tiny2" name="sub_ins" required><?php echo $data['post']->subInstruction; ?></textarea>
+                <textarea class="tiny2" name="sub_ins"><?php echo $data['post']->subInstruction; ?></textarea>
               </div>
               <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
               <div class="row my-3">
@@ -166,9 +166,9 @@
           <input type="hidden" name="isSubjective" value="yes">
           <div class="my-4">
             <label for="className">Sub Instruction</label>
-            <textarea class="tiny2" name="sub_ins" required><?php echo $data['post']->subInstruction; ?></textarea>
+            <textarea class="tiny2" name="sub_ins"><?php echo $data['post']->subInstruction; ?></textarea>
           </div>
-          <textarea class="tiny" name="question" required><?php echo $data['post']->question; ?></textarea>
+          <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
           <div class="my-4">
             <label for="className">Expected answer</label>
             <textarea class="tiny2" name="ans"><?= $data['post']->ans; ?></textarea>

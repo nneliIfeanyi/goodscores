@@ -136,7 +136,7 @@
                                 <?php if (!empty($obj->img)) : ?>
                                     <div class="">
                                         <div class="my-1 mx-3">
-                                            <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
+                                            <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="80%" height="150px" alt="daigram">
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -144,8 +144,6 @@
                                     <?php
                                     $question = str_replace('<p>', '', $obj->question);
                                     $question = str_replace('</p>', '', $question);
-                                    // $question = str_replace('/', '', $question);
-                                    // $question = substr($question, 1, -1);
                                     ?>
                                     <span><b><?= $num; ?>)&nbsp;&nbsp;</b></span>
                                     <span style="font-size: 14px;"><?= $question; ?></span>
