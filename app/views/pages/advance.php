@@ -90,7 +90,7 @@
                                                     <div class="modal-footer">
                                                         <div class="d-flex gap-4">
                                                             <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-                                                            <form method="POST" action="<?php echo URLROOT; ?>/submissions/delete_class/<?= $class->id; ?>">
+                                                            <form method="POST" action="<?php echo URLROOT; ?>/submissions/delete_class2/<?= $class->id; ?>">
                                                                 <input class="btn btn-danger" id="submit2" type="submit" value="Yes Continue">
                                                             </form>
                                                         </div>

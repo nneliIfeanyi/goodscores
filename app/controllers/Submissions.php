@@ -247,6 +247,21 @@ class Submissions extends Controller
     }
   }
 
+  public function delete_class2($id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      //Execute
+      if ($this->userModel->deleteClass2($id)) {
+        flash('msg', 'Class is deleted successfully', 'alert alert-danger');
+        redirect('pages/advance');
+      } else {
+        die('Something went wrong');
+      }
+    } else {
+      redirect('users/classes');
+    }
+  }
+
 
 
   // Exam Params

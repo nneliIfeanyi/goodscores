@@ -314,6 +314,22 @@ class User
     }
   }
 
+  public function deleteClass2($id)
+  {
+    // Prepare Query
+    $this->db->query('DELETE FROM fetch1 WHERE id = :id');
+
+    // Bind Values
+    $this->db->bind(':id', $id);
+
+    //Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
 
   // Delete Subject
