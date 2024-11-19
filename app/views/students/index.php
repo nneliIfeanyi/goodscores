@@ -89,7 +89,7 @@
                                                             <th scope="col">Photo</th>
                                                             <th scope="col">Fullname</th>
                                                             <th scope="col">Passkey</th>
-                                                            <th scope="col">View</th>
+                                                            <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -112,11 +112,35 @@
                                                                     <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
                                                                     <td><?= $student->passkey; ?></td>
                                                                     <td class="d-flex gap-2">
-                                                                        <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                                                        <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#class<?php echo $student->id; ?>"><i class="bi bi-trash text-danger"></i></a>
                                                                         <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
                                                                     </td>
                                                                 </tr>
 
+                                                                <!-- Delete Modal -->
+                                                                <div class="modal fade" id="class<?php echo $student->id; ?>" tabindex="-1">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Are you sure to delete <strong class="text-primary"><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?>?</strong></h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                This action cannot be reversed..
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <div class="d-flex gap-4">
+                                                                                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                                                                    <a href="<?= URLROOT ?>/students/delete/<?= $student->id ?>" class="btn btn-danger">
+                                                                                        Yes Continue
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End Delete Modal -->
                                                             <?php $num++;
                                                             endforeach;
                                                         else : ?>
@@ -156,7 +180,7 @@
                                                         <th scope="col">Fullname</th>
                                                         <th scope="col">Class</th>
                                                         <th scope="col">Passkey</th>
-                                                        <th scope="col">View</th>
+                                                        <th scope="col">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -180,10 +204,35 @@
                                                                 <td><?= $student->class; ?></td>
                                                                 <td><?= $student->passkey; ?></td>
                                                                 <td class="d-flex gap-2">
-                                                                    <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                                                    <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#class<?php echo $student->id; ?>"><i class="bi bi-trash text-danger"></i></a>
                                                                     <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
                                                                 </td>
                                                             </tr>
+
+                                                            <!-- Delete Modal -->
+                                                            <div class="modal fade" id="class<?php echo $student->id; ?>" tabindex="-1">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Are you sure to delete <strong class="text-primary"><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?>?</strong></h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            This action cannot be reversed..
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <div class="d-flex gap-4">
+                                                                                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                                                                <a href="<?= URLROOT ?>/students/delete/<?= $student->id ?>" class="btn btn-danger">
+                                                                                    Yes Continue
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- End Delete Modal -->
 
                                                         <?php $num++;
                                                         endforeach;
@@ -236,16 +285,41 @@
                                                                     <td><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?></td>
                                                                     <td><?= $student->passkey; ?></td>
                                                                     <td class="d-flex gap-2">
-                                                                        <a href="<?= URLROOT ?>/students/edit/<?= $student->id ?>" class=""><i class="bi bi-pen"></i></a>
+                                                                        <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#class<?php echo $student->id; ?>"><i class="bi bi-trash text-danger"></i></a>
                                                                         <a href="<?= URLROOT ?>/students/profile/<?= $student->id ?>" class=""><i class="bi bi-eye"></i></a>
                                                                     </td>
                                                                 </tr>
+
+                                                                <!-- Delete Modal -->
+                                                                <div class="modal fade" id="class<?php echo $student->id; ?>" tabindex="-1">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Are you sure to delete <strong class="text-primary"><?= $student->surname ?> <?= $student->firstname ?> <?= $student->middlename ?>?</strong></h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                This action cannot be reversed..
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <div class="d-flex gap-4">
+                                                                                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                                                                                    <a href="<?= URLROOT ?>/students/delete/<?= $student->id ?>" class="btn btn-danger">
+                                                                                        Yes Continue
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End Delete Modal -->
 
                                                             <?php $num++;
                                                             endforeach;
                                                         else : ?>
                                                             <tr>
-                                                                <td class="text-danger">No data set</td>
+                                                                <td class=" text-danger">No data set</td>
                                                             </tr>
                                                         <?php endif; ?>
                                                     </tbody>

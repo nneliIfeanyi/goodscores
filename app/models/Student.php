@@ -85,6 +85,21 @@ class Student
             return false;
         }
     }
+    public function deleteStudent($id)
+    {
+        // Prepare Query
+        $this->db->query('DELETE FROM students WHERE id = :id');
+
+        // Bind Values
+        $this->db->bind(':id', $id);
+
+        //Execute
+        if ($this->db->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // Find Student BY Username
     public function findStudentById($id)

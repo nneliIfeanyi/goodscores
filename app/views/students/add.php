@@ -68,8 +68,9 @@
                                 <input type="hidden" name="regNo" value="<?= $_COOKIE['sch_username'] . '_' . $data['regNo'] ?>">
                                 <input type=" text" disabled value="<?= $_COOKIE['sch_username'] . '_' . $data['regNo'] ?>" class="form-control form-control-lg" />
                             </div>
-                            <div class="d-grid mx-4">
-                                <input type="submit" value="Continue" class="btn btn-outline-primary">
+                            <div class="d-flex mx-4">
+                                <input type="submit" value="Continue" class="btn btn-outline-primary me-3">
+                                <a href="<?= URLROOT ?>/students" class="btn btn-secondary"><i class="bi bi-chevron-left"></i> Back</a>
                             </div>
 
                         </form>

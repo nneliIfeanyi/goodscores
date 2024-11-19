@@ -407,6 +407,23 @@ class Students extends Controller
             $this->view('students/scoring', $data);
         }
     }
+
+    public function delete($id)
+    {
+        if (!$this->isLoggedIn2()) {
+            redirect('users/login');
+        }
+        if ($this->studentModel->deleteStudent($id)) {
+            flash('msg', 'Successfull!');
+            echo "
+            <script>
+                history.back();
+            </script>
+            ";
+        } else {
+            die('Soomething Went Wrong');
+        }
+    }
     public function profile($id)
     {
         if (!$this->isLoggedIn() && !$this->isLoggedIn2()) {
