@@ -22,11 +22,11 @@
     <section class="section">
       <div class="row">
         <div class="col-lg-6">
-          <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <!-- <div class="alert alert-primary alert-dismissible fade show" role="alert">
             <i class="bi bi-star me-1 text-warning"></i>
             Class name should follow your school's pattern | Either Year-1 to Year-12 or Basic-1 to Basic-6 or Jss-1 to Sss-3
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
+          </div> -->
 
           <div class="card">
             <div class="card-body">
@@ -113,7 +113,6 @@
                           <th scope="row"><?php echo $n; ?></th>
                           <td><?php echo $class->classname; ?></td>
                           <td class="d-flex gap-2">
-                            <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/edit_class/<?php echo $class->id; ?>"><i class="bi bi-pen"></i></a>
                             <span class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#class<?php echo $class->id; ?>"><i class="bi bi-trash"></i></span>
                           </td>
                         </tr>

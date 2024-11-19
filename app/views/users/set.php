@@ -41,10 +41,10 @@
                     <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
                     <input type="text" name="section_tag" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                   </div>
-                  <div class="my-4">
+                  <!-- <div class="my-4">
                     <label for="className">Section name</label>
                     <input type="text" name="section_name" disabled class="form-control form-control-lg" value="<?= $data['param']; ?>" />
-                  </div>
+                  </div> -->
                   <div class="my-4">
                     <select class="form-control form-control-lg" name="class" required>
                       <option value="">Select Class</option>

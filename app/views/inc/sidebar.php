@@ -59,11 +59,11 @@
              <i class="bi bi-circle"></i><span>Theory Questions</span>
            </a>
          </li>
-         <li>
+         <!-- <li>
            <a href="<?php echo URLROOT; ?>/users/set/custom">
              <i class="bi bi-circle"></i><span>Custom</span>
            </a>
-         </li>
+         </li> -->
 
        </ul>
      </li><!-- End Set Questions Nav -->

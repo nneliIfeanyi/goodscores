@@ -72,7 +72,6 @@
                                             <th scope="row"><?php echo $n; ?></th>
                                             <td><?php echo $class->classname; ?></td>
                                             <td class="d-flex gap-2">
-                                                <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/users/edit_class/<?php echo $class->id; ?>"><i class="bi bi-pen"></i></a>
                                                 <span class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#class<?php echo $class->id; ?>"><i class="bi bi-trash"></i></span>
                                             </td>
                                         </tr>
