@@ -112,7 +112,7 @@
                             <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
                             <span><?= $data['params1']->instruction; ?></span>
                         </div><br />
-                        <div class="col-6 pe-1" style="overflow-x: hidden;">
+                        <div class="col-6 pe-1" style="overflow-wrap:break-word">
 
                             <?php foreach ($data['obj'] as $obj) : ?>
                                 <?php
@@ -163,7 +163,7 @@
                                 </div><!-- End OBJ Options Display -->
 
                         </div><!-- End first col-6 question display -->
-                        <div class="col-6 mt-2 pe-1" style="overflow-x: hidden;">
+                        <div class="col-6 mt-2 pe-1" style="overflow-wrap:break-word;">
                         <?php $num++;
                             endforeach; ?><!-- End OBJ foreach -->
                     <?php endif; ?><!-- End Not Empty OBJ questions-->
@@ -174,7 +174,7 @@
                                 <p class="m-0 fw-bold"><?= $data['params2']->tag; ?> | <?= $data['params2']->section; ?></p>
                                 <span style="text-decoration: underline;"><?= $data['params2']->instruction; ?></span>
                             </div><br />
-                            <div class="col-6 pe-1" style="overflow-x: hidden;">
+                            <div class="col-6 pe-1" style="overflow-wrap:break-word">
                                 <?php $n = 1;
                                 foreach ($data['theory'] as $theory) : ?>
                                     <?php if (!empty($theory->img)) : ?>
@@ -228,7 +228,7 @@
                                         </div>
                                     <?php endif; ?>
                             </div>
-                            <div class="col-6 pe-1" style="overflow-x: hidden;">
+                            <div class="col-6 pe-1" style="overflow-wrap:break-word;">
                             <?php $n++;
                                 endforeach; ?>
                         <?php endif; ?>
