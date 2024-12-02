@@ -50,7 +50,7 @@
 
                                         <td></td>
                                         <td>
-                                            <span class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#section<?= $recent->id; ?>">start <i class="bi bi-chevron-right"></i></span>
+                                            <span class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#section<?= $recent->id; ?>"><i class="bi bi-chevron-right fs-5"></i></span>
                                         </td>
                                     </tr>
                                     <!-- Modal -->

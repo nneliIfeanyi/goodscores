@@ -1,6 +1,7 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
-<?php require APPROOT . '/views/inc/navbar.php'; ?>
-<?php require APPROOT . '/views/inc/sidebar.php'; ?>
+<?php require APPROOT . '/views/inc/header.php';
+require APPROOT . '/views/inc/navbar.php';
+require APPROOT . '/views/inc/sidebar.php';
+?>
 
 <main id="main" class="main">
   <?php if ($_SESSION['role'] != 'Admin') : ?>

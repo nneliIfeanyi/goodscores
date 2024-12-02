@@ -2,8 +2,6 @@
 
 <body>
     <style>
-        @import url(https://fonts.googleapis.com/css?family=Open+Sans:800);
-
         #countDown {
             font-size: 16px;
             font-weight: bold;
@@ -36,175 +34,124 @@
             <span class="spinner-border text-primary"> </span>
         </div>
     </div>
-    <!-- Ajax Response -->
-    <div id="ajax-msg"></div>
-    <!-- End Ajax Response -->
-    <!-- ======= Flash Message ======= -->
-    <?php echo flash('msg'); ?>
-    <!-- ======= Header ======= -->
-    <header id="header" class="header fixed-top d-flex align-items-center">
-
-        <div class="d-flex align-items-center justify-content-between">
-            <a href="#" class="logo d-flex align-items-center">
-                <img src="assets/img/logo.png" alt="">
-                <span class=""><?= $_COOKIE['sch_username']; ?></span>
-            </a>
-            <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
-        </div><!-- End Logo -->
-
-        <nav class="header-nav ms-auto">
-            <ul class="d-flex align-items-center">
-
-                <li class="nav-item dropdown">
-
-                    <span class="nav-link nav-icon">
-                        <i class="bi bi-bell"></i>
-                        <span id="countDown" class="badge bg-primary py-1 badge-number"></span>
-                    </span><!-- End Notification Icon -->
-                </li>
-                <li class="nav-item dropdown pe-3">
-                    <label class="nav-link nav-profile d-flex align-items-center pe-0">
-                        <?php if (!empty($_SESSION['profile_photo'])) : ?>
-                            <img src="<?= URLROOT; ?>/<?= $_SESSION['profile_photo']; ?>" alt="Profile" class="rounded-circle">
-                        <?php else : ?>
-                            <span class="d-none d-md-block ps-2"><?php echo $_SESSION['fullname']; ?></span>
-                        <?php endif; ?>
-                    </label><!-- End Profile Image Icon -->
-                </li><!-- End Profile Nav -->
-
-            </ul>
-        </nav><!-- End Icons Navigation -->
-
-    </header><!-- End Header -->
-    <section style="overflow-x: scroll;width:100%;">
-        <div class="pagetitle">
-            <h1>CBT</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="<?= URLROOT; ?>/students/dashboard">Home</a></li>
-                    <li class="breadcrumb-item">Students</li>
-                    <li class="breadcrumb-item active">CBT</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
-        <div class="row">
-            <div class="col-lg-9 mx-auto">
-                <div id="card" class="card">
-                    <div class="card-body mt-2 pb-0">
-                        <?php if ($data['param']->section == 'objectives_questions') {
-                            $data['param']->section = 'Objective Questions';
-                        }
-                        ?>
-                        <div class="pagetitle border-bottom">
-
-                            <nav class="m-0">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><?= $data['param']->class; ?></li>
-                                    <li class="breadcrumb-item"><?= $data['param']->subject; ?></li>
-                                    <li class="breadcrumb-item active"><?= $data['core']->publishedAS; ?></li>
-                                </ol>
-                            </nav>
-                            <h3 class="pb-3 h4"><?= $data['param']->section ?> | <?= $data['param']->instruction ?></h3>
-                        </div>
+    <div class="question-container">
+        <nav class="question-header navbar-expand fixed-top py-3 shadow-sm z-3">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="question-heading fw-bold fs-6 mb-0 text-truncate"><?= $data['param']->subject; ?></h1>
+                    <div class="question-time">Time: <span id="countDown">00:00:00</span></div>
+                    <div class="indicator" class="border border-success rounded py-1 px-2">0/0</div>
+                </div>
+            </div>
+        </nav>
+        <section class="py-5 pt-5">
+            <div class="container">
+                <div class="row">
+                    <!-- Left Section -->
+                    <section class="col-md-8 question-lists z-1 py-5">
                         <form action="<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>" method="POST">
                             <input type="hidden" name="class" value="<?= $data['core']->class; ?>">
                             <input type="hidden" name="subject" value="<?= $data['core']->subject; ?>">
                             <input type="hidden" name="paperID" id="name" value="<?= $data['core']->paperID; ?>">
                             <input type="hidden" name="cbtTag" value="<?= $data['core']->publishedAS; ?>">
                             <!-- <input type="hidden" name="isSubjective" value="<?= $data['core']->isSubjective; ?>"> -->
-                            <?php
-                            if (!empty($data['cbt'])) :
+                            <?php if (!empty($data['cbt'])) :
                                 $n = 1;
                                 foreach ($data['cbt'] as $recent) : ?>
-                                    <div class="mb-3">
-                                        <input type="hidden" name="img<?= $n; ?>" value="<?= $recent->img; ?>">
-                                        <input type="hidden" name="subInstruction<?= $n; ?>" value="<?= $recent->subInstruction; ?>">
-                                        <input type="hidden" name="isSubjective<?= $n; ?>" value="<?= $recent->isSubjective; ?>">
-                                        <?php if (!empty($recent->img)) : ?>
-                                            <div class="">
-                                                <div class="mt-2 me-4">
-                                                    <img src="<?php echo URLROOT . '/' . $recent->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
-                                        <!-- Question Div -->
-                                        <div class="d-flex flex-row m-0">
-                                            <p class="fw-bold me-2"><?= $n; ?> </p>
-                                            <?= $recent->question; ?>
-                                            <input type="hidden" name="question<?= $n; ?>" value="<?= $recent->question; ?>">
-                                        </div>
-                                        <!-- OPtions Div -->
-                                        <div class="fw-bold m-0" style="font-size: 14px;margin-top: -9px;">
-
-                                            <input type="hidden" name="default<?= $n; ?>" value="<?= $recent->ans; ?>">
-                                            <?php if ($recent->isSubjective == 'yes') : ?>
-                                                <input type="hidden" name="<?= $n; ?>optA" value="">
-                                                <input type="hidden" name="<?= $n; ?>optB" value="">
-                                                <input type="hidden" name="<?= $n; ?>optC" value="">
-                                                <input type="hidden" name="<?= $n; ?>optD" value="">
-                                                <div class="my-2">
-                                                    <label for="className">Answer</label>
-                                                    <input type="text" name="ans<?= $n; ?>" class="form-control form-control-lg" />
+                                    <div class="question border-bottom pb-5">
+                                        <div class="d-flex align-items-start justify-content-start">
+                                            <input type="hidden" name="img<?= $n; ?>" value="<?= $recent->img; ?>">
+                                            <input type="hidden" name="subInstruction<?= $n; ?>" value="<?= $recent->subInstruction; ?>">
+                                            <input type="hidden" name="isSubjective<?= $n; ?>" value="<?= $recent->isSubjective; ?>">
+                                            <?php if (!empty($recent->img)) : ?>
+                                                <div class="">
+                                                    <div class="mt-2 me-4">
+                                                        <img src="<?php echo URLROOT . '/' . $recent->img; ?>" class="rounded" width="60%" height="120px" alt="daigram">
+                                                    </div>
                                                 </div>
                                             <?php endif; ?>
-                                            <div class="mx-3 my-1">
-                                                <?php if (!empty($recent->opt1)) : ?>
-                                                    <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
-                                                    <div class=" border pe-1">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="a" class="form-check-input fs-2" id="A<?= $n; ?>">
-                                                        <label for="A<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt1; ?></label>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="mx-3 my-1">
-                                                <?php if (!empty($recent->opt2)) : ?>
-                                                    <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
-                                                    <div class=" border pe-1">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="b" class="form-check-input fs-2" id="B<?= $n; ?>">
-                                                        <label for="B<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt2; ?></label>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="mx-3 my-1">
-                                                <?php if (!empty($recent->opt3)) : ?>
-                                                    <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
-                                                    <div class=" border  pe-1">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="c" class="form-check-input fs-2" id="C<?= $n; ?>">
-                                                        <label for="C<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt3; ?></label>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="mx-3 my-1">
-                                                <?php if (!empty($recent->opt4)) : ?>
-                                                    <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
-                                                    <div class="border  pe-1">
-                                                        <input type="radio" name="ans<?= $n; ?>" value="d" class="form-check-input fs-2" id="D<?= $n; ?>">
-                                                        <label for="D<?= $n; ?>" class="form-check-label mt-3"><?= $recent->opt4; ?></label>
-                                                    </div>
-                                                <?php else: ?>
+                                            <div>
+                                                <!-- QUESTION DIV HERE -->
+                                                <div class="d-flex">
+                                                    <span class="me-2 fw-semibold"><?= $n; ?></span>
+                                                    <p class="fw-semi-bold"><?= $recent->question; ?></p>
+                                                    <input type="hidden" name="question<?= $n; ?>" value="<?= $recent->question; ?>">
+                                                </div>
+                                                <!-- QUESTION DIV ENDS HERE -->
+                                                <!-- SUBJECTIVE DIV -->
+                                                <input type="hidden" name="default<?= $n; ?>" value="<?= $recent->ans; ?>">
+                                                <?php if ($recent->isSubjective == 'yes') : ?>
+                                                    <input type="hidden" name="<?= $n; ?>optA" value="">
+                                                    <input type="hidden" name="<?= $n; ?>optB" value="">
+                                                    <input type="hidden" name="<?= $n; ?>optC" value="">
                                                     <input type="hidden" name="<?= $n; ?>optD" value="">
+                                                    <div class="my-2">
+                                                        <label for="className">Answer</label>
+                                                        <input type="text" name="ans<?= $n; ?>" class="form-control form-control-lg" />
+                                                    </div>
                                                 <?php endif; ?>
+                                                <!-- SUBJECTIVE DIV ENDS -->
+                                                <!-- OPTIONS DIV HERE -->
+                                                <div class="answer-options opacity-75 lh-base ps-2">
+                                                    <?php if (!empty($recent->opt1)) : ?>
+                                                        <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
+                                                        <div class="d-flex align-items-start my-3">
+                                                            <input type="radio" name="ans<?= $n; ?>" value="a" id="A<?= $n; ?>" class="mt-2 form-check-input fs-4" />
+                                                            <label class="py-2 ms-2" for="A<?= $n; ?>"><?= $recent->opt1; ?></label>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($recent->opt2)) : ?>
+                                                        <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
+                                                        <div class="d-flex align-items-start mb-3">
+                                                            <input type="radio" name="ans<?= $n; ?>" value="b" id="B<?= $n; ?>" class="mt-2 form-check-input fs-4" />
+                                                            <label class="py-2 ms-2" for="B<?= $n; ?>"><?= $recent->opt2; ?></label>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($recent->opt3)) : ?>
+                                                        <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
+                                                        <div class="d-flex align-items-start mb-3">
+                                                            <input type="radio" name="ans<?= $n; ?>" value="c" id="C<?= $n; ?>" class="mt-2 form-check-input fs-4" />
+                                                            <label class="py-2 ms-2" for="C<?= $n; ?>"><?= $recent->opt3; ?></label>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($recent->opt4)) : ?>
+                                                        <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
+                                                        <div class="d-flex align-items-start mb-3">
+                                                            <input type="radio" name="ans<?= $n; ?>" value="d" id="D<?= $n; ?>" class="mt-2 form-check-input fs-4" />
+                                                            <label class="py-2 ms-2" for="D<?= $n; ?>"><?= $recent->opt4; ?></label>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <!-- OPTIONS DIV ENDS HERE -->
                                             </div>
                                         </div>
                                     </div>
                                 <?php $n++;
                                 endforeach; ?>
-                                <div class="d-grid my-3">
-                                    <input type="submit" id="submit" value="Submit" class="btn btn-outline-primary">
-                                </div>
                             <?php else : ?>
                                 <label class="text-danger">No data set</label>
                             <?php endif; ?>
-                        </form>
 
-                    </div>
+                            <!-- Next/Previous Buttons -->
+                            <div class="my-3 bg-light py-4">
+                                <div class="container">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <button type="button" id="prev-btn" class="btn btn-default border py-2 px-5" onclick="plusSlides(-1)">Previous</button>
+                                        <button type="button" id="next-btn" class="btn btn-default border py-2 px-5" onclick="plusSlides(1)">Next</button>
+                                    </div>
+                                    <button type="submit" id="submit-btn" class="btn btn-success d-block w-100 py-2 px-5 my-3" onclick="">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
 
                 </div>
             </div>
-        </div>
-        </div>
-    </section>
+        </section>
+    </div>
+
     <?php require APPROOT . '/views/inc/footer.php'; ?>
+    <script src="<?php echo URLROOT; ?>/assets/js/questions.js"></script>
     <!-- Page loader fade in on form submit -->
     <script>
         $(':submit').each(function() {
@@ -246,26 +193,4 @@
                 display.classList.add('blinking');
             }
         }, 1000);
-    </script>
-    <script>
-        // query current page visibility state: prerender, visible, hidden
-        var pageVisibility = document.visibilityState;
-
-        // subscribe to visibility change events
-        document.addEventListener('visibilitychange', function() {
-            // fires when user switches tabs, apps, goes to homescreen, etc.
-            // if (document.visibilityState == 'hidden') {
-            //   let url = '<?= URLROOT; ?>/students/submit_cbt/<?= $data['core']->paperID; ?>';
-            //  setTimeout(submitCBT, 60000);
-
-            //  function submitCBT() {
-            //     location.href = url;
-            //   }
-            // }
-
-            // fires when app transitions from prerender, user returns to the app / tab.
-            // if (document.visibilityState == 'visible') {
-
-            // }
-        });
     </script>
