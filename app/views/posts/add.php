@@ -242,9 +242,9 @@
   tinymce.init({
     selector: 'textarea.tiny',
     height: 210,
-    plugins: 'charmap emoticon wordcount table pagebreak',
+    plugins: 'charmap emoticon wordcount table pagebreak code',
     menubar: 'edit insert format tools',
-    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap table',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap table code',
     newline_behavior: 'linebreak',
     setup: (editor) => {
 
@@ -260,9 +260,9 @@
   tinymce.init({
     selector: 'textarea.tiny2',
     height: 180,
-    plugins: 'charmap',
+    plugins: 'charmap code',
     menubar: '',
-    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
+    toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap code',
     newline_behavior: 'linebreak',
     setup: (editor) => {
 
