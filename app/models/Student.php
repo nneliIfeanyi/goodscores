@@ -265,7 +265,6 @@ class Student
     public function insertScore($data)
     {
         if ($data['cbtTag'] == 'CA1') {
-            $data['score'] = ($data['percent'] / 100 * 20);
             // Prepare Query
             $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
       VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
@@ -276,7 +275,7 @@ class Student
             $this->db->bind(':class', $data['class']);
             $this->db->bind(':term', TERM);
             $this->db->bind(':sub_ject', $data['subject']);
-            $this->db->bind(':CA1', $data['score']);
+            $this->db->bind(':CA1', $data['result']);
             $this->db->bind(':CA2', '');
             $this->db->bind(':exam', '');
             //Execute
@@ -286,7 +285,6 @@ class Student
                 return false;
             }
         } elseif ($data['cbtTag'] == 'CA2') {
-            $data['score'] = ($data['percent'] / 100 * 20);
             // Prepare Query
             $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
       VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
@@ -298,7 +296,7 @@ class Student
             $this->db->bind(':term', TERM);
             $this->db->bind(':sub_ject', $data['subject']);
             $this->db->bind(':CA1', '');
-            $this->db->bind(':CA2', $data['score']);
+            $this->db->bind(':CA2', $data['result']);
             $this->db->bind(':exam', '');
             //Execute
             if ($this->db->execute()) {
@@ -307,7 +305,6 @@ class Student
                 return false;
             }
         } elseif ($data['cbtTag'] == 'exam') {
-            $data['score'] = ($data['percent'] / 100 * 60);
             // Prepare Query
             $this->db->query('INSERT INTO scores (sch_id, student_id, class, term, sub_ject, CA1, CA2, exam) 
       VALUES (:sch_id, :student_id, :class, :term, :sub_ject, :CA1, :CA2, :exam)');
@@ -320,7 +317,7 @@ class Student
             $this->db->bind(':sub_ject', $data['subject']);
             $this->db->bind(':CA1', '');
             $this->db->bind(':CA2', '');
-            $this->db->bind(':exam', $data['score']);
+            $this->db->bind(':exam', $data['result']);
             //Execute
             if ($this->db->execute()) {
                 return true;

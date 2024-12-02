@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/students/inc/header.php';
-//require APPROOT . '/views/students/inc/navbar.php';
-//require APPROOT . '/views/students/inc/sidebar.php';
+require APPROOT . '/views/students/inc/navbar.php';
+require APPROOT . '/views/students/inc/sidebar.php';
 ?>
 
 
@@ -19,7 +19,7 @@
                         <h5 class="card-title"><?= $data['subject']; ?> | 1st CA</h5>
 
                         <div class="badge rounded-circle p-5 bg-success">
-                            <p class="fw-bold fs-1"><?= $data['score']->CA1; ?> of 20</p>
+                            <p class="fw-bold fs-1"><?= $data['score']->CA1; ?> of <?= $data['rowcount']; ?></p>
                         </div>
                         <!-- <p><span class="fs-2 fw-bold">PASSED!</span><br /></p> -->
 
@@ -32,7 +32,7 @@
                         <h5 class="card-title"><?= $data['subject']; ?> | 2nd CA</h5>
 
                         <div class="badge rounded-circle p-5 bg-success">
-                            <p class="fw-bold fs-1"><?= $data['score']->CA2; ?> of 20</p>
+                            <p class="fw-bold fs-1"><?= $data['score']->CA2; ?> of <?= $data['rowcount']; ?></p>
                         </div>
                         <!-- <p><span class="fs-2 fw-bold">PASSED!</span><br /></p> -->
 
@@ -45,7 +45,7 @@
                         <h5 class="card-title"><?= $data['subject']; ?> | Exam</h5>
 
                         <div class="badge rounded-circle p-5 bg-success">
-                            <p class="fw-bold fs-1"><?= $data['score']->exam; ?> of 60</p>
+                            <p class="fw-bold fs-1"><?= $data['score']->exam; ?> of <?= $data['rowcount']; ?></p>
                         </div>
                         <!-- <p><span class="fs-2 fw-bold">PASSED!</span><br /></p> -->
 

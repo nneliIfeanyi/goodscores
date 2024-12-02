@@ -133,6 +133,8 @@
     menubar: 'edit insert format tools table',
     toolbar: 'undo redo superscript subscript | bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
+    statusbar: false,
+    promotion: false,
     table_row_class_list: [{
       title: 'None',
       value: '',

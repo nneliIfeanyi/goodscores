@@ -206,6 +206,8 @@
     menubar: 'edit insert format tools',
     toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
+    statusbar: false,
+    promotion: false,
     setup: (editor) => {
 
       editor.ui.registry.addButton('dash', {
@@ -221,6 +223,8 @@
     selector: 'textarea.tiny2',
     height: 180,
     plugins: 'charmap',
+    statusbar: false,
+    promotion: false,
     menubar: '',
     toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap',
     newline_behavior: 'linebreak',

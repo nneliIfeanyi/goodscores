@@ -255,7 +255,7 @@ class Students extends Controller
                 if ($total <= 0) {
                     $result = 0;
                 } else {
-                    $result =  round($total / $cbtRowCount * 100, 1);
+                    $result =  $total;
                 }
                 $cbt = $this->studentModel->getResponse($paper_id);
                 $data = [
@@ -264,7 +264,7 @@ class Students extends Controller
                     'subject' => $_POST['subject'],
                     'class' => $_POST['class'],
                     'paperID' => $_POST['paperID'],
-                    'percent' => $result,
+                    'result' => $result,
                     'cbtTag' => $_POST['cbtTag'],
                     'term' => $core->term,
                     'cbt' => $cbt,
@@ -275,14 +275,11 @@ class Students extends Controller
                 if ($row) {
                     //update row
                     if ($data['cbtTag'] == 'CA1') {
-                        $score = ($data['percent'] / 100 * 20);
-                        $this->studentModel->updateScoreRow1($row->id, $score);
+                        $this->studentModel->updateScoreRow1($row->id, $data['result']);
                     } elseif ($data['cbtTag'] == 'CA2') {
-                        $score = ($data['percent'] / 100 * 20);
-                        $this->studentModel->updateScoreRow2($row->id, $score);
+                        $this->studentModel->updateScoreRow2($row->id, $data['result']);
                     } elseif ($data['cbtTag'] == 'exam') {
-                        $score = ($data['percent'] / 100 * 20);
-                        $this->studentModel->updateScoreRow3($row->id, $score);
+                        $this->studentModel->updateScoreRow3($row->id, $data['result']);
                     }
                     $examTaken = $this->studentModel->checkRowExist($core->subject, $core->class, $core->term);
                     $data['score'] = $examTaken;

@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="question-container">
-        <nav class="question-header navbar-expand fixed-top py-3 shadow-sm z-3">
+        <nav class="question-header navbar-expand text-bg-success fixed-top py-3  z-3">
             <div class="container">
                 <div class="d-flex align-items-center justify-content-between">
                     <h1 class="question-heading fw-bold fs-6 mb-0 text-truncate"><?= $data['param']->subject; ?></h1>
@@ -95,28 +95,28 @@
                                                 <div class="answer-options opacity-75 lh-base ps-2">
                                                     <?php if (!empty($recent->opt1)) : ?>
                                                         <input type="hidden" name="<?= $n; ?>optA" value="<?= $recent->opt1; ?>">
-                                                        <div class="d-flex align-items-start my-3">
+                                                        <div class="d-flex align-items-start">
                                                             <input type="radio" name="ans<?= $n; ?>" value="a" id="A<?= $n; ?>" class="mt-2 form-check-input fs-4" />
                                                             <label class="py-2 ms-2" for="A<?= $n; ?>"><?= $recent->opt1; ?></label>
                                                         </div>
                                                     <?php endif; ?>
                                                     <?php if (!empty($recent->opt2)) : ?>
                                                         <input type="hidden" name="<?= $n; ?>optB" value="<?= $recent->opt2; ?>">
-                                                        <div class="d-flex align-items-start mb-3">
+                                                        <div class="d-flex align-items-start">
                                                             <input type="radio" name="ans<?= $n; ?>" value="b" id="B<?= $n; ?>" class="mt-2 form-check-input fs-4" />
                                                             <label class="py-2 ms-2" for="B<?= $n; ?>"><?= $recent->opt2; ?></label>
                                                         </div>
                                                     <?php endif; ?>
                                                     <?php if (!empty($recent->opt3)) : ?>
                                                         <input type="hidden" name="<?= $n; ?>optC" value="<?= $recent->opt3; ?>">
-                                                        <div class="d-flex align-items-start mb-3">
+                                                        <div class="d-flex align-items-start">
                                                             <input type="radio" name="ans<?= $n; ?>" value="c" id="C<?= $n; ?>" class="mt-2 form-check-input fs-4" />
                                                             <label class="py-2 ms-2" for="C<?= $n; ?>"><?= $recent->opt3; ?></label>
                                                         </div>
                                                     <?php endif; ?>
                                                     <?php if (!empty($recent->opt4)) : ?>
                                                         <input type="hidden" name="<?= $n; ?>optD" value="<?= $recent->opt4; ?>">
-                                                        <div class="d-flex align-items-start mb-3">
+                                                        <div class="d-flex align-items-start">
                                                             <input type="radio" name="ans<?= $n; ?>" value="d" id="D<?= $n; ?>" class="mt-2 form-check-input fs-4" />
                                                             <label class="py-2 ms-2" for="D<?= $n; ?>"><?= $recent->opt4; ?></label>
                                                         </div>
@@ -133,13 +133,13 @@
                             <?php endif; ?>
 
                             <!-- Next/Previous Buttons -->
-                            <div class="my-3 bg-light py-4">
+                            <div class="my-3 bg-light py-3">
                                 <div class="container">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <button type="button" id="prev-btn" class="btn btn-default border py-2 px-5" onclick="plusSlides(-1)">Previous</button>
-                                        <button type="button" id="next-btn" class="btn btn-default border py-2 px-5" onclick="plusSlides(1)">Next</button>
+                                        <button type="button" id="prev-btn" class="btn btn-outline-secondary py-2 px-5" onclick="plusSlides(-1)">Previous</button>
+                                        <button type="button" id="next-btn" class="btn btn-outline-secondary py-2 px-5" onclick="plusSlides(1)">Next</button>
                                     </div>
-                                    <button type="submit" id="submit-btn" class="btn btn-success d-block w-100 py-2 px-5 my-3" onclick="">Submit</button>
+                                    <button type="submit" id="submit-btn" class="btn btn-outline-success d-block w-100 py-2 px-5 my-3" onclick="">Submit</button>
                                 </div>
                             </div>
                         </form>

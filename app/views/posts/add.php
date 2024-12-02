@@ -246,6 +246,8 @@
     menubar: 'edit insert format tools',
     toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap table code',
     newline_behavior: 'linebreak',
+    statusbar: false,
+    promotion: false,
     setup: (editor) => {
 
       editor.ui.registry.addButton('dash', {
@@ -264,6 +266,8 @@
     menubar: '',
     toolbar: 'undo redo dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap code',
     newline_behavior: 'linebreak',
+    statusbar: false,
+    promotion: false,
     setup: (editor) => {
 
       editor.ui.registry.addButton('dash', {
