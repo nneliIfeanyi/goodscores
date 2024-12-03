@@ -129,7 +129,7 @@
   tinymce.init({
     selector: 'textarea.tiny',
     height: 230,
-    plugins: 'charmap emoticon code wordcount table pagebreak',
+    plugins: 'charmap emoticon codesample wordcount table pagebreak',
     menubar: 'edit insert format tools table',
     toolbar: 'undo redo superscript subscript | bold underline strikethrough | lineheight outdent indent | charmap table',
     newline_behavior: 'linebreak',
