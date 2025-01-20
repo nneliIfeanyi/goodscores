@@ -9,20 +9,21 @@
   </div>
   <main>
     <div class="container">
-    <!-- Ajax Response -->
-    <div id="ajax-msg"></div>
-    <!-- End Ajax Response -->
+      <!-- Ajax Response -->
+      <div id="ajax-msg"></div>
+      <!-- End Ajax Response -->
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
-              <div class="d-flex justify-content-center py-4" data-bs-toggle="tooltip" data-bs-title="<?php echo $_COOKIE['sch_name']; ?>">
+              <!-- <div class="d-flex justify-content-center py-4" data-bs-toggle="tooltip" data-bs-title="<?php echo $_COOKIE['sch_name']; ?>">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
                   <img src="<?php echo URLROOT; ?>/assets/img/logo.png" alt="">
                   <span class=""><?php echo $_COOKIE['sch_username']; ?></span>
                 </a>
-              </div><!-- End Logo -->
+              </div> -->
+              <!-- End Logo -->
 
               <div class="card mb-3">
 
@@ -94,28 +95,28 @@
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
   <script>
-        $('form').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: "<?php echo URLROOT; ?>/users/register",
-                method: "POST",
-                data: new FormData(this),
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#submit').attr('disabled', 'disabled');
-                    $('#submit').val('Processing, Pls Wait ....');
+    $('form').on('submit', function(event) {
+      event.preventDefault();
+      $.ajax({
+        url: "<?php echo URLROOT; ?>/users/register",
+        method: "POST",
+        data: new FormData(this),
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+          $('#submit').attr('disabled', 'disabled');
+          $('#submit').val('Processing, Pls Wait ....');
 
-                },
-                success: function(data) {
-                    $('#submit').attr('disabled', false);
-                    $('#submit').val('Create Account');
-                    $('#ajax-msg').html(data);
-                }
-            });
+        },
+        success: function(data) {
+          $('#submit').attr('disabled', false);
+          $('#submit').val('Create Account');
+          $('#ajax-msg').html(data);
+        }
+      });
 
-        });
-    </script>
+    });
+  </script>
   <!-- Show and Hide Password -->
   <script>
     $(document).ready(function() {

@@ -18,12 +18,13 @@
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
-              <div class="d-flex justify-content-center py-4" data-bs-toggle="tooltip" data-bs-title="<?php echo $_COOKIE['sch_name']; ?>">
+              <!-- <div class="d-flex justify-content-center py-4" data-bs-toggle="tooltip" data-bs-title="<?php echo $_COOKIE['sch_name']; ?>">
                 <a href="" class="logo d-flex align-items-center w-auto">
                   <img src="<?php echo URLROOT; ?>/assets/img/logo.png" alt="">
                   <span class=""><?php echo $_COOKIE['sch_username']; ?></span>
                 </a>
-              </div><!-- End Logo -->
+              </div> -->
+              <!-- End Logo -->
 
               <div class="card mb-3">
 
