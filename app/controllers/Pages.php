@@ -104,9 +104,9 @@ class Pages extends Controller
     } // End Post Request
     else {
       //Set Data
-      $schools = $this->pageModel->getSchools();
+      //$schools = $this->pageModel->getSchools();
       $data = [
-        'schools' => $schools,
+        // 'schools' => $schools,
         'username' => '',
         'username_err' => ''
       ];
@@ -149,12 +149,19 @@ class Pages extends Controller
       } else {
         $register = $this->pageModel->registerSch($data);
         if ($register) {
-          sendMail($data['email']);
-          flash('msg', 'Registration successful, you can now login');
-          // Redirect to verify email page
-          $redirect = URLROOT . '/pages/verify_email/' . $data['email'];
-          echo "<meta http-equiv='refresh' content='0; $redirect'>
+          // sendMail($data['email']);
+          $sch = $this->pageModel->findSch($data['username']);
+          setcookie('sch_id', $sch->id, time() + (86400 * 365), '/');
+          setcookie('sch_name', $sch->name, time() + (86400 * 365), '/');
+          setcookie('sch_username', $sch->username, time() + (86400 * 365), '/');
+          setcookie('cbt', $sch->isCbt, time() + (86400 * 365), '/');
+          // Redirect to Teachers section
+          $redirect = URLROOT . '/users/register/';
+          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+            <i class='spinner-border spinner-border-sm text-primary'></i>  &nbsp;Successfull! Redirecting to teachers section
+          </p><meta http-equiv='refresh' content='4; $redirect'>
         ";
+          flash('msg', 'School authentication approved');
         } else {
           die('Something went wrong!');
         }

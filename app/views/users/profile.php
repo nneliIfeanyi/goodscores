@@ -173,45 +173,45 @@
 </main><!-- End #main -->
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 <script>
-        $('#profile-form').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: "<?= URLROOT; ?>/submissions/profile/<?= $data['user']->id; ?>",
-                method: "POST",
-                data: new FormData(this),
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#submit').attr('disabled', 'disabled');
-                    $('#submit').val('Processing, Pls Wait ....');
+    $('#profile-form').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "<?= URLROOT; ?>/submissions/profile/<?= $data['user']->id; ?>",
+            method: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#submit').attr('disabled', 'disabled');
+                $('#submit').val('Processing, Pls Wait ....');
 
-                },
-                success: function(data) {
-                    $('#ajax-msg').html(data);
-                }
-            });
-
+            },
+            success: function(data) {
+                $('#ajax-msg').html(data);
+            }
         });
-    </script>
 
-    <script>
-        $('#resetPass').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: "<?= URLROOT; ?>/submissions/password/<?= $data['user']->id; ?>",
-                method: "POST",
-                data: new FormData(this),
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#submit2').attr('disabled', 'disabled');
-                    $('#submit2').val('Processing, Pls Wait ....');
+    });
+</script>
 
-                },
-                success: function(data) {
-                    $('#ajax-msg').html(data);
-                }
-            });
+<script>
+    $('#resetPass').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "<?= URLROOT; ?>/submissions/password/<?= $data['user']->id; ?>",
+            method: "POST",
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#submit2').attr('disabled', 'disabled');
+                $('#submit2').val('Processing, Pls Wait ....');
 
+            },
+            success: function(data) {
+                $('#ajax-msg').html(data);
+            }
         });
-    </script>
+
+    });
+</script>

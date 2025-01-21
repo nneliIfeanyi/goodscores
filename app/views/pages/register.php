@@ -97,7 +97,7 @@
                 },
                 success: function(data) {
                     $('#submit').attr('disabled', false);
-                    $('#submit').val('Success!');
+                    $('#submit').val('Create Account');
                     $('#ajax-msg').html(data);
                 }
             });

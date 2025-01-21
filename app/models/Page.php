@@ -77,10 +77,10 @@ class Page
     }
 
     // Find Teacher BY Username
-    public function findSchByEmail($username)
+    public function findSchByEmail($email)
     {
-        $this->db->query("SELECT * FROM school WHERE email = :username");
-        $this->db->bind(':username', $username);
+        $this->db->query("SELECT * FROM school WHERE email = :email");
+        $this->db->bind(':email', $email);
 
         $row = $this->db->single();
 

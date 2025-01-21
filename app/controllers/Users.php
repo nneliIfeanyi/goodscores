@@ -296,15 +296,13 @@ class Users extends Controller
 
         //Execute
         if ($this->userModel->registerTeacher($data)) {
-          // Redirect to login
-          // Redirect to verify email page
-          $redirect = URLROOT . '/users/login';
+          $loggedInUser = $this->userModel->login($data['username'], val_entry($_POST['password']));
+          $this->createUserSession($loggedInUser);
+          $redirect = URLROOT . '/users/dashboard';
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
-            <i class='bi bi-check-circle'></i>  &nbsp;Registration Successfull!
-          </p><meta http-equiv='refresh' content='3; $redirect'>
+            <i class='spinner-border spinner-border-sm text-primary'></i>  &nbsp;Registration Successfull!
+          </p><meta http-equiv='refresh' content='4; $redirect'>
         ";
-          flash('msg', 'You are now registered and can log in');
-          //redirect('users/login');
         } else {
           die('Something went wrong');
         }

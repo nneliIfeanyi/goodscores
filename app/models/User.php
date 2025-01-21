@@ -32,8 +32,8 @@ class User
       }
     } else {
       // Prepare Query
-      $this->db->query('INSERT INTO teachers (sch_id, name, email, phone, username, password) 
-      VALUES (:sch_id, :name, :email, :phone, :username, :password)');
+      $this->db->query('INSERT INTO teachers (sch_id, name, email, phone, username, role, password) 
+      VALUES (:sch_id, :name, :email, :phone, :username, :role, :password)');
 
       // Bind Values
       $this->db->bind(':sch_id', $data['sch_id']);
@@ -41,6 +41,7 @@ class User
       $this->db->bind(':email', $data['email']);
       $this->db->bind(':phone', $data['phone']);
       $this->db->bind(':username', $data['username']);
+      $this->db->bind(':role', 'Staff');
       $this->db->bind(':password', $data['password']);
       //Execute
       if ($this->db->execute()) {

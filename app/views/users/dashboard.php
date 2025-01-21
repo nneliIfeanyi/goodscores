@@ -54,7 +54,9 @@ require APPROOT . '/views/inc/sidebar.php';
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-journal-text"></i>
+                      <a href="<?php echo URLROOT; ?>/users/subjects">
+                        <i class="bi bi-journal-text"></i>
+                      </a>
                     </div>
                     <div class="ps-3">
                       <h6><?php echo $data['subjects']; ?></h6>
@@ -87,7 +89,7 @@ require APPROOT . '/views/inc/sidebar.php';
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
+                      <a href="<?php echo URLROOT; ?>/users/classes"> <i class="bi bi-people"></i></a>
                     </div>
                     <div class="ps-3">
                       <h6><?php echo $data['classes']; ?></h6>
