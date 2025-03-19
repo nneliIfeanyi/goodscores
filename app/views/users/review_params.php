@@ -31,7 +31,7 @@ require APPROOT . '/views/inc/sidebar.php';
                             <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
                             <div class="my-4">
                                 <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
-                                <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
+                                <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
                             </div>
                             <div class="my-4">
                                 <label for="className">Section name</label>
@@ -43,9 +43,7 @@ require APPROOT . '/views/inc/sidebar.php';
                                 </select>
                             </div><!--===== Class Ends =====-->
                             <div class="my-4">
-                                <select class="form-control form-control-lg" name="subject">
-                                    <option value="<?php echo $data['params']->subject; ?>"><?php echo $data['params']->subject; ?></option>
-                                </select>
+                                <input type="text" name="subject" class="form-control form-control-lg" value="<?php echo $data['params']->subject; ?>" />
                             </div><!--===== Subject Ends =====-->
                             <?php if ($data['section'] == 'objectives_questions') : ?>
                                 <div class="my-4">

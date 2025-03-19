@@ -107,15 +107,30 @@
                     </div><!-- Duration and Class Div Ends-->
                     <hr />
                     <?php if (!empty($data['obj'])) : $num = 1;
-                        if ($data['params1']->section == 'objectives_questions') {
+                        if ($data['params1']->section == 'objectives_questions' && !empty($data['params1']->section)) {
                             $data['params1']->section = 'Objectives questions';
+                        } else {
+                            $data['params1']->section = '';
                         }
 
                     ?>
-                        <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
-                            <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
-                            <span><?= $data['params1']->instruction; ?></span>
-                        </div><br />
+                        <?php
+                        if (!empty($data['params1']->tag)) {
+                        ?>
+                            <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
+                                <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
+                                <span><?= $data['params1']->instruction; ?></span>
+                            </div><br />
+                        <?php
+                        } else {
+                        ?>
+                            <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
+                                <p class="m-0 fw-bold"><?= $data['params1']->section; ?></p>
+                                <span><?= $data['params1']->instruction; ?></span>
+                            </div><br />
+                        <?php
+                        }
+                        ?>
                         <div class="col-6 pe-1" style="overflow-wrap:break-word">
 
                             <?php foreach ($data['obj'] as $obj) : ?>
