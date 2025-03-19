@@ -83,6 +83,10 @@
                         <?php
                         if (TERM == '1st term') {
                             $term = '1<sup>st</sup> Term';
+                        } else if (TERM == '2nd term') {
+                            $term = '2<sup>nd</sup> Term';
+                        } else if (TERM == '3rd term') {
+                            $term = '3<sup>rd</sup> Term';
                         }
                         ?>
                         <span style="margin-left: 16px;"><?= $term; ?> Examination</span>

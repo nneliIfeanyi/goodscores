@@ -127,7 +127,7 @@ require APPROOT . '/views/inc/sidebar.php';
                         <th scope="col">Subject</th>
                         <th scope="col">Section</th>
                         <th scope="col">Class</th>
-                        <!-- <th scope="col">Term</th> -->
+                        <th scope="col">Term</th>
                         <th scope="col">View</th>
                       </tr>
                     </thead>
@@ -142,7 +142,7 @@ require APPROOT . '/views/inc/sidebar.php';
                               <?php echo $recent->section; ?>
                             </td>
                             <td><?php echo $recent->class; ?></td>
-                            <!-- <td><?php echo $recent->term; ?></td> -->
+                            <td><?php echo $recent->term; ?></td>
                             <td scope="row" class="d-flex gap-2">
                               <?php if ($recent->section == 'objectives_questions') : ?>
                                 <a class="btn btn-sm btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?php echo $recent->paperID; ?>">
