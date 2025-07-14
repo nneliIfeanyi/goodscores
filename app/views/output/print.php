@@ -221,7 +221,7 @@
                                             <span style="font-size: 14px;"><?= $questionA; ?></span>
                                         <?php else : ?>
                                             <span><b><?= $n; ?>)a&nbsp;&nbsp;</b></span>
-                                            <span style="font-size: 14px;"><?= $questionA; ?></span>
+                                            <span style="font-size: 16px;"><?= $questionA; ?></span>
                                         <?php endif; ?>
                                     </div>
                                     <?php if (!empty($theory->questionB)) : ?>
@@ -231,7 +231,7 @@
                                             $questionB = str_replace('</p>', '', $questionB);
                                             ?>
                                             <span><b><?= $n; ?>)b&nbsp;&nbsp;</b></span>
-                                            <span style="font-size: 14px;"><?= $questionB; ?></span>
+                                            <span style="font-size: 16px;"><?= $questionB; ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <?php if (!empty($theory->questionC)) : ?>
@@ -241,7 +241,7 @@
                                             $questionC = str_replace('</p>', '', $questionC);
                                             ?>
                                             <span><b><?= $n; ?>)c&nbsp;&nbsp;</b></span>
-                                            <span style="font-size: 14px;"><?= $questionC; ?></span>
+                                            <span style="font-size: 16px;"><?= $questionC; ?></span>
                                         </div>
                                     <?php endif; ?>
                                     <?php if (!empty($theory->questionD)) : ?>
@@ -251,7 +251,7 @@
                                             $questionD = str_replace('</p>', '', $questionD);
                                             ?>
                                             <span><b><?= $n; ?>)d&nbsp;&nbsp;</b></span>
-                                            <span style="font-size: 14px;"><?= $questionD; ?></span>
+                                            <span style="font-size: 16px;"><?= $questionD; ?></span>
                                         </div>
                                     <?php endif; ?>
                             </div>
