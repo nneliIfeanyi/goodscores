@@ -136,15 +136,19 @@
                             <?php foreach ($data['obj'] as $obj) : ?>
                                 <?php
                                 if (empty($obj->opt3)) {
-                                    $obj->opt3 = '';
+                                    $obj->opt3 = $opt4 = '';
                                 } else {
-                                    $obj->opt3 = '<b>(c)</b>  ' . $obj->opt3 . '&nbsp;';
+                                    $opt3 = str_replace('<p>', '', $obj->opt3);
+                                    $opt3 = str_replace('</p>', '', $opt3);
+                                    $opt3 = '<b>(c)</b>&nbsp;' . $opt3 . '&nbsp;';
                                 }
 
                                 if (empty($obj->opt4)) {
-                                    $obj->opt4 = '';
+                                    $obj->opt4 = $opt4 = '';
                                 } else {
                                     $obj->opt4 = '<b>(d)</b>  ' . $obj->opt4;
+                                    $opt4 = str_replace('<p>', '', $obj->opt4);
+                                    $opt4 = str_replace('</p>', '', $opt4);
                                 }
                                 ?>
                                 <?php if (!empty($obj->subInstruction)) : ?>
@@ -163,21 +167,25 @@
                                     <?php
                                     $question = str_replace('<p>', '', $obj->question);
                                     $question = str_replace('</p>', '', $question);
+                                    $opt1 = str_replace('<p>', '', $obj->opt1);
+                                    $opt1 = str_replace('</p>', '', $opt1);
+                                    $opt2 = str_replace('<p>', '', $obj->opt2);
+                                    $opt2 = str_replace('</p>', '', $opt2);
                                     ?>
                                     <span><b><?= $num; ?>)&nbsp;&nbsp;</b></span>
-                                    <span style="font-size: 14px;"><?= $question; ?></span>
+                                    <span style="font-size: 16px;"><?= $question; ?></span>
                                 </div>
                                 <!-- End OBJ Numbering and Question Display -->
                                 <div class="ms-4 mb-1">
-                                    <span style="font-size: 12px;" class="d-flex flex-wrap">
-                                        <?php if (!empty($obj->opt1)) : ?>
-                                            <b>(a)</b> <?= $obj->opt1; ?> &nbsp;&nbsp;
+                                    <span style="font-size: 16px;" class="d-flex flex-wrap">
+                                        <?php if (!empty($opt1)) : ?>
+                                            <b>(a)</b> <?= $opt1; ?> &nbsp;&nbsp;
                                         <?php endif; ?>
-                                        <?php if (!empty($obj->opt2)) : ?>
-                                            <b>(b)</b> <?= $obj->opt2; ?> &nbsp;&nbsp;
+                                        <?php if (!empty($opt2)) : ?>
+                                            <b>(b)</b> <?= $opt2; ?> &nbsp;&nbsp;
                                         <?php endif; ?>
-                                        <?= $obj->opt3; ?>
-                                        <?= $obj->opt4; ?>
+                                        <?= $opt3; ?>
+                                        <?= $opt4; ?>
                                     </span>
                                 </div><!-- End OBJ Options Display -->
 
