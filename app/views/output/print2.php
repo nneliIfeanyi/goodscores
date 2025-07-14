@@ -83,6 +83,10 @@
                         <?php
                         if (TERM == '1st term') {
                             $term = '1<sup>st</sup> Term';
+                        } else if (TERM == '2nd term') {
+                            $term = '2<sup>nd</sup> Term';
+                        } else if (TERM == '3rd term') {
+                            $term = '3<sup>rd</sup> Term';
                         }
                         ?>
                         <span style="margin-left: 16px;"><?= $term; ?> Examination</span>
@@ -116,15 +120,20 @@
                             <?php foreach ($data['obj'] as $obj) : ?>
                                 <?php
                                 if (empty($obj->opt3)) {
-                                    $obj->opt3 = '';
+
+                                    $obj->opt3 = $opt3 = '';
                                 } else {
-                                    $obj->opt3 = '<b>(c)</b>  ' . $obj->opt3 . '&nbsp;';
+                                    $opt3 = str_replace('<p>', '', $obj->opt3);
+                                    $opt3 = str_replace('</p>', '', $opt3);
+                                    $opt3 = '<b>(c)</b>&nbsp;' . $opt3 . '&nbsp;';
                                 }
 
                                 if (empty($obj->opt4)) {
-                                    $obj->opt4 = '';
+                                    $obj->opt4 = $opt4 = '';
                                 } else {
-                                    $obj->opt4 = '<b>(d)</b>  ' . $obj->opt4;
+                                    $obj->opt4 = '<b>(d)</b>&nbsp;' . $obj->opt4;
+                                    $opt4 = str_replace('<p>', '', $obj->opt4);
+                                    $opt4 = str_replace('</p>', '', $opt4);
                                 }
                                 ?>
                                 <?php if (!empty($obj->subInstruction)) : ?>
@@ -133,35 +142,47 @@
                                     </div>
                                 <?php endif; ?>
                                 <?php if (!empty($obj->img)) : ?>
-                                    <div class="">
-                                        <div class="my-1 mx-3">
-                                            <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
-                                        </div>
+                                    <div class="my-1 mx-3">
+                                        <img src="<?php echo URLROOT . '/' . $obj->img; ?>" class="rounded" width="80%" height="120px" alt="daigram">
                                     </div>
                                 <?php endif; ?>
-                                <div class="w-100 d-flex">
+                                <div class="w-100 m-0">
                                     <?php
                                     $question = str_replace('<p>', '', $obj->question);
                                     $question = str_replace('</p>', '', $question);
+                                    $opt1 = str_replace('<p>', '', $obj->opt1);
+                                    $opt1 = str_replace('</p>', '', $opt1);
+                                    $opt2 = str_replace('<p>', '', $obj->opt2);
+                                    $opt2 = str_replace('</p>', '', $opt2);
                                     // $question = str_replace('/', '', $question);
                                     //$question = substr($question, 1, -1);
                                     ?>
-                                    <span><b><?= $num; ?>)</b>&nbsp;&nbsp;</span>
-                                    <span style="font-size: 14px;"><?= $question; ?></span>
+
+                                    <span style="font-size: 16px;line-height: 0.1rem;" class="m-0">
+                                        <b><?= $num; ?>)</b>&nbsp;
+                                        <?= $question; ?>&nbsp;&nbsp;
+                                        <?php if (!empty($opt1)) : ?>
+                                            <b>(a)</b>&nbsp;<?= $opt1; ?> &nbsp;
+                                        <?php endif; ?>
+                                        <?php if (!empty($opt2)) : ?>
+                                            <b>(b)</b>&nbsp;<?= $opt2; ?> &nbsp;
+                                        <?php endif; ?>
+                                        <?= $opt3; ?>
+                                        <?= $opt4; ?>
+                                    </span>
                                 </div>
                                 <!-- End OBJ Numbering and Question Display -->
-                                <div class="ms-4 mb-1">
-                                    <span style="font-size: 12px;" class="d-flex flex-wrap">
-                                        <?php if (!empty($obj->opt1)) : ?>
-                                            <b>(a)</b> <?= $obj->opt1; ?> &nbsp;&nbsp;
-                                        <?php endif; ?>
-                                        <?php if (!empty($obj->opt2)) : ?>
-                                            <b>(b)</b> <?= $obj->opt2; ?> &nbsp;&nbsp;
-                                        <?php endif; ?>
-                                        <?= $obj->opt3; ?>
-                                        <?= $obj->opt4; ?>
-                                    </span>
-                                </div><!-- End OBJ Options Display -->
+                                <!-- <span style="font-size: 30px;" class="d-flex flex-wrap">
+                                    <?php if (!empty($obj->opt1)) : ?>
+                                        <b>(a)</b> <?= $obj->opt1; ?> &nbsp;&nbsp;
+                                    <?php endif; ?>
+                                    <?php if (!empty($obj->opt2)) : ?>
+                                        <b>(b)</b> <?= $obj->opt2; ?> &nbsp;&nbsp;
+                                    <?php endif; ?>
+                                    <?= $obj->opt3; ?>
+                                    <?= $obj->opt4; ?>
+                                </span> -->
+                                <!-- End OBJ Options Display -->
                             <?php $num++;
                             endforeach; ?><!-- End OBJ foreach -->
                         <?php endif; ?><!-- End Not Empty OBJ questions-->
