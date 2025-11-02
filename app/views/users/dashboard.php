@@ -173,7 +173,7 @@ require APPROOT . '/views/inc/sidebar.php';
                         <?php endforeach;
                       else : ?>
                         <tr>
-                          <td class="text-danger">No data set</td>
+                          <td class="text-danger">No data set for the current school session.</td>
                         </tr>
                       <?php endif; ?>
                     </tbody>

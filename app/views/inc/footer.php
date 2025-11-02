@@ -19,30 +19,17 @@
 </script>
 <!-- Page loader fade in on link click -->
 <script>
-    $(document).ready(function() {
-        $('a').each(function() {
-            $(this).click(function() {
-                $('#loader').fadeIn();
+     $(document).ready(function() {
+            // Hide loader once DOM is ready
+            $("#loader").fadeOut("slow");
+
+            // Show loader again before unloading (e.g., navigating away)
+            $(window).on("beforeunload", function() {
+                $("#loader").show();
             });
         });
-    });
-</script>
-<!-- Page loader fadeout -->
-<script>
-    $(document).ready(function() {
-        $('#loader').delay(300).fadeOut('slow');
-        $('#loader-container').delay(300).fadeOut('slow');
-    });
 </script>
 
-<!-- Page loader fade in on form submit -->
-<!-- <script>
-    $(':submit').each(function() {
-        $(this).click(function() {
-            $('#loader').fadeIn();
-        });
-    });
-</script> -->
 <script>
     function goTop() {
         window.location.assign('#');
