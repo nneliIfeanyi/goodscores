@@ -118,7 +118,7 @@ require APPROOT . '/views/inc/sidebar.php';
                 </div>
 
                 <div class="card-body pb-0">
-                  <h5 class="card-title">Recent | Activities</h5>
+                  <h5 class="card-title">Recent | Activities <?php echo SCH_SESSION ;?></h5>
 
                   <table class="table table-borderless">
                     <thead>
