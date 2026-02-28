@@ -16,15 +16,6 @@
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-
-              <!-- <div class="d-flex justify-content-center py-4" data-bs-toggle="tooltip" data-bs-title="<?php echo $_COOKIE['sch_name']; ?>">
-                <a href="index.html" class="logo d-flex align-items-center w-auto">
-                  <img src="<?php echo URLROOT; ?>/assets/img/logo.png" alt="">
-                  <span class=""><?php echo $_COOKIE['sch_username']; ?></span>
-                </a>
-              </div> -->
-              <!-- End Logo -->
-
               <div class="card mb-3">
 
                 <div class="card-body">
@@ -35,21 +26,6 @@
                   </div>
 
                   <form class="row g-3">
-                    <div class="col-12">
-                      <label for="yourName" class="form-label">Your Name</label>
-                      <input type="text" name="name" class="form-control" id="yourName" value="<?php echo $data['name']; ?>" required>
-                    </div>
-
-                    <div class="col-12">
-                      <label for="yourEmail" class="form-label">Your Email</label>
-                      <input type="email" name="email" class="form-control" id="yourEmail" value="<?php echo $data['email']; ?>" required>
-                    </div>
-
-                    <div class="col-12">
-                      <label for="phoneNumber" class="form-label">Phone</label>
-                      <input type="number" name="phone" class="form-control" id="phoneNumber" value="<?php echo $data['phone']; ?>" required>
-                    </div>
-
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username</label>
                       <div class="input-group has-validation">

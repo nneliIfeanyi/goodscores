@@ -130,19 +130,17 @@ class Page
 
     // Classes DB Connection //
     // Classes DB Connection //\\// Classes DB Connection //\\// Classes DB Connection //
-    public function getClasses($id)
+    public function getClasses()
     {
-        $this->db->query("SELECT * FROM fetch1 WHERE sch_id = :id;");
-        $this->db->bind(':id', $id);
+        $this->db->query("SELECT * FROM fetch1;");
         $results = $this->db->resultset();
 
         return $results;
     }
     public function checkIfClassExist($classname)
     {
-        $this->db->query("SELECT * FROM fetch1 WHERE classname = :classname AND sch_id = :sch_id;");
+        $this->db->query("SELECT * FROM fetch1 WHERE classname = :classname;");
         $this->db->bind(':classname', $classname);
-        $this->db->bind(':sch_id', $_COOKIE['sch_id']);
         $row = $this->db->single();
 
         //Check Rows
@@ -157,11 +155,10 @@ class Page
     public function addClass($data)
     {
         // Prepare Query
-        $this->db->query('INSERT INTO fetch1 (sch_id, classname) 
-      VALUES (:sch_id, :classname)');
+        $this->db->query('INSERT INTO fetch1 (classname) 
+      VALUES (:classname)');
 
         // Bind Values
-        $this->db->bind(':sch_id', $data['sch_id']);
         $this->db->bind(':classname', $data['classname']);
         //Execute
         if ($this->db->execute()) {

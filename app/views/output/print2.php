@@ -76,7 +76,7 @@
                     <div class="col-4">
                         <h6 style="font-weight: lighter;font-size:small;">
                             <span>Subject: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->subject; ?></span><br />
-                            <span>Session: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->year; ?></span>
+                            <span>Session: </span><span style="font-size:medium;font-weight:550">2025/2026</span>
                         </h6>
                     </div><!-- Subject and section Div Ends -->
                     <div class="col-5 fst-italic">
@@ -89,7 +89,8 @@
                             $term = '3<sup>rd</sup> Term';
                         }
                         ?>
-                        <span style="margin-left: 16px;"><?= $term; ?> Examination</span>
+                        <!-- <span style="margin-left: 16px;"><?= $term; ?> Examination</span> -->
+                        <span style="margin-left: 16px;">1<sup>st</sup> Examination</span>
                     </div><!-- Term Div Ends-->
                     <div class="col-3">
                         <?php if (empty($data['params']->duration)) : ?>

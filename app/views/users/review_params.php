@@ -29,12 +29,9 @@ require APPROOT . '/views/inc/sidebar.php';
                         </div>
                         <form action="<?php echo URLROOT; ?>/submissions/review/<?= $data['section']; ?>" method="POST">
                             <input type="hidden" name="paperID" value="<?= $data['params']->paperID; ?>">
+
                             <div class="my-4">
-                                <label for="className">Section tag <span style="font-size: small;">(eg.Section A)</span></label>
-                                <input type="text" name="section_tag" value="<?= $data['params']->tag; ?>" class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                            </div>
-                            <div class="my-4">
-                                <label for="className">Section name</label>
+                                <!-- <label for="className">Section name</label> -->
                                 <input type="text" disabled name="section_name" class="form-control form-control-lg" value="<?= $data['section']; ?>" />
                             </div>
                             <div class="my-4">
@@ -103,71 +100,6 @@ require APPROOT . '/views/inc/sidebar.php';
                         </div><!-- End Delete Modal-->
                     </div>
                 </div>
-            </div>
-            <?php if ($_COOKIE['cbt'] != '1') : ?>
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-
-                            <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
-                                <strong>Set Exam Duration</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <form action="<?php echo URLROOT; ?>/users/duration/<?= $data['params']->paperID; ?>" method="POST">
-                                <input type="hidden" name="section" value="<?= $data['section'] ?>">
-                                <div class="my-4">
-                                    <label for="className">Time</label>
-                                    <input type="text" value="<?= $data['core']->duration; ?>" name="duration" required class="form-control form-control-lg" data-parsley-trigger="keyup" />
-                                </div>
-                                <input type="submit" value="Set Exam Time" class="btn btn-primary mx-4">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <div class="col-lg-6">
-                <?php if ($_COOKIE['cbt'] == '1') : ?>
-                    <div class="card">
-                        <div class="card-body">
-
-                            <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
-                                <strong>Alter CBT Settings</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <form action="<?php echo URLROOT; ?>/submissions/core_paper_edit/<?= $data['params']->paperID; ?>" method="POST">
-
-                                <div class="my-4 row">
-                                    <label for="">Enter Duration<br><span style="font-size: smaller;">one digit not allowed, use "00", "01", "02" instead of "0", "1", "2"</span></label>
-                                    <div class="col-6">
-                                        <div class="input-group mb-3">
-                                            <input type="number" value="<?= $data['hr']; ?>" minlength="2" maxlength="2" name="hr" required class="form-control form-control-lg" />
-                                            <span class="input-group-text" id="basic-addon2">Hr</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="input-group mb-3">
-                                            <input type="number" value="<?= $data['min']; ?>" name="min" minlength="2" maxlength="2" required class="form-control form-control-lg" />
-                                            <span class="input-group-text" id="basic-addon2">min</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="my-4">
-                                    <label>Publish As</label>
-                                    <select class="form-control form-control-lg" name="publishAS">
-                                        <option value="<?= $data['core']->publishedAS; ?>"><?= $data['core']->publishedAS; ?></option>
-                                        <option value="">None</option>
-                                        <option value="CA1">1st CA</option>
-                                        <option value="CA2">2nd CA</option>
-                                        <option value="exam">Exam</option>
-                                    </select>
-                                </div>
-                                <div class="d-grid">
-                                    <input type="submit" name="set" value="Save Changes" class="btn btn-outline-primary">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </section>

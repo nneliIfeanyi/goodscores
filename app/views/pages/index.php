@@ -1,13 +1,13 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <body>
-    <meta http-equiv="refresh" content="7; <?php echo URLROOT; ?>/pages/welcome">
-  <!-- PAGE LOADER -->
-  <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
-    <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
-      <span class="spinner-border text-primary"> </span>
+    <!-- <meta http-equiv="refresh" content="7; <?php echo URLROOT; ?>/pages/welcome"> -->
+    <!-- PAGE LOADER -->
+    <div id="loader" class="overflow-hidden align-items-middle position-fixed top-0 left-0 w-100 h-100">
+        <div class="loader-container position-relative d-flex align-items-center justify-content-center flex-column vw-100 vh-100 text-center" style="background: rgba(0, 0, 0, 0.6);z-index: 1500;">
+            <span class="spinner-border text-primary"> </span>
+        </div>
     </div>
-  </div>
 
     <nav id="nav" class="navbar navbar-nav navbar-expand-lg bg-light shadow-sm">
         <div class="container">
@@ -33,13 +33,13 @@
                         <a href="pages/support.html" class="nav-link">Supports</a>
                     </li> -->
                     <li class="nav-item ms-5">
-                        <a href="<?= URLROOT; ?>/pages/login" class="btn btn-primary px-5">Login</a>
+                        <a href="<?= URLROOT; ?>/users/login" class="btn btn-primary px-5">Login</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav><!-- END - NAV -->
-    <section class="hero-section w-100 h-100 d-flex align-items-center justify-content-center text-center text-lg-start pt-5 pb-3 mt-5">
+    <section class="hero-section w-100 h-100 d-flex align-items-center justify-content-center text-center text-lg-start pb-3">
         <div class="container">
             <div class="hero-contents row">
                 <div class="hero-texts col-lg-8">
@@ -53,10 +53,10 @@
             </div>
         </div>
     </section><!-- END - .hero-section -->
-    <section class="feature-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light py-3">
+    <section class="feature-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light">
         <div class="container">
             <!-- <h4>FEATURES</h4> -->
-            <div class="feature-contents row mt-5">
+            <div class="feature-contents row">
                 <div class="col-lg-3 col-md-6 my-3">
                     <span class="bi bi-pen-fill p-2 rounded-circle fs-1 bg-primary-subtle mb-3"></span>
                     <h5>Easy To Use</h5>
@@ -81,7 +81,7 @@
         </div>
     </section><!-- END - .feature-section -->
 
-    <section class="how-it-works-section w-100 h-100 d-flex align-items-center justify-content-center text-start bg-light pt-5 pb-3">
+    <section class="how-it-works-section w-100 h-100 d-flex align-items-center justify-content-center text-start bg-light pb-3">
         <div class="container">
             <h2 class="text-center fw-bold">Getting Started</h2>
             <div class="how-it-works-contents row mt-3">
@@ -117,7 +117,7 @@
         </div>
     </section><!-- END - .how-it-works-section -->
 
-    <section class="benefit-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light py-5">
+    <section class="benefit-section w-100 h-100 d-flex align-items-center justify-content-center text-center bg-light">
         <div class="container">
             <h3 class="fw-bold">Why Good Scores</h3>
             <div class="benefit-contents row mt-3">
@@ -144,7 +144,7 @@
             </div>
         </div>
     </section><!-- END - .benefit-section -->
-    <footer class="d-flex flex-column align-items-center justify-content-center text-center text-md-start py-2 mt-2 mb-0">
+    <footer class="d-flex flex-column align-items-center justify-content-center text-center text-md-start mb-0">
         <div class="container">
             <div class="footer-contents row align-items-center">
                 <div class="col-md-8 my-2">

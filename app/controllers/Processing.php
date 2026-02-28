@@ -18,7 +18,7 @@ class Processing extends Controller
     public function add($paper_id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $num_rows = $this->postModel->checkObjectivesNumRows($paper_id, $_COOKIE['sch_id']);
+            $num_rows = $this->postModel->checkObjectivesNumRows($paper_id);
             $ans = strtolower($_POST['ans']);
             $data = [
                 'paperID' => $paper_id,
@@ -28,7 +28,6 @@ class Processing extends Controller
                 'opt3' => trim($_POST['opt3']),
                 'opt4' => trim($_POST['opt4']),
                 'ans' => trim($ans),
-                'sch_id' => $_COOKIE['sch_id'],
                 'user_id' => $_SESSION['user_id'],
                 'num_rows' => $num_rows,
                 'isSubjective' => $_POST['isSubjective'],

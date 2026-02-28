@@ -17,15 +17,9 @@
 
   <section class="section">
     <div class="row">
-      <div class="col-md-10 col-lg-7">
-
+      <div class="col-md-10">
         <div class="card">
           <div class="card-body">
-
-            <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show" role="alert">
-              <strong><?php echo $data['params']->tag; ?></strong>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
             <?php if (!empty($data['post']->img) && empty($_SESSION['daigram'])) : ?>
               <div class="d-flex justify-content-center">
                 <div class="mt-2 mb-4">
@@ -45,58 +39,39 @@
                   <img src="<?php echo URLROOT . '/' . $_SESSION['daigram']; ?>" class="img-fluid rounded-3" alt="daigram">
                 </div>
               </div>
-            <?php else : ?>
-              <label style="font-size: x-small;">To append a diagram | click camera icon.</label>
-
             <?php endif; ?>
             <form action="<?php echo URLROOT; ?>/posts/edit/<?php echo $data['post']->id; ?>" method="POST">
               <input type="hidden" name="paperID" value="<?php echo $data['post']->paperID; ?>">
               <input type="hidden" name="daigram" value="<?= $data['post']->img; ?>">
               <input type="hidden" name="section_alt" value="<?= $data['params']->section_alt; ?>">
               <input type="hidden" name="isSubjective" value="no">
-              <div class="my-4">
-                <label for="className">Sub Instruction</label>
-                <textarea class="tiny2" name="sub_ins"><?php echo $data['post']->subInstruction; ?></textarea>
+              <button id="toggle-question-info" type="button" class="btn btn-sm btn-secondary my-2">Edit question Info</button>
+              <div id="question-info" style="display: none;" class="mt-1 mb-2">
+                <label for="className">Add more information or instructions for this question.</label>
+                <textarea class="tiny" name="sub_ins"><?php echo $data['post']->subInstruction; ?></textarea>
               </div>
-              <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
+              <div>
+                <label style="font-size: medium;">Set question here</label>
+                <textarea class="tiny" name="question"><?php echo $data['post']->question; ?></textarea>
+              </div>
               <div class="row my-3">
-                <p class="col-2 d-lg-none">(A)</p>
-                <div class="col-10 col-lg-6">
-                  <textarea class="tiny2" type="text" class="tiny" name="opt1"><?php echo $data['post']->opt1; ?></textarea>
+                <div class="col-md-6">
+                  <label for="A"><span style="font-size: x-small;">option</span>(A)</label>
+                  <textarea class="tiny" type="text" class="tiny" name="opt1"><?php echo $data['post']->opt1; ?></textarea>
                 </div>
-                <p class="col-2 d-lg-none">(B)</p>
-                <div class="col-10 col-lg-6">
-                  <textarea class="tiny2" type="text" class="tiny" name="opt2"><?php echo $data['post']->opt2; ?></textarea>
+                <div class="col-md-6">
+                  <label for="B"><span style="font-size: x-small;">option</span>(B)</label>
+                  <textarea class="tiny" type="text" class="tiny" name="opt2"><?php echo $data['post']->opt2; ?></textarea>
                 </div>
-                <p class="col-2 d-lg-none">(C)</p>
-                <div class="col-10 col-lg-6">
-                  <textarea class="tiny2" type="text" class="tiny" name="opt3"><?php echo $data['post']->opt3; ?></textarea>
+                <div class="col-md-6">
+                  <label for="C"><span style="font-size: x-small;">option</span>(C)</label>
+                  <textarea class="tiny" type="text" class="tiny" name="opt3"><?php echo $data['post']->opt3; ?></textarea>
                 </div>
-                <p class="col-2 d-lg-none">(D)</p>
-                <div class="col-10 col-lg-6">
-                  <textarea class="tiny2" type="text" class="tiny" name="opt4"><?php echo $data['post']->opt4; ?></textarea>
+                <div class="col-md-6">
+                  <label for="D"><span style="font-size: x-small;">option</span>(D)</label>
+                  <textarea class="tiny" type="text" class="tiny" name="opt4"><?php echo $data['post']->opt4; ?></textarea>
                 </div>
               </div>
-
-              <!-- 
-                <div class="row my-3">
-                  <p class="col-2 d-lg-none">(A)</p>
-                  <div class="col-10 col-lg-6">
-                    <input type="text" class="form-control form-control-lg" value="<?php echo $data['post']->opt1; ?>" placeholder="Option A" required name="opt1">
-                  </div>
-                  <p class="col-2 d-lg-none">(B)</p>
-                  <div class="col-10 col-lg-6">
-                    <input type="text" class="form-control form-control-lg" value="<?php echo $data['post']->opt2; ?>" placeholder="Option B" required name="opt2">
-                  </div>
-                  <p class="col-2 d-lg-none">(C)</p>
-                  <div class="col-10 col-lg-6">
-                    <input type="text" class="form-control form-control-lg" value="<?php echo $data['post']->opt3; ?>" placeholder="Option C" name="opt3">
-                  </div>
-                  <p class="col-2 d-lg-none">(D)</p>
-                  <div class="col-10 col-lg-6">
-                    <input type="text" class="form-control form-control-lg" value="<?php echo $data['post']->opt4; ?>" placeholder="Option D" name="opt4">
-                  </div>
-                </div> -->
               <div class="d-flex flex-row gap-3 py-3">
                 <div class="form-check border border-secondary">
                   <input type="radio" name="ans" value="a" <?php echo ($data['post']->ans == 'a') ? 'checked' : ''; ?> class="form-check-input" id="A">
@@ -131,7 +106,7 @@
 
       </div>
       <!-- ===== isSubjective Question ===== -->
-      <div class="col-md-10 col-lg-5">
+      <!-- <div class="col-md-10">
         <div class="alert alert-primary bg-secondary text-light border-0 alert-dismissible fade show" role="alert">
           <strong><?php echo $data['params']->tag; ?></strong>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -183,7 +158,7 @@
             </a>
           </div>
         </form>
-      </div>
+      </div> -->
       <!-- ===== End isSubjective Question ===== -->
     </div>
   </section>
@@ -219,22 +194,10 @@
   });
 </script>
 <script>
-  tinymce.init({
-    selector: 'textarea.tiny2',
-    height: 180,
-    plugins: 'charmap codesample',
-    statusbar: false,
-    promotion: false,
-    menubar: '',
-    toolbar: 'dash | superscript subscript bold underline strikethrough | lineheight outdent indent | charmap codesample',
-    newline_behavior: 'linebreak',
-    setup: (editor) => {
-
-      editor.ui.registry.addButton('dash', {
-        text: '=',
-        onAction: (_) => editor.insertContent(`&nbsp;=&nbsp;`)
-      });
-
-    },
+  // toggle question info visibility
+  $(document).ready(function() {
+    $('#toggle-question-info').click(function() {
+      $('#question-info').toggle();
+    });
   });
 </script>

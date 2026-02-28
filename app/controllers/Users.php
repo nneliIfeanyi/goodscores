@@ -6,15 +6,7 @@ class Users extends Controller
   public $pageModel;
   public function __construct()
   {
-    if (!isset($_COOKIE['sch_id']) && !isset($_COOKIE['user_id'])) {
-      redirect('pages/login');
-    } else {
-      $_SESSION['user_id'] = $_COOKIE['user_id'];
-      $_SESSION['name'] = $_COOKIE['name'];
-      $_SESSION['username'] = $_COOKIE['user_name'];
-      $_SESSION['photo'] = $_COOKIE['photo'];
-      $_SESSION['role'] = $_COOKIE['role'];
-    }
+
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
     $this->pageModel = $this->model('Page');
@@ -36,32 +28,39 @@ class Users extends Controller
 
     $subjects = $this->userModel->getUserSubjectsRowCount($_SESSION['user_id']);
     $classes = $this->userModel->getUserClassesRowCount($_SESSION['user_id']);
-    $params1 = $this->postModel->getRecentParams();
-    $params = $this->postModel->getArchive($_SESSION['user_id']);
-    $class = $this->userModel->getTeachers($_COOKIE['sch_id']);
+    $recents = $this->postModel->getRecents($_SESSION['user_id']);
 
     //$all = $this->postModel->getParamsRowCount();
     $data = [
       'subjects' => $subjects,
       'classes' => $classes,
-      'recent' => $params,
-      //'archive' => $archive,
-      'class' => $class
+      'recent' => $recents
     ];
 
     $this->view('users/dashboard', $data);
+  }
+
+  public function archive()
+  {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
+    //$archives = $this->postModel->getArchive(TERM, SCH_SESSION);
+    $data = [
+      // 'archives' => $archives
+    ];
+
+    $this->view('users/archive', $data);
   }
 
   // Dashboard View Ends
 
   public function set($param)
   {
-
     // Check if logged in
     if (!$this->isLoggedIn()) {
       redirect('users/login');
     }
-
     $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
     $data = [
@@ -69,7 +68,6 @@ class Users extends Controller
       'subjects' => $subjects,
       'classes' => $classes
     ];
-
     $this->view('users/set', $data);
   }
 
@@ -80,13 +78,9 @@ class Users extends Controller
     if (!$this->isLoggedIn()) {
       redirect('users/login');
     }
-    $sch = $this->pageModel->getSchool($_COOKIE['sch_id']);
     $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
-    $classesAll = $this->pageModel->getClasses($_COOKIE['sch_id']);
     $data = [
-      'classes' => $classes,
-      'sch' => $sch,
-      'classes2' => $classesAll
+      'classes' => $classes
     ];
 
     $this->view('users/classes', $data);
@@ -99,17 +93,12 @@ class Users extends Controller
       $classes = $this->userModel->getUserClasses($_SESSION['user_id']);
       $subjects = $this->userModel->getUserSubjects($_SESSION['user_id']);
       $core = $this->postModel->getParamsFromCore($_GET['paperID']);
-      $duration = explode(':', $core->duration);
-      $hr = $duration[0];
-      $min = $duration[1];
       $data = [
         'classes' => $classes,
         'subjects' => $subjects,
         'params' => $params,
         'section' => $params->section,
-        'core' => $core,
-        'hr' => $hr,
-        'min' => $min
+        'core' => $core
       ];
 
       $this->view('users/review_params', $data);
@@ -118,23 +107,6 @@ class Users extends Controller
     }
   }
 
-  public function duration($paper_id)
-  {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST
-
-      $data = [
-        'id' => $paper_id,
-        'duration' => val_entry($_POST['duration']),
-        'section' => $_POST['section']
-      ];
-      $this->userModel->setDuration($data);
-      flash('msg', 'Changes saved successfully');
-      redirect('users/review_params?paperID=' . $paper_id . '&section=' . $data['section']);
-    } else {
-      die('Something went wrong');
-    }
-  }
 
   public function edit_class($id)
   {
@@ -245,10 +217,6 @@ class Users extends Controller
 
   public function register()
   {
-    // Check if sch logged in
-    if (!isset($_COOKIE['sch_id'])) {
-      redirect('pages/login');
-    }
     // Check if teacher logged in
     if ($this->isLoggedIn()) {
       redirect('users/dashboard');
@@ -258,13 +226,9 @@ class Users extends Controller
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
       $data = [
-        'name' => val_entry($_POST['name']),
-        'email' => val_entry($_POST['email']),
-        'phone' => val_entry($_POST['phone']),
         'username' => val_entry($_POST['username']),
         'password' => val_entry($_POST['password']),
         'confirm_password' => val_entry($_POST['confirm_password']),
-        'sch_id' => $_COOKIE['sch_id'],
         'username_err' => '',
         'password_err' => '',
         'confirm_password_err' => ''
@@ -299,6 +263,7 @@ class Users extends Controller
         if ($this->userModel->registerTeacher($data)) {
           $loggedInUser = $this->userModel->login($data['username'], val_entry($_POST['password']));
           $this->createUserSession($loggedInUser);
+          flash('msg', 'Login Successfull!');
           $redirect = URLROOT . '/users/dashboard';
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
             <i class='spinner-border spinner-border-sm text-primary'></i>  &nbsp;Registration Successfull!
@@ -313,9 +278,6 @@ class Users extends Controller
 
       // Init data
       $data = [
-        'name' => '',
-        'phone' => '',
-        'email' => '',
         'username' => '',
         'password' => '',
         'confirm_password' => '',
@@ -331,10 +293,6 @@ class Users extends Controller
 
   public function login()
   {
-    // Check if sch logged in
-    if (!isset($_COOKIE['sch_id'])) {
-      redirect('pages/login');
-    }
     // Check if teacher logged in
     if ($this->isLoggedIn()) {
       redirect('users/dashboard');
@@ -344,7 +302,6 @@ class Users extends Controller
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
       $data = [
-        'sch_id' => $_COOKIE['sch_id'],
         'username' => val_entry($_POST['username']),
         'password' => val_entry($_POST['password']),
         'username_err' => '',
@@ -415,27 +372,16 @@ class Users extends Controller
   // Create Session With User Info
   public function createUserSession($user)
   {
-    setcookie('user_id', $user->id, time() + (86400 * 365), '/');
-    setcookie('user_name', $user->name, time() + (86400 * 365), '/');
-    setcookie('name', $user->username, time() + (86400 * 365), '/');
-    setcookie('photo', $user->img, time() + (86400 * 365), '/');
-    setcookie('role', $user->role, time() + (86400 * 365), '/');
+    $_SESSION['user_id'] = $user->id;
+    $_SESSION['role'] = 'staff';
+    $_SESSION['name'] = $user->username;
+    $_SESSION['photo'] = '';
+    $_SESSION['username'] = $user->name;
   }
 
   // Logout & Destroy Session
   public function logout()
   {
-    $id = $_COOKIE['user_id'];
-    $user_name = $_COOKIE['user_name'];
-    $name = $_COOKIE['name'];
-    $role = $_COOKIE['role'];
-    $photo = $_COOKIE['photo'];
-
-    setcookie('user_id', $id, time() - 3, '/');
-    setcookie('user_name', $user_name, time() - 3, '/');
-    setcookie('name', $name, time() - 3, '/');
-    setcookie('role', $role, time() - 3, '/');
-    setcookie('photo', $photo, time() - 3, '/');
     session_unset();
     session_destroy();
     redirect('users/login');

@@ -11,44 +11,18 @@ class User
   // Add User / Register Teacher
   public function registerTeacher($data)
   {
-    if ($data['username'] == 'Admin' || $data['username'] == 'admin') {
-      // Prepare Query
-      $this->db->query('INSERT INTO teachers (sch_id, name, email, phone, username, role, password) 
-      VALUES (:sch_id, :name, :email, :phone, :username, :role, :password)');
+    // Prepare Query
+    $this->db->query('INSERT INTO teachers (username, password) 
+      VALUES (:username,:password)');
 
-      // Bind Values
-      $this->db->bind(':sch_id', $data['sch_id']);
-      $this->db->bind(':name', $data['name']);
-      $this->db->bind(':email', $data['email']);
-      $this->db->bind(':phone', $data['phone']);
-      $this->db->bind(':username', $data['username']);
-      $this->db->bind(':role', 'Admin');
-      $this->db->bind(':password', $data['password']);
-      //Execute
-      if ($this->db->execute()) {
-        return true;
-      } else {
-        return false;
-      }
+    // Bind Values
+    $this->db->bind(':username', $data['username']);
+    $this->db->bind(':password', $data['password']);
+    //Execute
+    if ($this->db->execute()) {
+      return true;
     } else {
-      // Prepare Query
-      $this->db->query('INSERT INTO teachers (sch_id, name, email, phone, username, role, password) 
-      VALUES (:sch_id, :name, :email, :phone, :username, :role, :password)');
-
-      // Bind Values
-      $this->db->bind(':sch_id', $data['sch_id']);
-      $this->db->bind(':name', $data['name']);
-      $this->db->bind(':email', $data['email']);
-      $this->db->bind(':phone', $data['phone']);
-      $this->db->bind(':username', $data['username']);
-      $this->db->bind(':role', 'Staff');
-      $this->db->bind(':password', $data['password']);
-      //Execute
-      if ($this->db->execute()) {
-        return true;
-      } else {
-        return false;
-      }
+      return false;
     }
   }
 
@@ -57,9 +31,8 @@ class User
   // Find User BY Email
   public function findUserByEmail($email)
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND email = :email");
+    $this->db->query("SELECT * FROM teachers WHERE email = :email");
     $this->db->bind(':email', $email);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
 
     $row = $this->db->single();
 
@@ -76,9 +49,8 @@ class User
   // Find Teacher BY Username
   public function findTeacherByUsername($username)
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND username = :username");
+    $this->db->query("SELECT * FROM teachers WHERE username = :username");
     $this->db->bind(':username', $username);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $this->db->single();
 
     //Check Rows
@@ -94,9 +66,8 @@ class User
   // Find Teacher BY Username
   public function findTeacher($username)
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND username = :username OR email = :username");
+    $this->db->query("SELECT * FROM teachers WHERE username = :username OR email = :username");
     $this->db->bind(':username', $username);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
 
     $row = $this->db->single();
 
@@ -128,12 +99,9 @@ class User
   // Login / Authenticate User
   public function login($username, $password)
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :sch_id AND username = :username OR email = :username");
+    $this->db->query("SELECT * FROM teachers WHERE username = :username OR email = :username");
     $this->db->bind(':username', $username);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-
     $row = $this->db->single();
-
     $hashed_password = $row->password;
     if (password_verify($password, $hashed_password)) {
       return $row;
@@ -175,8 +143,7 @@ class User
   }
   public function getTeachers()
   {
-    $this->db->query("SELECT * FROM teachers WHERE sch_id = :id;");
-    $this->db->bind(':id', $_COOKIE['sch_id']);
+    $this->db->query("SELECT * FROM teachers;");
     $results = $this->db->resultset();
 
     return $results;
@@ -204,12 +171,10 @@ class User
 
   public function checkIfClassExist($classname)
   {
-    $this->db->query("SELECT * FROM classes WHERE classname = :classname AND user_id = :user_id AND sch_id = :sch_id;");
+    $this->db->query("SELECT * FROM classes WHERE classname = :classname AND user_id = :user_id;");
     $this->db->bind(':classname', $classname);
     $this->db->bind(':user_id', $_SESSION['user_id']);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $row = $this->db->single();
-
     //Check Rows
     if ($this->db->rowCount() > 0) {
       return true;
@@ -220,10 +185,9 @@ class User
 
   public function checkIfSubjectExist($subject)
   {
-    $this->db->query("SELECT * FROM subjects WHERE subject = :subject AND user_id = :user_id AND sch_id = :sch_id;");
+    $this->db->query("SELECT * FROM subjects WHERE subject = :subject AND user_id = :user_id");
     $this->db->bind(':subject', $subject);
     $this->db->bind(':user_id', $_SESSION['user_id']);
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
     $row = $this->db->single();
 
     //Check Rows
@@ -260,11 +224,10 @@ class User
   public function addClass($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO classes (sch_id, user_id, classname) 
-      VALUES (:sch_id, :user_id, :classname)');
+    $this->db->query('INSERT INTO classes (user_id, classname) 
+      VALUES (:user_id, :classname)');
 
     // Bind Values
-    $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':classname', $data['classname']);
     //Execute
@@ -280,11 +243,10 @@ class User
   public function addSubject($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO subjects (sch_id, user_id, subject) 
-      VALUES (:sch_id, :user_id, :subject)');
+    $this->db->query('INSERT INTO subjects (user_id, subject) 
+      VALUES (:user_id, :subject)');
 
     // Bind Values
-    $this->db->bind(':sch_id', $data['sch_id']);
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':subject', $data['subject']);
 
@@ -314,23 +276,6 @@ class User
       return false;
     }
   }
-
-  public function deleteClass2($id)
-  {
-    // Prepare Query
-    $this->db->query('DELETE FROM fetch1 WHERE id = :id');
-
-    // Bind Values
-    $this->db->bind(':id', $id);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
 
 
   // Delete Subject
@@ -452,41 +397,6 @@ class User
     // Bind Values
     $this->db->bind(':id', $id);
     $this->db->bind(':img', '');
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  public function coreEdit($data)
-  {
-    // Prepare Query
-    $this->db->query('UPDATE core SET published = :published, duration = :duration, publishedAS = :publishedAS WHERE paperID = :id AND sch_id = :sch_id');
-
-    // Bind Values
-    $this->db->bind(':sch_id', $_COOKIE['sch_id']);
-    $this->db->bind(':id', $data['id']);
-    $this->db->bind(':published', $data['published']);
-    $this->db->bind(':duration', $data['duration']);
-    $this->db->bind(':publishedAS', $data['publishAS']);
-
-    //Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  public function setDuration($data)
-  {
-    // Prepare Query
-    $this->db->query('UPDATE core SET duration = :duration WHERE paperID = :id');
-
-    // Bind Values
-    $this->db->bind(':id', $data['id']);
-    $this->db->bind(':duration', $data['duration']);
 
     //Execute
     if ($this->db->execute()) {

@@ -18,7 +18,7 @@ class Pages extends Controller
     $data = [];
 
     // Load about view
-    $this->view('pages/welcome', $data);
+    $this->view('pages/index', $data);
   }
 
   // Load Homepage

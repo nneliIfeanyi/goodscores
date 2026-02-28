@@ -82,38 +82,14 @@ class Posts extends Controller
     }
   }
 
-  // Add Comprehension 
-  public function custom($paper_id)
-  {
-    $params = $this->postModel->getParamsFromCore($paper_id);
-    $content = $this->postModel->getCustomContent($paper_id);
-    $data = [
-      'sch_id' => $_COOKIE['sch_id'],
-      'paperID' => $paper_id,
-      'year' => $params->year,
-      'class' => $params->class,
-      'term' => $params->term,
-      'subject' => $params->subject,
-      'content' => $content
-    ];
-    $this->view('posts/custom', $data);
-  }
-
-
-
-
-
-
-
   // Add Objectives Question
   public function add($paper_id)
   {
     $params = $this->postModel->getParamsByPaperID($paper_id, 'objectives_questions');
-    $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID, $_COOKIE['sch_id']);
+    $num_rows = $this->postModel->checkObjectivesNumRows($params->paperID);
 
     $data = [
       'params' => $params,
-      'sch_id' => $_COOKIE['sch_id'],
       'section' => 'objectives_questions',
       'paperID' => $paper_id,
       'num_rows' => $num_rows,
@@ -122,7 +98,6 @@ class Posts extends Controller
       'term' => $params->term,
       'subject' => $params->subject,
       'total_subject_num_rows' => $params->num_rows,
-      'tag' => $params->tag
     ];
     $this->view('posts/add', $data);
   }
