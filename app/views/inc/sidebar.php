@@ -48,7 +48,7 @@
      </li><!-- End Set Questions Nav -->
      <li class="nav-heading">More</li>
      <li class="nav-item">
-       <a class="nav-link collapsed" href="<?= URLROOT; ?>/pages/profile/">
+       <a class="nav-link collapsed" href="<?= URLROOT; ?>/users/setting/<?= $_SESSION['user_id'] ?>">
          <i class="bi bi-gear"></i>
          <span>Settings</span>
        </a>

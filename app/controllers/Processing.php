@@ -65,19 +65,19 @@ class Processing extends Controller
     public function add2($paper_id)
     {
 
-        $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
+        $num_rows = $this->postModel->checkTheoryNumRows($paper_id);
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             $data = [
                 'paperID' => $paper_id,
                 'questionID' => $_POST['questionID'],
-                'section' => 'theory_questions',
-                'sch_id' => $_COOKIE['sch_id'],
+                //'section' => 'theory_questions',
                 'user_id' => $_SESSION['user_id'],
                 'questionA' => trim($_POST['questionA']),
                 'questionB' => trim($_POST['questionB']),
                 'questionC' => trim($_POST['questionC']),
                 'questionD' => trim($_POST['questionD']),
+                'sub_ins' => trim($_POST['sub_ins'])
             ];
 
             if (empty($_SESSION['daigram'])) { // Question has no daigram

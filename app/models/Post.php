@@ -201,9 +201,7 @@ class Post
   {
     $this->db->query("SELECT * FROM objectives WHERE paperID = :paperID;");
     $this->db->bind(':paperID', $paper_id);
-
     $this->db->resultset();
-
     //Check Rows
     if ($this->db->rowCount() > 0) {
       return $this->db->rowCount();
@@ -217,9 +215,7 @@ class Post
   {
     $this->db->query("SELECT * FROM theory WHERE paperID = :paperID;");
     $this->db->bind(':paperID', $paper_id);
-
     $this->db->resultset();
-
     //Check Rows
     if ($this->db->rowCount() > 0) {
       return $this->db->rowCount();
@@ -335,13 +331,14 @@ class Post
   public function setQuestions2($data)
   {
     // Prepare Query
-    $this->db->query('INSERT INTO theory (user_id, paperID, questionID, questionA, questionB, questionC, questionD, img) 
-      VALUES (user_id, :paperID, :questionID, :questionA, :questionB, :questionC, :questionD, :img)');
+    $this->db->query('INSERT INTO theory (user_id, paperID, questionID, subIns, questionA, questionB, questionC, questionD, img) 
+      VALUES (:user_id, :paperID, :questionID, :subIns, :questionA, :questionB, :questionC, :questionD, :img)');
 
     // Bind Values
     $this->db->bind(':user_id', $data['user_id']);
     $this->db->bind(':paperID', $data['paperID']);
     $this->db->bind(':questionID', $data['questionID']);
+    $this->db->bind(':subIns', $data['sub_ins']);
     $this->db->bind(':questionA', $data['questionA']);
     $this->db->bind(':questionB', $data['questionB']);
     $this->db->bind(':questionC', $data['questionC']);
@@ -417,6 +414,16 @@ class Post
   }
 
 
+  public function getSections($id)
+  {
+    $this->db->query("SELECT section FROM params WHERE paperID = :id");
+    $this->db->bind(':id', $id);
+    $this->db->resultset();
+    if ($this->db->rowCount() > 0) {
+      return $this->db->rowCount();
+    }
+  }
+
   // Update Post
   public function updateObj($data)
   {
@@ -467,10 +474,11 @@ class Post
   public function updateTheory($data)
   {
     // Prepare Query
-    $this->db->query('UPDATE theory SET questionA = :questionA, questionB = :questionB, questionC = :questionC, questionD = :questionD, img = :img WHERE id = :id');
+    $this->db->query('UPDATE theory SET subIns = :subIns, questionA = :questionA, questionB = :questionB, questionC = :questionC, questionD = :questionD, img = :img WHERE id = :id');
 
     // Bind Values
     $this->db->bind(':id', $data['id']);
+    $this->db->bind(':subIns', $data['sub_ins']);
     $this->db->bind(':questionA', $data['questionA']);
     $this->db->bind(':questionB', $data['questionB']);
     $this->db->bind(':questionC', $data['questionC']);

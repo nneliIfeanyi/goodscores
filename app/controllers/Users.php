@@ -29,8 +29,6 @@ class Users extends Controller
     $subjects = $this->userModel->getUserSubjectsRowCount($_SESSION['user_id']);
     $classes = $this->userModel->getUserClassesRowCount($_SESSION['user_id']);
     $recents = $this->postModel->getRecents($_SESSION['user_id']);
-
-    //$all = $this->postModel->getParamsRowCount();
     $data = [
       'subjects' => $subjects,
       'classes' => $classes,
@@ -39,6 +37,8 @@ class Users extends Controller
 
     $this->view('users/dashboard', $data);
   }
+
+  // Dashboard View Ends
 
   public function archive()
   {
@@ -53,7 +53,21 @@ class Users extends Controller
     $this->view('users/archive', $data);
   }
 
-  // Dashboard View Ends
+
+  public function setting($id)
+  {
+    if (!$this->isLoggedIn()) {
+      redirect('users/login');
+    }
+    $paper_head = $this->pageModel->getSchool($id);
+    $data = [
+      'header' => $paper_head
+    ];
+
+    $this->view('users/setting', $data);
+  }
+
+
 
   public function set($param)
   {
@@ -231,7 +245,10 @@ class Users extends Controller
         'confirm_password' => val_entry($_POST['confirm_password']),
         'username_err' => '',
         'password_err' => '',
-        'confirm_password_err' => ''
+        'confirm_password_err' => '',
+        'sch_name' => null,
+        'motto' => null,
+        'address' => null
       ];
 
       // Register Form Validation
@@ -261,6 +278,7 @@ class Users extends Controller
 
         //Execute
         if ($this->userModel->registerTeacher($data)) {
+          $this->pageModel->registerSch($data);
           $loggedInUser = $this->userModel->login($data['username'], val_entry($_POST['password']));
           $this->createUserSession($loggedInUser);
           flash('msg', 'Login Successfull!');

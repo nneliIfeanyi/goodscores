@@ -364,6 +364,7 @@ class Submissions extends Controller
 
       $data = [
         'id' => $id,
+        'sub_ins' => trim($_POST['sub_ins']),
         'questionA' => trim($_POST['questionA']),
         'questionB' => trim($_POST['questionB']),
         'questionC' => trim($_POST['questionC']),

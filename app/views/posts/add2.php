@@ -28,20 +28,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
           <textarea class="form-control" disabled name="question" required placeholder="COMPLETED"></textarea>
-          <div class="row my-3">
-            <div class="col-6 col-md-3">
-              <input type="text" disabled class="form-control" placeholder="Opt-A" required name="opt1">
-            </div>
-            <div class="col-6 col-md-3">
-              <input type="text" disabled class="form-control" placeholder="Opt-B" required name="opt2">
-            </div>
-            <div class="col-6 col-md-3">
-              <input type="text" disabled class="form-control" placeholder="Opt-C" name="opt3">
-            </div>
-            <div class="col-6 col-md-3">
-              <input type="text" disabled class="form-control" placeholder="Opt-D" name="opt4">
-            </div>
-          </div>
           <div class="d-flex gap-3 flex-wrap">
             <?php if ($this->postModel->getParamsByPaperID($data['paperID'], 'objectives_questions')) : ?>
               <a class="btn btn-outline-primary" href="<?php echo URLROOT; ?>/posts/add/<?= $data['paperID']; ?>">Go to Objectives Questions <i class="bi bi-chevron-right"></i></a>
@@ -75,6 +61,11 @@
               </div>
             <?php endif; ?>
             <div class="row mb-2">
+              <button id="toggle-question-info" type="button" class="btn btn-sm btn-secondary my-2">Add question Info</button>
+              <div id="question-info" style="display: none;" class="mt-1 mb-2">
+                <label for="className">Add more information or instructions for this question.</label>
+                <textarea class="tiny" name="sub_ins"><p></p></textarea>
+              </div>
               <div class="col-12"><!-- Question  input -->
                 <label class="ms-3 mt-2 border-start border-top border-end px-2">Question <b><?= $data['num_rows'] + (1); ?></b>a</label>
                 <textarea class="tiny" name="questionA"><p></p></textarea>
@@ -117,14 +108,7 @@
 </main><!-- End #main -->
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
-<!-- Page loader fade in on form submit -->
-<script>
-  $(':submit').each(function() {
-    $(this).click(function() {
-      $('#loader').fadeIn();
-    });
-  });
-</script>
+
 <script>
   tinymce.init({
     selector: 'textarea.tiny',
@@ -143,5 +127,13 @@
       value: 'table_cell_grey_border',
     }, ],
     table_sizing_mode: 'relative',
+  });
+</script>
+<script>
+  // toggle question info visibility
+  $(document).ready(function() {
+    $('#toggle-question-info').click(function() {
+      $('#question-info').toggle();
+    });
   });
 </script>

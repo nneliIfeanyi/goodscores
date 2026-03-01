@@ -143,10 +143,9 @@ class Posts extends Controller
   public function add2($paper_id)
   {
     $params = $this->postModel->getParamsByPaperID($paper_id, 'theory_questions');
-    $num_rows = $this->postModel->checkTheoryNumRows($paper_id, $_COOKIE['sch_id']);
+    $num_rows = $this->postModel->checkTheoryNumRows($paper_id);
     // Not post request method
     $data = [
-      'sch_id' => $_COOKIE['sch_id'],
       'section' => 'theory_questions',
       'paperID' => $paper_id,
       'num_rows' => $num_rows,
