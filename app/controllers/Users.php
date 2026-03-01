@@ -314,11 +314,6 @@ class Users extends Controller
     // Check if teacher logged in
     if ($this->isLoggedIn()) {
       redirect('users/dashboard');
-    } else {
-      // Unset all session variables
-      session_unset();
-      // Destroy the session
-      session_destroy();
     }
 
     // Check if POST
