@@ -11,7 +11,7 @@ class Page
     // Get single school by ID
     public function getSchool($id)
     {
-        $this->db->query("SELECT * FROM school WHERE id = :id");
+        $this->db->query("SELECT * FROM school WHERE user_id = :id");
         $this->db->bind(':id', $id);
 
         $row = $this->db->single();
