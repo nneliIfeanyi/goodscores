@@ -60,6 +60,14 @@ class Users extends Controller
       redirect('users/login');
     }
     $paper_head = $this->pageModel->getSchool($id);
+    if (!$paper_head) {
+      $this->pageModel->registerSch([
+        'user_id' => $_SESSION['user_id'],
+        'name' => null,
+        'motto' => null,
+        'address' => null
+      ]);
+    }
     $data = [
       'header' => $paper_head
     ];

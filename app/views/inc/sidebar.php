@@ -39,11 +39,11 @@
              <i class="bi bi-circle"></i><span>Theory Questions</span>
            </a>
          </li>
-         <li>
+         <!-- <li>
            <a href="<?php echo URLROOT; ?>/users/archive">
              <i class="bi bi-circle"></i><span>Archive</span>
            </a>
-         </li>
+         </li> -->
        </ul>
      </li><!-- End Set Questions Nav -->
      <li class="nav-heading">More</li>
