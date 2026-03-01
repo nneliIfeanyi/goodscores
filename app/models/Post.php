@@ -79,7 +79,7 @@ class Post
     }
   }
   // Delete all obj
-  public function deleteTheoryAll($id,)
+  public function deleteTheoryAll($id)
   {
     // Prepare Query
     $this->db->query('DELETE FROM theory WHERE paperID = :id');
