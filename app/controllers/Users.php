@@ -360,7 +360,24 @@ class Users extends Controller
         if ($loggedInUser) {
           // User Authenticated!
           $this->createUserSession($loggedInUser);
-          // Redirect to verify email page
+
+          // if "remember me" was checked, persist a long‑lived cookie/token
+          $remember = isset($_POST['remember']) && $_POST['remember'] === 'true';
+          if ($remember) {
+            // generate a random token, store it in the database and set a cookie for 30 days
+            $token = bin2hex(random_bytes(16));
+            setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/');
+            // update model (method added below)
+            $this->userModel->updateRememberToken($loggedInUser->id, $token);
+          } else {
+            // if user explicitly did not ask for persistence, make sure any previous token is removed
+            if (isset($_COOKIE['remember_token'])) {
+              setcookie('remember_token', '', time() - 3600, '/');
+            }
+            $this->userModel->updateRememberToken($loggedInUser->id, null);
+          }
+
+          // Redirect to dashboard
           $redirect = URLROOT . '/users/dashboard';
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
             <i class='bi bi-check-circle'></i>  &nbsp;Login Successfull!
@@ -411,18 +428,37 @@ class Users extends Controller
   // Logout & Destroy Session
   public function logout()
   {
+    // clear any remember-me cookie and token in the database
+    if (isset($_COOKIE['remember_token'])) {
+      // if user id still available in session clear the DB value too
+      if (isset($_SESSION['user_id'])) {
+        $this->userModel->updateRememberToken($_SESSION['user_id'], null);
+      }
+      setcookie('remember_token', '', time() - 3600, '/');
+    }
+
     session_unset();
     session_destroy();
     redirect('users/login');
   }
 
-  // Check Logged In
+  // Check Logged In (also support remember‑me cookie if session expired)
   public function isLoggedIn()
   {
     if (isset($_SESSION['user_id'])) {
       return true;
-    } else {
-      return false;
     }
+
+    // session not set – check for a valid remember token
+    if (isset($_COOKIE['remember_token'])) {
+      $user = $this->userModel->findByRememberToken($_COOKIE['remember_token']);
+      if ($user) {
+        // token valid, restore session
+        $this->createUserSession($user);
+        return true;
+      }
+    }
+
+    return false;
   }
 }
