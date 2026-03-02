@@ -253,11 +253,7 @@ class Users extends Controller
         'confirm_password' => val_entry($_POST['confirm_password']),
         'username_err' => '',
         'password_err' => '',
-        'confirm_password_err' => '',
-        'user_id' => $_SESSION['user_id'],
-        'sch_name' => 'Enter school name',
-        'motto' => null,
-        'address' => null
+        'confirm_password_err' => ''
       ];
 
       // Register Form Validation
@@ -287,7 +283,6 @@ class Users extends Controller
 
         //Execute
         if ($this->userModel->registerTeacher($data)) {
-          $this->pageModel->registerSch($data);
           $loggedInUser = $this->userModel->login($data['username'], val_entry($_POST['password']));
           $this->createUserSession($loggedInUser);
           flash('msg', 'Login Successfull!');
@@ -404,6 +399,13 @@ class Users extends Controller
     $_SESSION['name'] = $user->username;
     $_SESSION['photo'] = '';
     $_SESSION['username'] = $user->name;
+    $data = [
+      'user_id' => $_SESSION['user_id'],
+      'name' => 'Enter school name',
+      'motto' => null,
+      'address' => null
+    ];
+    $this->pageModel->registerSch($data);
   }
 
   // Logout & Destroy Session
