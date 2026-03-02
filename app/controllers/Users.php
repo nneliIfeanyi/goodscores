@@ -254,7 +254,8 @@ class Users extends Controller
         'username_err' => '',
         'password_err' => '',
         'confirm_password_err' => '',
-        'sch_name' => null,
+        'user_id' => $_SESSION['user_id'],
+        'sch_name' => 'Enter school name',
         'motto' => null,
         'address' => null
       ];
