@@ -1,7 +1,7 @@
 {
   "name": "Goodscores",
   "short_name": "Goodscores",
-  "start_url": "index.php",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f6f9ff",
   "theme_color": "#0d6efd",
@@ -26,13 +26,13 @@
       "src": "icons/mask4.png",
       "type": "image/png",
       "sizes": "128x128",
-      "purpose":"maskable"
+      "purpose": "maskable"
     },
     {
       "src": "icons/mask5.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose":"any"
+      "purpose": "any"
     }
   ]
 }
