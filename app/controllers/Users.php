@@ -10,6 +10,17 @@ class Users extends Controller
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
     $this->pageModel = $this->model('Page');
+
+    if (!$this->isLoggedIn()) {
+      if (isset($_COOKIE['remember_token'])) {
+        $user = $this->userModel->findByRememberToken($_COOKIE['remember_token']);
+        if ($user) {
+          // token valid, restore session
+          $this->createUserSession($user);
+          return true;
+        }
+      }
+    }
   }
 
   public function index()
@@ -247,6 +258,9 @@ class Users extends Controller
     // Check if POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
+      // prepare form input data; we don't yet know the user_id because the
+      // teacher hasn't been created/logged in. the value will be assigned
+      // after successful registration and login.
       $data = [
         'username' => val_entry($_POST['username']),
         'password' => val_entry($_POST['password']),
@@ -254,8 +268,9 @@ class Users extends Controller
         'username_err' => '',
         'password_err' => '',
         'confirm_password_err' => '',
-        'user_id' => $_SESSION['user_id'],
-        'sch_name' => 'Enter school name',
+        // user_id will be filled in later, avoid accessing undefined session key
+        'user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null,
+        'name' => 'Enter school name',
         'motto' => null,
         'address' => null
       ];
@@ -287,15 +302,24 @@ class Users extends Controller
 
         //Execute
         if ($this->userModel->registerTeacher($data)) {
-          $this->pageModel->registerSch($data);
+          // now that the teacher exists, log them in to retrieve their id
           $loggedInUser = $this->userModel->login($data['username'], val_entry($_POST['password']));
-          $this->createUserSession($loggedInUser);
-          flash('msg', 'Login Successfull!');
-          $redirect = URLROOT . '/users/dashboard';
-          echo "<p class='alert alert-success flash-msg fade show' role='alert'>
-            <i class='spinner-border spinner-border-sm text-primary'></i>  &nbsp;Registration Successfull!
-          </p><meta http-equiv='refresh' content='4; $redirect'>
-        ";
+          if ($loggedInUser) {
+            // assign the real user_id and persist the school record
+            $data['user_id'] = $loggedInUser->id;
+            $this->pageModel->registerSch($data);
+
+            $this->createUserSession($loggedInUser);
+            flash('msg', 'Login Successfull!');
+            $redirect = URLROOT . '/users/dashboard';
+            echo "<p class='alert alert-success flash-msg fade show' role='alert'>
+              <i class='spinner-border spinner-border-sm text-primary'></i>  &nbsp;Registration Successfull!
+            </p><meta http-equiv='refresh' content='4; $redirect'>
+          ";
+          } else {
+            // this should not happen but guard anyway
+            die('Unable to log in newly registered user');
+          }
         } else {
           die('Something went wrong');
         }
@@ -367,21 +391,14 @@ class Users extends Controller
           $this->createUserSession($loggedInUser);
 
           // if "remember me" was checked, persist a long‑lived cookie/token
-          $remember = isset($_POST['remember']) && $_POST['remember'] === 'true';
+          $remember = 'true';
           if ($remember) {
             // generate a random token, store it in the database and set a cookie for 30 days
             $token = bin2hex(random_bytes(16));
             setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/');
             // update model (method added below)
             $this->userModel->updateRememberToken($loggedInUser->id, $token);
-          } else {
-            // if user explicitly did not ask for persistence, make sure any previous token is removed
-            if (isset($_COOKIE['remember_token'])) {
-              setcookie('remember_token', '', time() - 3600, '/');
-            }
-            $this->userModel->updateRememberToken($loggedInUser->id, null);
           }
-
           // Redirect to dashboard
           $redirect = URLROOT . '/users/dashboard';
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
@@ -446,17 +463,5 @@ class Users extends Controller
     if (isset($_SESSION['user_id'])) {
       return true;
     }
-
-    // session not set – check for a valid remember token
-    if (isset($_COOKIE['remember_token'])) {
-      $user = $this->userModel->findByRememberToken($_COOKIE['remember_token']);
-      if ($user) {
-        // token valid, restore session
-        $this->createUserSession($user);
-        return true;
-      }
-    }
-
-    return false;
   }
 }
