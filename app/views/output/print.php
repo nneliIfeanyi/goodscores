@@ -75,8 +75,8 @@
                     </div><!-- School Name and Motto Div Ends-->
                     <div class="col-4">
                         <h6 style="font-weight: lighter;font-size:small;">
-                            <span>Subject: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->subject; ?></span><br />
-                            <span>Session: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->year; ?></span>
+                            <span>Subject: </span><span style="font-size:medium;font-weight:550"><?= $data['obj_params']->subject; ?></span><br />
+                            <span>Session: </span><span style="font-size:medium;font-weight:550"><?= $data['obj_params']->year; ?></span>
                         </h6>
                     </div><!-- Subject and section Div Ends -->
                     <div class="col-5 fst-italic">
@@ -93,41 +93,41 @@
                         <span style="margin-left: 16px;">1<sup>st</sup> Term Examination</span>
                     </div><!-- Term Div Ends-->
                     <div class="col-3">
-                        <?php if (empty($data['params']->duration)) : ?>
+                        <?php if (empty($data['obj_params']->duration)) : ?>
                             <h6 style="font-weight: lighter;font-size:small;">
                                 <!-- <span>Time:</span><span>value</span><br /> -->
-                                <span>Class: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->class ?></span>
+                                <span>Class: </span><span style="font-size:medium;font-weight:550"><?= $data['obj_params']->class ?></span>
                             </h6>
                         <?php else : ?>
                             <div style="font-weight: lighter;font-size:small;">
-                                <span>Time: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->duration; ?></span><br />
-                                <span>Class: </span><span style="font-size:medium;font-weight:550"><?= $data['params']->class; ?></span>
+                                <span>Time: </span><span style="font-size:medium;font-weight:550"><?= $data['obj_params']->duration; ?></span><br />
+                                <span>Class: </span><span style="font-size:medium;font-weight:550"><?= $data['obj_params']->class; ?></span>
                             </div>
                         <?php endif; ?>
 
                     </div><!-- Duration and Class Div Ends-->
                     <hr />
                     <?php if (!empty($data['obj'])) : $num = 1;
-                        if ($data['params1']->section == 'objectives_questions' && !empty($data['params1']->section)) {
-                            $data['params1']->section = 'Objectives questions';
+                        if ($data['obj_params']->section == 'objectives_questions' && !empty($data['obj_params']->section)) {
+                            $data['obj_params']->section = 'Objectives questions';
                         } else {
-                            $data['params1']->section = '';
+                            $data['obj_params']->section = '';
                         }
 
                     ?>
                         <?php
-                        if (!empty($data['params1']->tag)) {
+                        if (!empty($data['obj_params']->tag)) {
                         ?>
                             <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
-                                <p class="m-0 fw-bold"><?= $data['params1']->tag; ?> | <?= $data['params1']->section; ?></p>
-                                <span><?= $data['params1']->instruction; ?></span>
+                                <p class="m-0 fw-bold"><?= $data['obj_params']->tag; ?> | <?= $data['obj_params']->section; ?></p>
+                                <span><?= $data['obj_params']->instruction; ?></span>
                             </div><br />
                         <?php
                         } else {
                         ?>
                             <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
-                                <p class="m-0 fw-bold"><?= $data['params1']->section; ?></p>
-                                <span><?= $data['params1']->instruction; ?></span>
+                                <p class="m-0 fw-bold"><?= $data['obj_params']->section; ?></p>
+                                <span><?= $data['obj_params']->instruction; ?></span>
                             </div><br />
                         <?php
                         }
@@ -199,8 +199,8 @@
 
                         <?php if (!empty($data['theory'])) : ?>
                             <div class="text-center m-0" style="font-weight: lighter;font-size:small;">
-                                <p class="m-0 fw-bold"><?= $data['params2']->tag; ?> | <?= $data['params2']->section; ?></p>
-                                <span style="text-decoration: underline;"><?= $data['params2']->instruction; ?></span>
+                                <p class="m-0 fw-bold">Section B | <?= $data['theory_params']->section; ?></p>
+                                <span style="text-decoration: underline;"><?= $data['theory_params']->instruction; ?></span>
                             </div><br />
                             <div class="col-6 pe-1" style="overflow-wrap:break-word">
                                 <?php $n = 1;

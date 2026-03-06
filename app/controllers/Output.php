@@ -10,7 +10,6 @@ class Output extends Controller
     $this->postModel = $this->model('Post');
     $this->pageModel = $this->model('Page');
     $this->userModel = $this->model('User');
-    $this->studentModel = $this->model('Student');
   }
 
   // Load Homepage
@@ -43,41 +42,49 @@ class Output extends Controller
 
   public function print($paperID)
   {
-    $obj = $this->studentModel->getCbtQuestions($paperID);
+    $obj = $this->postModel->getObjectives($paperID);
     $theory = $this->postModel->getTheory($paperID);
-    $params = $this->postModel->getParamsFromCore($paperID);
-    $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
-    $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($params->sch_id);
+    $obj_params = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
+    $theory_params = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
+    $sch = $this->pageModel->getSchool($_SESSION['user_id']);
     $data = [
       'paperID' => $paperID,
-      'params' => $params,
-      'params1' => $params1,
-      'params2' => $params2,
+      'obj_params' => $obj_params,
+      'theory_params' => $theory_params,
       'theory' => $theory,
       'obj' => $obj,
       'sch' => $sch
     ];
+    if (!$data['sch']) {
+      $data['sch'] = (object)[
+        'name' => 'CPM INTERNATIONAL SCHOOL',
+        'motto' => 'Knowledge is Power'
+      ];
+    }
     $this->view('output/print', $data);
   }
 
   public function print2($paperID)
   {
-    $obj = $this->studentModel->getCbtQuestions($paperID);
     $theory = $this->postModel->getTheory($paperID);
-    $params = $this->postModel->getParamsFromCore($paperID);
+    $obj = $this->postModel->getObjectives($paperID);
     $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
     $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($params->sch_id);
+    $sch = $this->pageModel->getSchool($_SESSION['user_id']);
     $data = [
       'paperID' => $paperID,
-      'params' => $params,
       'params1' => $params1,
       'params2' => $params2,
       'theory' => $theory,
       'obj' => $obj,
       'sch' => $sch
     ];
+    if (!$data['sch']) {
+      $data['sch'] = (object)[
+        'name' => 'CPM INTERNATIONAL SCHOOL',
+        'motto' => 'Knowledge is Power'
+      ];
+    }
     $this->view('output/print2', $data);
   }
 
@@ -88,7 +95,7 @@ class Output extends Controller
     $params = $this->postModel->getParamsByPaperID2($paperID);
     $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
     $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($params->sch_id);
+    $sch = $this->pageModel->getSchool($params->user_id);
     $data = [
       'paperID' => $paperID,
       'params' => $params,
