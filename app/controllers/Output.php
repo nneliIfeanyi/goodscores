@@ -46,21 +46,21 @@ class Output extends Controller
     $theory = $this->postModel->getTheory($paperID);
     $obj_params = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
     $theory_params = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($_SESSION['user_id']);
+    // $sch = $this->pageModel->getSchool($_SESSION['user_id']);
     $data = [
       'paperID' => $paperID,
       'obj_params' => $obj_params,
       'theory_params' => $theory_params,
       'theory' => $theory,
       'obj' => $obj,
-      'sch' => $sch
+      //'sch' => $sch,
+
     ];
-    if (!$data['sch']) {
-      $data['sch'] = (object)[
-        'name' => 'CPM INTERNATIONAL SCHOOL',
-        'motto' => 'Knowledge is Power'
-      ];
-    }
+    $data['sch'] = (object)[
+      'name' => 'CPM INTERNATIONAL SCHOOL',
+      'motto' => 'Knowledge is Power'
+    ];
+
     $this->view('output/print', $data);
   }
 
@@ -70,21 +70,20 @@ class Output extends Controller
     $obj = $this->postModel->getObjectives($paperID);
     $params1 = $this->postModel->getParamsByPaperID($paperID, 'objectives_questions');
     $params2 = $this->postModel->getParamsByPaperID($paperID, 'theory_questions');
-    $sch = $this->pageModel->getSchool($_SESSION['user_id']);
+    // $sch = $this->pageModel->getSchool($_SESSION['user_id']);
     $data = [
       'paperID' => $paperID,
       'params1' => $params1,
       'params2' => $params2,
       'theory' => $theory,
       'obj' => $obj,
-      'sch' => $sch
+      //'sch' => $sch
     ];
-    if (!$data['sch']) {
-      $data['sch'] = (object)[
-        'name' => 'CPM INTERNATIONAL SCHOOL',
-        'motto' => 'Knowledge is Power'
-      ];
-    }
+    $data['sch'] = (object)[
+      'name' => 'CPM INTERNATIONAL SCHOOL',
+      'motto' => 'Knowledge is Power'
+    ];
+
     $this->view('output/print2', $data);
   }
 
