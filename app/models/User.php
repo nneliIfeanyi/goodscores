@@ -110,31 +110,7 @@ class User
     }
   }
 
-  /**
-   * Persist a random token for "remember me" functionality.
-   * Passing null will clear the token in the database.
-   */
-  public function updateRememberToken($userId, $token)
-  {
-    $this->db->query('UPDATE teachers SET remember_token = :token WHERE id = :id');
-    $this->db->bind(':token', $token);
-    $this->db->bind(':id', $userId);
-    return $this->db->execute();
-  }
 
-  /**
-   * Find a teacher record by its remember token. Returns the row or false.
-   */
-  public function findByRememberToken($token)
-  {
-    $this->db->query('SELECT * FROM teachers WHERE remember_token = :token');
-    $this->db->bind(':token', $token);
-    $row = $this->db->single();
-    if ($this->db->rowCount() > 0) {
-      return $row;
-    }
-    return false;
-  }
 
   // Find User By ID
   public function getUserById($id)

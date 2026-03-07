@@ -10,17 +10,6 @@ class Users extends Controller
     $this->userModel = $this->model('User');
     $this->postModel = $this->model('Post');
     $this->pageModel = $this->model('Page');
-
-    if (!$this->isLoggedIn()) {
-      if (isset($_COOKIE['remember_token'])) {
-        $user = $this->userModel->findByRememberToken($_COOKIE['remember_token']);
-        if ($user) {
-          // token valid, restore session
-          $this->createUserSession($user);
-          return true;
-        }
-      }
-    }
   }
 
   public function index()
@@ -212,8 +201,7 @@ class Users extends Controller
           imagejpeg($target_layer, "assets/img/" . $_FILES['photo']['name']);
           $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
           if ($this->userModel->editPhoto($id, $db_image_file)) {
-            setcookie('photo', $db_image_file, time() + (86400 * 365), '/');
-            //$_SESSION['photo'] = $db_image_file;
+            $_SESSION['photo'] = $db_image_file;
             flash('msg', 'Profile photo updated..');
             echo "<script>
                 history.go(-2)
@@ -227,8 +215,7 @@ class Users extends Controller
           imagepng($target_layer, "assets/img/" . $_FILES['photo']['name']);
           $db_image_file =  "assets/img/" . $_FILES['photo']['name'];
           if ($this->userModel->editPhoto($id, $db_image_file)) {
-            setcookie('photo', $db_image_file, time() + (86400 * 365), '/');
-            //$_SESSION['photo'] = $db_image_file;
+            $_SESSION['photo'] = $db_image_file;
             flash('msg', 'Profile photo updated..');
             echo "<script>
                 history.go(-2)
@@ -390,15 +377,6 @@ class Users extends Controller
           // User Authenticated!
           $this->createUserSession($loggedInUser);
 
-          // if "remember me" was checked, persist a long‑lived cookie/token
-          $remember = 'true';
-          if ($remember) {
-            // generate a random token, store it in the database and set a cookie for 30 days
-            $token = bin2hex(random_bytes(16));
-            setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/');
-            // update model (method added below)
-            $this->userModel->updateRememberToken($loggedInUser->id, $token);
-          }
           // Redirect to dashboard
           $redirect = URLROOT . '/users/dashboard';
           echo "<p class='alert alert-success flash-msg fade show' role='alert'>
@@ -443,21 +421,12 @@ class Users extends Controller
   // Logout & Destroy Session
   public function logout()
   {
-    // clear any remember-me cookie and token in the database
-    if (isset($_COOKIE['remember_token'])) {
-      // if user id still available in session clear the DB value too
-      if (isset($_SESSION['user_id'])) {
-        $this->userModel->updateRememberToken($_SESSION['user_id'], null);
-      }
-      setcookie('remember_token', '', time() - 3600, '/');
-    }
 
     session_unset();
     session_destroy();
     redirect('users/login');
   }
 
-  // Check Logged In (also support remember‑me cookie if session expired)
   public function isLoggedIn()
   {
     if (isset($_SESSION['user_id'])) {
