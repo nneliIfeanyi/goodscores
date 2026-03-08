@@ -95,6 +95,7 @@
           <div class="col-12">
             <div class="d-flex gap-1 flex-wrap">
               <a href="<?= URLROOT; ?>/posts/add/<?= $data['params']->paperID; ?>" class="btn btn-outline-primary">Continue <i class="bi bi-chevron-right"></i></a>
+              <a href="<?= URLROOT; ?>/output/print/<?= $data['params']->paperID; ?>" class="btn btn-outline-secondary">Print <i class="bi bi-printer"></i></a>
               <a href="javascript:void()" onclick="history.back()" class="btn"><i class="bi bi-chevron-left"></i> Go Back</a>
             </div>
           </div>
