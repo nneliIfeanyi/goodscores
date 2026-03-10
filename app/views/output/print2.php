@@ -90,7 +90,7 @@
                         }
                         ?>
                         <!-- <span style="margin-left: 16px;"><?= $term; ?> Examination</span> -->
-                        <span style="margin-left: 16px;">2<sup>nd</sup> Examination</span>
+                        <span style="margin-left: 16px;">2<sup>nd</sup> Term Examination</span>
                     </div><!-- Term Div Ends-->
                     <div class="col-3">
                         <?php if (empty($data['params1']->duration)) : ?>
