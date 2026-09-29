@@ -1,0 +1,200 @@
+/* Custom styles on top of Tailwind */
+
+:root {
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --brand-teal: #0d9488;
+  --brand-teal-deep: #0f766e;
+  --brand-teal-bright: #2dd4bf;
+  --brand-glow: rgba(20, 184, 166, 0.24);
+}
+
+.safe-bottom {
+  padding-bottom: var(--safe-bottom);
+}
+
+/* Shared brand treatment: a soft teal atmosphere with luminous primary actions. */
+body {
+  background-image: radial-gradient(circle at 12% 0%, rgba(45, 212, 191, 0.12), transparent 34rem);
+}
+
+.dark body {
+  background-image: radial-gradient(circle at 12% 0%, rgba(20, 184, 166, 0.12), transparent 34rem);
+}
+
+.bg-primary-600 {
+  background-color: var(--brand-teal);
+  background-image: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-deep) 100%);
+  box-shadow: 0 8px 20px var(--brand-glow);
+}
+
+.hover\:bg-primary-700:hover {
+  background-color: var(--brand-teal-deep);
+  background-image: linear-gradient(135deg, #14b8a6 0%, var(--brand-teal-deep) 100%);
+  box-shadow: 0 10px 24px rgba(13, 148, 136, 0.32);
+}
+
+.floating-action-button {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(5rem + var(--safe-bottom));
+  z-index: 30;
+  display: inline-flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: var(--brand-teal);
+  background-image: linear-gradient(135deg, var(--brand-teal) 0%, var(--brand-teal-deep) 100%);
+  border-radius: 9999px;
+  box-shadow: 0 8px 20px var(--brand-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 148, 136, 0.36);
+}
+
+.bg-gradient-to-br.from-primary-600.to-primary-800 {
+  background-image: linear-gradient(135deg, #0d9488 0%, #0f766e 58%, #115e59 100%);
+  box-shadow: inset 0 -24px 70px rgba(4, 47, 46, 0.16);
+}
+
+.bg-primary-50 {
+  background-image: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+}
+
+button.bg-primary-600,
+a.bg-primary-600 {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+button.bg-primary-600:hover,
+a.bg-primary-600:hover {
+  filter: saturate(1.08);
+  transform: translateY(-1px);
+}
+
+/* Shared feedback for slow writes and external AI requests */
+#network-loader {
+  position: fixed;
+  top: 4.25rem;
+  left: 50%;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  color: #115e59;
+  background: linear-gradient(135deg, #ecfeff, #ccfbf1, #d1fae5);
+  border: 1px solid rgba(13, 148, 136, 0.25);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.16);
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#network-loader.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.network-loader-spinner {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid rgba(13, 148, 136, 0.25);
+  border-top-color: #0f766e;
+  border-radius: 50%;
+  animation: networkSpin 0.75s linear infinite;
+}
+
+@keyframes networkSpin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-skeleton {
+  height: 5.25rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.7) 25%, rgba(241, 245, 249, 0.95) 37%, rgba(226, 232, 240, 0.7) 63%);
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.3s ease-in-out infinite;
+}
+
+.dark .loading-skeleton {
+  background: linear-gradient(90deg, rgba(31, 41, 55, 0.8) 25%, rgba(55, 65, 81, 0.95) 37%, rgba(31, 41, 55, 0.8) 63%);
+  background-size: 400% 100%;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Antique white gradient background for main content areas */
+.bg-antique-gradient {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(45, 212, 191, 0.14), transparent 24rem),
+    linear-gradient(160deg, #faf8f5 0%, #f5f0e8 40%, #ebe3d5 100%);
+}
+
+.dark .bg-antique-gradient {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(20, 184, 166, 0.12), transparent 24rem),
+    linear-gradient(160deg, #111827 0%, #1f2937 50%, #111827 100%);
+}
+
+/* Smooth page transitions */
+.page-enter {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Bottom nav active state */
+.nav-item.active {
+  color: #0d9488;
+}
+.dark .nav-item.active {
+  color: #2dd4bf;
+}
+
+/* Form focus rings */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.22), 0 0 18px rgba(45, 212, 191, 0.16);
+}
+
+/* Hide splash after load */
+#splash.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.onboarding-art {
+  background: linear-gradient(145deg, rgba(204, 251, 241, 0.9), rgba(240, 253, 250, 0.55));
+  border: 1px solid rgba(13, 148, 136, 0.16);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.72), 0 18px 45px rgba(15, 118, 110, 0.12);
+}
+
+.dark .onboarding-art {
+  background: linear-gradient(145deg, rgba(19, 78, 74, 0.86), rgba(17, 24, 39, 0.72));
+  border-color: rgba(45, 212, 191, 0.18);
+}
+
+.onboarding-slide {
+  animation: onboardingSlideIn 0.35s ease both;
+}
+
+@keyframes onboardingSlideIn {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}

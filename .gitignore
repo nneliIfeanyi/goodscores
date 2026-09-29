@@ -1,0 +1,25 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies installed locally
+/node_modules/
+
+# Production and tool-generated build output
+/dist/
+/build/
+/.vite/
+
+# Test and recording output
+/coverage/
+/test-results/
+
+# Logs
+*.log
+
+# IDE and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
