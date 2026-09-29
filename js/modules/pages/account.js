@@ -3,8 +3,8 @@ import { isLoggedIn, logout } from '../auth.js';
 import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
-import { getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
-import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=19';
+import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
+import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=25';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
 async function refreshUser() {
@@ -81,10 +81,19 @@ export async function renderAccount() {
     </div>`;
   document.getElementById('btn-logout')?.addEventListener('click', logout);
   loadTeacherMetaManager();
+  const mainContent = document.getElementById('main-content');
+  if (mainContent && !mainContent.dataset.metaRefreshBound) {
+    mainContent.dataset.metaRefreshBound = '1';
+    window.addEventListener('gs-meta-refresh', () => loadTeacherMetaManager(true));
+  }
 
   const isAdmin = user.role === 'school_admin';
   const isSchoolLinked = !!user.school_id;
   const isIndividual = !user.school_id && user.role === 'individual';
+  const outputSettings = {
+    ...(user.pdf_settings || {}),
+    ...(isAdmin ? (user.school?.paper_settings || {}) : {}),
+  };
   const planLabel = user.is_pro_plus ? 'Pro Plus' : user.is_pro ? (user.is_unlimited ? 'Unlimited' : 'Pro') : 'Free';
 
   main.innerHTML = `
@@ -137,30 +146,62 @@ export async function renderAccount() {
         </div>
       </section>
 
-      ${!isSchoolLinked ? `<form id="pdf-settings-form" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-3">
+      <section class="rounded-2xl border border-red-200 dark:border-red-900/70 bg-red-50/60 dark:bg-red-950/20 p-5 space-y-3">
         <div>
-          <h3 class="font-medium">PDF output</h3>
-          <p class="text-xs text-gray-500 mt-1">Choose the default layout and typography for browser printing.</p>
+          <h3 class="font-semibold text-red-700 dark:text-red-300">Offline storage</h3>
+          <p class="text-xs text-red-600/80 dark:text-red-300/80 mt-1">Remove this device's saved questions, papers, subjects, and classes. Server backups and your account are not affected.</p>
         </div>
+        <button id="btn-clear-offline-storage" type="button" class="w-full py-2.5 rounded-xl border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/30">Clear offline storage</button>
+      </section>
+
+      ${(isIndividual || isAdmin) ? `<form id="pdf-settings-form" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-3">
+        <div>
+          <h3 class="font-medium">Paper output</h3>
+          <p class="text-xs text-gray-500 mt-1">Choose the default paper layout. Export uses this choice automatically.</p>
+        </div>
+        <fieldset>
+          <legend class="text-sm font-medium">Default paper format</legend>
+          <div class="grid gap-3 sm:grid-cols-2 mt-2">
+            <label class="block cursor-pointer">
+              <input type="radio" name="paper_format" value="columns" class="peer sr-only" ${((outputSettings.paper_format || 'columns') === 'columns') ? 'checked' : ''} />
+              <span class="block rounded-xl border border-gray-200 dark:border-gray-600 p-3 peer-checked:border-primary-600 peer-checked:ring-2 peer-checked:ring-primary-200 dark:peer-checked:ring-primary-900">
+                <span class="block text-xs font-semibold">Two-column paper</span>
+                <span class="mt-2 grid grid-cols-2 gap-2 rounded-lg bg-gray-50 dark:bg-gray-900 p-2 text-[9px] leading-tight text-gray-600 dark:text-gray-300">
+                  <span>1. Question statement<br /><br />2. Question statement</span>
+                  <span>A. Option&nbsp;&nbsp;B. Option<br />C. Option&nbsp;&nbsp;D. Option</span>
+                </span>
+                <span class="mt-2 block text-[11px] text-gray-500">Current format with questions arranged in two columns.</span>
+              </span>
+            </label>
+            <label class="block cursor-pointer">
+              <input type="radio" name="paper_format" value="inline_options" class="peer sr-only" ${outputSettings.paper_format === 'inline_options' ? 'checked' : ''} />
+              <span class="block rounded-xl border border-gray-200 dark:border-gray-600 p-3 peer-checked:border-primary-600 peer-checked:ring-2 peer-checked:ring-primary-200 dark:peer-checked:ring-primary-900">
+                <span class="block text-xs font-semibold">Inline options</span>
+                <span class="mt-2 block rounded-lg bg-gray-50 dark:bg-gray-900 p-2 text-[9px] leading-tight text-gray-600 dark:text-gray-300">1. What is the answer?&nbsp;&nbsp;&nbsp;&nbsp;A. One&nbsp;&nbsp; B. Two&nbsp;&nbsp; C. Three&nbsp;&nbsp; D. Four</span>
+                <span class="mt-2 block text-[11px] text-gray-500">No columns; options begin after the question with tab-sized spacing.</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
         <div class="grid grid-cols-2 gap-3">
           <label class="text-xs font-medium">Paper size
             <select name="paper_size" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm">
-              ${['A4', 'LETTER', 'LEGAL'].map((size) => `<option value="${size}" ${((user.pdf_settings?.paper_size || 'A4') === size) ? 'selected' : ''}>${size}</option>`).join('')}
+              ${['A4', 'LETTER', 'LEGAL'].map((size) => `<option value="${size}" ${((outputSettings.paper_size || 'A4') === size) ? 'selected' : ''}>${size}</option>`).join('')}
             </select>
           </label>
           <label class="text-xs font-medium">Orientation
             <select name="orientation" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm">
-              <option value="portrait" ${((user.pdf_settings?.orientation || 'portrait') === 'portrait') ? 'selected' : ''}>Portrait</option>
-              <option value="landscape" ${user.pdf_settings?.orientation === 'landscape' ? 'selected' : ''}>Landscape</option>
+              <option value="portrait" ${((outputSettings.orientation || 'portrait') === 'portrait') ? 'selected' : ''}>Portrait</option>
+              <option value="landscape" ${outputSettings.orientation === 'landscape' ? 'selected' : ''}>Landscape</option>
             </select>
           </label>
-          ${[['margin_top', 'Top'], ['margin_bottom', 'Bottom'], ['margin_left', 'Left'], ['margin_right', 'Right']].map(([name, label]) => `<label class="text-xs font-medium">Margin ${label} (mm)<input name="${name}" type="number" min="0" max="50" step="1" value="${user.pdf_settings?.[name] ?? (name.includes('left') || name.includes('right') ? 8 : 10)}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>`).join('')}
-          <label class="text-xs font-medium">Header height (px)<input name="header_height" type="number" min="0" max="300" step="1" value="${user.pdf_settings?.header_height ?? 80}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
-          <label class="text-xs font-medium">Footer text<input name="footer_text" value="${user.pdf_settings?.footer_text ?? 'End of Paper'}" placeholder="End of Paper" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
+          ${[['margin_top', 'Top'], ['margin_bottom', 'Bottom'], ['margin_left', 'Left'], ['margin_right', 'Right']].map(([name, label]) => `<label class="text-xs font-medium">Margin ${label} (mm)<input name="${name}" type="number" min="0" max="50" step="1" value="${outputSettings[name] ?? (name.includes('left') || name.includes('right') ? 8 : 10)}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>`).join('')}
+          <label class="text-xs font-medium">Header height (px)<input name="header_height" type="number" min="0" max="300" step="1" value="${outputSettings.header_height ?? 80}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
+          <label class="text-xs font-medium">Footer text<input name="footer_text" value="${outputSettings.footer_text ?? 'End of Paper'}" placeholder="End of Paper" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
           <label class="text-xs font-medium">
             Font size
             <select name="pdf_font_size" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm">
-              ${[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((size) => `<option value="${size}" ${Number(user.pdf_font_size || 11) === size ? 'selected' : ''}>${size} pt</option>`).join('')}
+              ${[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((size) => `<option value="${size}" ${Number(outputSettings.pdf_font_size || user.pdf_font_size || 11) === size ? 'selected' : ''}>${size} pt</option>`).join('')}
             </select>
           </label>
           <label class="text-xs font-medium">
@@ -172,16 +213,16 @@ export async function renderAccount() {
                 ['freesans', 'FreeSans'],
                 ['freeserif', 'FreeSerif'],
                 ['freemono', 'FreeMono'],
-              ].map(([value, label]) => `<option value="${value}" ${((user.pdf_font_family || 'dejavusans') === value) ? 'selected' : ''}>${label}</option>`).join('')}
+              ].map(([value, label]) => `<option value="${value}" ${((outputSettings.pdf_font_family || user.pdf_font_family || 'dejavusans') === value) ? 'selected' : ''}>${label}</option>`).join('')}
             </select>
           </label>
         </div>
         <div class="grid grid-cols-2 gap-3 text-xs">
-          <label class="flex items-center gap-2"><input type="checkbox" name="show_logo" ${user.pdf_settings?.show_logo !== false ? 'checked' : ''} /> Show logo</label>
-          <label class="flex items-center gap-2"><input type="checkbox" name="show_school_name" ${user.pdf_settings?.show_school_name !== false ? 'checked' : ''} /> Show school name</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="show_logo" ${outputSettings.show_logo !== false ? 'checked' : ''} /> Show logo</label>
+          <label class="flex items-center gap-2"><input type="checkbox" name="show_school_name" ${outputSettings.show_school_name !== false ? 'checked' : ''} /> Show school name</label>
         </div>
-        <label class="flex items-center gap-2 text-xs"><input type="checkbox" name="pdf_show_marks" ${user.pdf_show_marks !== false ? 'checked' : ''} /> Show marks per question</label>
-        <button type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save PDF settings</button>
+        <label class="flex items-center gap-2 text-xs"><input type="checkbox" name="pdf_show_marks" ${(outputSettings.show_marks !== undefined ? outputSettings.show_marks : user.pdf_show_marks !== false) ? 'checked' : ''} /> Show marks per question</label>
+        <button type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save paper settings</button>
       </form>` : ''}
 
       <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-4">
@@ -333,6 +374,26 @@ export async function renderAccount() {
   `;
 
   document.getElementById('btn-logout')?.addEventListener('click', logout);
+  document.getElementById('btn-clear-offline-storage')?.addEventListener('click', async () => {
+    const confirmed = await confirmModal({
+      title: 'Clear offline storage?',
+      message: 'This removes saved questions, papers, subjects, and classes from this device. Server backups and your account will remain safe.',
+      confirmLabel: 'Clear storage',
+      danger: true,
+    });
+    if (!confirmed) return;
+    const button = document.getElementById('btn-clear-offline-storage');
+    if (!button) return;
+    button.disabled = true;
+    try {
+      await clearOfflineStorage();
+      toast('Offline storage cleared', 'success');
+      await renderAccount();
+    } catch (err) {
+      toast(err.message || 'Could not clear offline storage', 'error');
+      button.disabled = false;
+    }
+  });
   const updateBackupPanel = async () => {
     const status = { ...(await getOfflineQuestionSummary()), online: navigator.onLine };
     const pendingPapers = (await getOfflinePapers()).filter((paper) => paper.backup_state !== 'backed_up').length;
@@ -376,7 +437,7 @@ export async function renderAccount() {
     error.classList.add('hidden');
     button.disabled = true;
     try {
-      const res = await api('/auth/settings', {
+      await api('/auth/settings', {
         method: 'PUT',
         body: JSON.stringify({ school_id: form.school_id.value.trim() }),
       });
@@ -423,6 +484,7 @@ export async function renderAccount() {
           pdf_font_family: form.pdf_font_family.value,
           pdf_show_marks: form.pdf_show_marks.checked,
           pdf_settings: {
+            paper_format: form.paper_format.value,
             paper_size: form.paper_size.value,
             orientation: form.orientation.value,
             margin_top: Number(form.margin_top.value),
@@ -436,8 +498,7 @@ export async function renderAccount() {
           },
         }),
       });
-      const updatedUser = { ...getUser(), ...res.data };
-      saveUser(updatedUser);
+      await refreshUser();
       toast('PDF settings saved', 'success');
     } catch (err) {
       toast(err.message || 'Could not save PDF settings', 'error');

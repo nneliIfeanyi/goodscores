@@ -1,4 +1,4 @@
-import { getUser } from './api.js';
+import { api, getUser } from './api.js';
 import { cacheMeta, getCachedMeta } from './db.js';
 
 /** Terms are available by default; subjects and classes belong to each user. */
@@ -35,6 +35,34 @@ function uniqueRows(rows) {
   });
 }
 
+function mergeRows(...sources) {
+  return uniqueRows(sources.flat().filter(Boolean));
+}
+
+function isPendingRow(row) {
+  return !!row?.local_only || String(row?.id || '').startsWith('local-');
+}
+
+async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
+  const remoteNames = new Set((remoteRows || []).map((row) => String(row?.name || '').trim().toLowerCase()).filter(Boolean));
+  const synced = [];
+  for (const row of rows.filter(isPendingRow)) {
+    const name = String(row.name || '').trim();
+    const normalizedName = name.toLowerCase();
+    if (!name || remoteNames.has(normalizedName)) continue;
+    try {
+      const response = await api(endpoint, { method: 'POST', body: JSON.stringify(toPayload(row, name)) });
+      if (response.data) {
+        synced.push(response.data);
+        remoteNames.add(normalizedName);
+      }
+    } catch (_) {
+      synced.push(row);
+    }
+  }
+  return synced;
+}
+
 /**
  * Load subjects, classes, and terms from IndexedDB/defaults only.
  * Account CRUD may explicitly write changes to the server, but ordinary
@@ -50,13 +78,43 @@ export async function loadMetaData({ refresh = false } = {}) {
     if (user?.id) anonymousCached = await getCachedMeta('all-v2:anonymous');
   } catch (_) {}
 
-  const fallback = removeLegacyDefaults({
+  let fallback = removeLegacyDefaults({
     ...DEFAULT_META,
     ...(anonymousCached || {}),
     ...(cached || {}),
     subjects: [...(anonymousCached?.subjects || []), ...(cached?.subjects || [])],
     classes: [...(anonymousCached?.classes || []), ...(cached?.classes || [])],
   });
+
+  if (refresh && user && navigator.onLine) {
+    try {
+      const [subjectsResponse, classesResponse, termsResponse] = await Promise.all([
+        api('/meta/subjects'),
+        api('/meta/classes'),
+        api('/meta/terms'),
+      ]);
+      const syncedSubjects = await syncPendingRows(
+        '/meta/subjects',
+        fallback.subjects,
+        subjectsResponse.data,
+        (row, name) => ({ name, code: row.code || null })
+      );
+      const syncedClasses = await syncPendingRows(
+        '/meta/classes',
+        fallback.classes,
+        classesResponse.data,
+        (row, name) => ({ name, sort_order: Number(row.sort_order || 0) })
+      );
+      fallback = removeLegacyDefaults({
+        ...fallback,
+        subjects: mergeRows(subjectsResponse.data, fallback.subjects.filter((row) => !isPendingRow(row)), syncedSubjects),
+        classes: mergeRows(classesResponse.data, fallback.classes.filter((row) => !isPendingRow(row)), syncedClasses),
+        terms: mergeRows(termsResponse.data, fallback.terms),
+      });
+    } catch (_) {
+      // Keep the cached metadata when the server is unavailable.
+    }
+  }
 
   try {
     await cacheMeta(cacheKey, fallback);

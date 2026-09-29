@@ -1,7 +1,8 @@
 import { api, getUser, saveUser, storageUrl } from './api.js';
-import { getUnsyncedQuestions, getOfflineQuestions, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers } from './db.js?v=19';
+import { getUnsyncedQuestions, getOfflineQuestions, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers } from './db.js?v=25';
 import { toast } from './toast.js';
 import { requireAuthentication } from './authGate.js';
+import { loadMetaData } from './meta.js';
 
 let backupInProgress = false;
 let restoreInProgress = false;
@@ -145,6 +146,7 @@ export async function restoreQuestionBank() {
     const outcome = await mergeRestoredQuestions(questions);
     const paperResult = await api('/backup/papers');
     const paperOutcome = await mergeRestoredPapers(paperResult.data?.papers || []);
+    await loadMetaData({ refresh: true });
     const restoredCount = outcome.added + outcome.updated;
     const restoredPaperCount = paperOutcome.added + paperOutcome.updated;
     const skippedCount = outcome.skipped + paperOutcome.skipped;
@@ -152,6 +154,7 @@ export async function restoreQuestionBank() {
     window.dispatchEvent(new CustomEvent('gs-backup-status-refresh'));
     window.dispatchEvent(new CustomEvent('gs-questions-refresh'));
     window.dispatchEvent(new CustomEvent('gs-papers-refresh'));
+    window.dispatchEvent(new CustomEvent('gs-meta-refresh'));
     return outcome;
   } catch (error) {
     toast(error.message || 'Question bank restore failed', 'error');

@@ -18,6 +18,13 @@ window.addEventListener('gs-papers-refresh', () => {
 
 const questionKey = (question) => String(question?.id ?? question?.offline_id ?? '');
 
+async function findLocalPaper(id) {
+  const direct = await getOfflinePaper(id);
+  if (direct) return direct;
+  const localPapers = await getOfflinePapers({ includeDeleted: true });
+  return localPapers.find((paper) => String(paper.id) === String(id) || String(paper.offline_id) === String(id)) || null;
+}
+
 function isTheoryQuestion(question) {
   return question?.type === 'theory';
 }
@@ -64,17 +71,14 @@ async function exportPaper(id, button = null) {
     button.textContent = 'Generating…';
   }
   try {
-    const localPaper = await getOfflinePaper(id);
+    const localPaper = await findLocalPaper(id);
     if (localPaper) {
       const clientReferenceId = `local_export_${localPaper.offline_id}_${Date.now()}`;
-      const exportFormat = window.prompt('Type PDF to print or DOC to download an editable Word-compatible document', 'PDF')?.toLowerCase();
-      if (!exportFormat) return;
       const authorization = await api('/credits/authorize-export', {
         method: 'POST',
-        body: JSON.stringify({ client_reference_id: clientReferenceId, format: exportFormat }),
+        body: JSON.stringify({ client_reference_id: clientReferenceId, format: 'pdf' }),
       });
-      if (exportFormat === 'doc' || exportFormat === 'docx') await downloadPaperHtml(localPaper, 'docx');
-      else await printPaper(localPaper);
+      await printPaper(localPaper);
       toast(`Export authorized. ${authorization.data?.credits_left ?? ''} export credits remaining.`, 'success');
       return;
     }
@@ -145,7 +149,7 @@ function renderList() {
     b.addEventListener('click', async (event) => {
       event.stopPropagation();
       try {
-        const local = await getOfflinePaper(b.dataset.id);
+        const local = await findLocalPaper(b.dataset.id);
         if (local) openBuilder(local);
       } catch (err) {
         toast(err.message || 'Could not open paper', 'error');
@@ -690,7 +694,7 @@ async function openBuilder(existingPaper = null) {
 
 async function viewPaper(id) {
   try {
-    let p = await getOfflinePaper(id);
+    let p = await findLocalPaper(id);
     if (!p) return;
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';

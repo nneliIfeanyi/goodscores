@@ -226,6 +226,23 @@ export async function getOfflinePapers({ includeDeleted = false } = {}) {
   });
 }
 
+export async function clearOfflineStorage() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(['questions', 'papers', 'meta'], 'readwrite');
+    tx.objectStore('questions').clear();
+    tx.objectStore('papers').clear();
+    tx.objectStore('meta').clear();
+    tx.oncomplete = () => {
+      localStorage.removeItem('gs_device_key');
+      localStorage.removeItem('gs_exam_header');
+      resolve();
+    };
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error('Could not clear offline storage'));
+  });
+}
+
 export async function mergeRestoredPapers(serverPapers) {
   const localPapers = await getOfflinePapers({ includeDeleted: true });
   const localByServerId = new Map(localPapers.filter((paper) => paper.id).map((paper) => [String(paper.id), paper]));

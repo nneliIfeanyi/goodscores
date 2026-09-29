@@ -3,7 +3,7 @@ import { getUser, clearToken } from './utils/api.js';
 import { renderLogin, renderResetPassword } from './modules/pages/login.js';
 import { renderRegister } from './modules/pages/register.js';
 import { renderDashboard } from './modules/pages/dashboard.js';
-import { renderAccount } from './modules/pages/account.js?v=19';
+import { renderAccount } from './modules/pages/account.js?v=25';
 import { renderQuestions } from './modules/pages/questions.js';
 import { renderPapers } from './modules/pages/papers.js';
 import { api } from './utils/api.js';
@@ -158,7 +158,7 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
 
 // ---------- Service Worker ----------
 const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
-const APP_VERSION = '19';
+const APP_VERSION = '28';
 
 const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
 if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {
