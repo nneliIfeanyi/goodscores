@@ -12,6 +12,10 @@ let meta = { subjects: [], classes: [], terms: [] };
 let allQuestions = [];
 let papers = [];
 
+window.addEventListener('gs-papers-refresh', () => {
+  if (document.getElementById('paper-list')) loadPapers();
+});
+
 const questionKey = (question) => String(question?.id ?? question?.offline_id ?? '');
 
 function isTheoryQuestion(question) {
@@ -167,6 +171,8 @@ function renderList() {
 }
 
 async function openBuilder(existingPaper = null) {
+  document.getElementById('paper-builder')?.remove();
+
   // Load questions for selection
   try {
     allQuestions = await getOfflineQuestions();
@@ -308,7 +314,7 @@ async function openBuilder(existingPaper = null) {
     overlay.remove();
     document.querySelector('[data-page="account"]')?.click();
   });
-  document.getElementById('pb-close').onclick = () => overlay.remove();
+  overlay.querySelector('#pb-close').onclick = () => overlay.remove();
 
   const form = document.getElementById('pb-form');
   const titleInput = document.getElementById('pb-title');
@@ -652,6 +658,24 @@ async function openBuilder(existingPaper = null) {
         questions: qids.map((id) => questionMap.get(String(id))).filter(Boolean),
         total_marks: qids.reduce((total, id) => total + Number(questionMap.get(String(id))?.marks || 0), 0),
       });
+      const serverQuestionIds = qids.every((id) => Number.isInteger(Number(id)) && Number(id) > 0);
+      if (navigator.onLine && localStorage.getItem('gs_token') && serverQuestionIds) {
+        try {
+          const endpoint = existingPaper?.id ? `/papers/${existingPaper.id}` : '/papers';
+          const response = await api(endpoint, {
+            method: existingPaper?.id ? 'PUT' : 'POST',
+            body: JSON.stringify(payload),
+          });
+          const serverPaper = response.data || {};
+          Object.assign(localPaper, serverPaper, {
+            offline_id: localPaper.offline_id,
+            backup_state: 'backed_up',
+          });
+          await saveOfflinePaper(localPaper);
+        } catch (syncError) {
+          toast(`Paper saved locally. Server sync failed: ${syncError.message}`, 'warn');
+        }
+      }
       overlay.remove();
       await loadPapers();
       viewPaper(localPaper.offline_id);
@@ -757,8 +781,10 @@ export async function renderPapers() {
   `;
 
   await loadMeta();
-  document.getElementById('btn-new-paper')?.addEventListener('click', () => {
-    openBuilder();
-  });
+  const newPaperButton = document.getElementById('btn-new-paper');
+  if (newPaperButton && newPaperButton.dataset.bound !== 'true') {
+    newPaperButton.dataset.bound = 'true';
+    newPaperButton.addEventListener('click', () => openBuilder());
+  }
   await loadPapers();
 }

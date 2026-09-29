@@ -3,8 +3,8 @@ import { isLoggedIn, logout } from '../auth.js';
 import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
-import { getOfflineQuestionSummary } from '../../utils/db.js';
-import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js';
+import { getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
+import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=19';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
 async function refreshUser() {
@@ -335,6 +335,8 @@ export async function renderAccount() {
   document.getElementById('btn-logout')?.addEventListener('click', logout);
   const updateBackupPanel = async () => {
     const status = { ...(await getOfflineQuestionSummary()), online: navigator.onLine };
+    const pendingPapers = (await getOfflinePapers()).filter((paper) => paper.backup_state !== 'backed_up').length;
+    status.pending += pendingPapers;
     const state = document.getElementById('settings-sync-state');
     if (!state) return;
     state.textContent = !status.online
@@ -351,15 +353,19 @@ export async function renderAccount() {
   };
   updateBackupPanel();
   document.getElementById('settings-sync-retry')?.addEventListener('click', async (event) => {
-    event.currentTarget.disabled = true;
+    const button = document.getElementById('settings-sync-retry');
+    if (!button) return;
+    button.disabled = true;
     await backupQuestionBank();
-    event.currentTarget.disabled = false;
+    button.disabled = false;
     updateBackupPanel();
   });
   document.getElementById('settings-sync-restore')?.addEventListener('click', async (event) => {
-    event.currentTarget.disabled = true;
+    const button = document.getElementById('settings-sync-restore');
+    if (!button) return;
+    button.disabled = true;
     await restoreQuestionBank();
-    event.currentTarget.disabled = false;
+    button.disabled = false;
     updateBackupPanel();
   });
   document.getElementById('school-link-form')?.addEventListener('submit', async (event) => {

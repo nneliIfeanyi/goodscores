@@ -3,7 +3,7 @@ import { getUser, clearToken } from './utils/api.js';
 import { renderLogin, renderResetPassword } from './modules/pages/login.js';
 import { renderRegister } from './modules/pages/register.js';
 import { renderDashboard } from './modules/pages/dashboard.js';
-import { renderAccount } from './modules/pages/account.js';
+import { renderAccount } from './modules/pages/account.js?v=19';
 import { renderQuestions } from './modules/pages/questions.js';
 import { renderPapers } from './modules/pages/papers.js';
 import { api } from './utils/api.js';
@@ -24,7 +24,7 @@ function initConnectivity() {
       el = document.createElement('div');
       el.id = bannerId;
       el.className = 'fixed top-14 inset-x-0 z-50 text-center text-xs font-medium py-1.5 bg-amber-500 text-white';
-      el.textContent = 'You are offline – drafts save locally until you reconnect';
+      el.textContent = 'You are offline - do not refresh the page';
       document.body.appendChild(el);
     }
   }
@@ -145,7 +145,7 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById('install-banner')?.classList.remove('hidden');
+  document.getElementById('btn-install')?.classList.remove('hidden');
 });
 
 document.getElementById('btn-install')?.addEventListener('click', async () => {
@@ -153,27 +153,34 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
-  document.getElementById('install-banner')?.classList.add('hidden');
-});
-
-document.getElementById('btn-install-dismiss')?.addEventListener('click', () => {
-  document.getElementById('install-banner')?.classList.add('hidden');
+  document.getElementById('btn-install')?.classList.add('hidden');
 });
 
 // ---------- Service Worker ----------
+const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
+const APP_VERSION = '19';
+
+const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
+if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {
+  localStorage.removeItem(APP_UPDATE_PENDING_KEY);
+}
+
 function showAppUpdatePrompt() {
   if (document.getElementById('app-update-banner')) return;
+  localStorage.setItem(APP_UPDATE_PENDING_KEY, APP_VERSION);
   const banner = document.createElement('div');
   banner.id = 'app-update-banner';
-  banner.className = 'fixed top-16 inset-x-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary-700 p-3 text-white shadow-lg';
+  banner.className = 'fixed bottom-20 inset-x-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-xl bg-primary-700 p-3 text-white shadow-lg';
   banner.innerHTML = `
     <p class="flex-1 text-xs font-medium">A new GoodScores version is available.</p>
-    <button type="button" data-update-refresh class="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-primary-700">Refresh</button>
-    <button type="button" data-update-dismiss class="p-1 text-lg leading-none opacity-80 hover:opacity-100" aria-label="Dismiss">×</button>`;
+    <button type="button" data-update-refresh class="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-primary-700">Update now</button>`;
   document.body.appendChild(banner);
-  banner.querySelector('[data-update-refresh]').addEventListener('click', () => window.location.reload());
-  banner.querySelector('[data-update-dismiss]').addEventListener('click', () => banner.remove());
+  banner.querySelector('[data-update-refresh]').addEventListener('click', () => {
+    window.location.reload();
+  });
 }
+
+if (localStorage.getItem(APP_UPDATE_PENDING_KEY) === APP_VERSION) showAppUpdatePrompt();
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
@@ -198,10 +205,6 @@ async function boot() {
     initTheme();
     initNav();
     initConnectivity();
-
-    document.getElementById('btn-settings')?.addEventListener('click', () => {
-      document.querySelector('[data-page="account"]')?.click();
-    });
 
     await new Promise((resolve) => setTimeout(resolve, 1900));
 

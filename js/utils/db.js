@@ -81,7 +81,7 @@ export async function mergeRestoredQuestions(serverQuestions) {
   for (const question of serverQuestions || []) {
     const offlineId = question.offline_id || `server:${question.id}`;
     const existing = localByOfflineId.get(offlineId);
-    if (existing?.backup_state !== 'backed_up') {
+    if (existing && existing.backup_state !== 'backed_up') {
       skipped += 1;
       continue;
     }
@@ -197,7 +197,7 @@ export async function saveOfflinePaper(paper) {
     ...(existing || {}), ...paper,
     offline_id: paper.offline_id || crypto.randomUUID(),
     owner_key: ownerKey(),
-    backup_state: 'pending',
+    backup_state: paper.backup_state || 'pending',
     updated_at: new Date().toISOString(),
   };
   return new Promise((resolve, reject) => {
@@ -217,13 +217,48 @@ export async function getOfflinePaper(id) {
   });
 }
 
-export async function getOfflinePapers() {
+export async function getOfflinePapers({ includeDeleted = false } = {}) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const request = db.transaction('papers', 'readonly').objectStore('papers').getAll();
-    request.onsuccess = () => resolve((request.result || []).filter((paper) => paper.owner_key === ownerKey() && !paper.deleted));
+    request.onsuccess = () => resolve((request.result || []).filter((paper) => paper.owner_key === ownerKey() && (includeDeleted || !paper.deleted)));
     request.onerror = () => reject(request.error);
   });
+}
+
+export async function mergeRestoredPapers(serverPapers) {
+  const localPapers = await getOfflinePapers({ includeDeleted: true });
+  const localByServerId = new Map(localPapers.filter((paper) => paper.id).map((paper) => [String(paper.id), paper]));
+  const localByOfflineId = new Map(localPapers.map((paper) => [paper.offline_id, paper]));
+  let added = 0;
+  let updated = 0;
+  let skipped = 0;
+
+  for (const paper of serverPapers || []) {
+    const offlineId = `server:paper:${paper.id}`;
+    const existing = localByServerId.get(String(paper.id)) || localByOfflineId.get(offlineId);
+    if (existing && existing.backup_state !== 'backed_up') {
+      skipped += 1;
+      continue;
+    }
+
+    const serverTime = Date.parse(paper.updated_at || paper.created_at || '') || 0;
+    const localTime = Date.parse(existing?.updated_at || existing?.created_at || '') || 0;
+    if (existing && localTime > serverTime) {
+      skipped += 1;
+      continue;
+    }
+
+    await saveOfflinePaper({
+      ...paper,
+      offline_id: existing?.offline_id || offlineId,
+      backup_state: 'backed_up',
+    });
+    if (existing) updated += 1;
+    else added += 1;
+  }
+
+  return { added, updated, skipped };
 }
 
 export async function deleteOfflinePaper(id) {

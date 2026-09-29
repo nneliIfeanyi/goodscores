@@ -1,5 +1,5 @@
 import { api, getUser, saveUser, storageUrl } from './api.js';
-import { getUnsyncedQuestions, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions } from './db.js';
+import { getUnsyncedQuestions, getOfflineQuestions, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers } from './db.js?v=19';
 import { toast } from './toast.js';
 import { requireAuthentication } from './authGate.js';
 
@@ -44,30 +44,81 @@ export async function backupQuestionBank({ offlineId = null } = {}) {
     const questions = offlineId
       ? unsyncedQuestions.filter((question) => question.offline_id === offlineId)
       : unsyncedQuestions;
-    if (!questions.length) {
-      toast('Your question bank is already backed up.', 'info');
-      return;
+    if (questions.length) {
+      const result = await api('/backup/questions', {
+        method: 'POST',
+        body: JSON.stringify({ questions }),
+      });
+      const processed = result.data?.processed || [];
+      for (const item of processed) {
+        const local = questions.find((question) => question.offline_id === item.offline_id);
+        if (local) await markQuestionBackedUp(item.offline_id, item.id, result.data?.revision);
+      }
+      const cost = result.data?.cost ?? processed.filter((item) => !item.deleted).length;
+      const balance = result.data?.credits_left;
+      const user = getUser();
+      if (user && balance !== undefined && balance !== -1) saveUser({ ...user, credits: balance });
+      const balanceText = balance === undefined ? '' : ` ${balance} credits remaining.`;
+      toast(`Backed up ${processed.length} question${processed.length === 1 ? '' : 's'} for ${cost} credit${cost === 1 ? '' : 's'}.${balanceText}`, 'success');
     }
-    const result = await api('/backup/questions', {
-      method: 'POST',
-      body: JSON.stringify({ questions }),
-    });
-    const processed = result.data?.processed || [];
-    for (const item of processed) {
-      const local = questions.find((question) => question.offline_id === item.offline_id);
-      if (local) await markQuestionBackedUp(item.offline_id, item.id, result.data?.revision);
-    }
-    const cost = result.data?.cost ?? processed.filter((item) => !item.deleted).length;
-    const balance = result.data?.credits_left;
-    const user = getUser();
-    if (user && balance !== undefined && balance !== -1) saveUser({ ...user, credits: balance });
-    const balanceText = balance === undefined ? '' : ` ${balance} credits remaining.`;
-    toast(`Backed up ${processed.length} question${processed.length === 1 ? '' : 's'} for ${cost} credit${cost === 1 ? '' : 's'}.${balanceText}`, 'success');
+    await backupPendingPapers();
+    if (!questions.length) toast('Your question bank is already backed up.', 'info');
     window.dispatchEvent(new CustomEvent('gs-backup-status-refresh'));
   } catch (error) {
     toast(error.message || 'Question bank backup failed', 'error');
   } finally {
     backupInProgress = false;
+  }
+}
+
+async function backupPendingPapers() {
+  const localQuestions = await getOfflineQuestions();
+  const questionIdMap = new Map();
+  localQuestions.forEach((question) => {
+    if (question.id) questionIdMap.set(String(question.offline_id), Number(question.id));
+    if (question.id) questionIdMap.set(String(question.id), Number(question.id));
+  });
+
+  const pendingPapers = (await getOfflinePapers()).filter((paper) => paper.backup_state !== 'backed_up');
+  for (const paper of pendingPapers) {
+    const mapQuestionId = (id) => questionIdMap.get(String(id)) || (Number.isInteger(Number(id)) ? Number(id) : null);
+    const questionIds = (paper.question_ids || []).map(mapQuestionId).filter(Boolean);
+    const paperSettings = JSON.parse(JSON.stringify(paper.paper_settings || {}));
+    if (Array.isArray(paperSettings.sections)) {
+      paperSettings.sections = paperSettings.sections.map((section) => ({
+        ...section,
+        question_ids: (section.question_ids || []).map(mapQuestionId).filter(Boolean),
+      }));
+    }
+    if (!questionIds.length) continue;
+
+    try {
+      const payload = {
+        title: paper.title,
+        subject_id: paper.subject_id || null,
+        class_id: paper.class_id || null,
+        term_id: paper.term_id || null,
+        header_override: paper.header_override || null,
+        paper_settings: paperSettings,
+        question_ids: questionIds,
+        status: paper.status || 'draft',
+      };
+      const endpoint = paper.id ? `/papers/${paper.id}` : '/papers';
+      const response = await api(endpoint, {
+        method: paper.id ? 'PUT' : 'POST',
+        body: JSON.stringify(payload),
+      });
+      await saveOfflinePaper({
+        ...paper,
+        ...(response.data || {}),
+        offline_id: paper.offline_id,
+        question_ids: questionIds,
+        paper_settings: paperSettings,
+        backup_state: 'backed_up',
+      });
+    } catch (error) {
+      toast(`Paper backup failed: ${error.message}`, 'warn');
+    }
   }
 }
 
@@ -92,9 +143,15 @@ export async function restoreQuestionBank() {
     const result = await api('/backup/questions');
     const questions = await Promise.all((result.data?.questions || []).map(cacheRestoreImages));
     const outcome = await mergeRestoredQuestions(questions);
-    toast(`Restored ${outcome.added + outcome.updated} question${outcome.added + outcome.updated === 1 ? '' : 's'}; kept ${outcome.skipped} local change${outcome.skipped === 1 ? '' : 's'}.`, 'success');
+    const paperResult = await api('/backup/papers');
+    const paperOutcome = await mergeRestoredPapers(paperResult.data?.papers || []);
+    const restoredCount = outcome.added + outcome.updated;
+    const restoredPaperCount = paperOutcome.added + paperOutcome.updated;
+    const skippedCount = outcome.skipped + paperOutcome.skipped;
+    toast(`Restored ${restoredCount} question${restoredCount === 1 ? '' : 's'} and ${restoredPaperCount} paper${restoredPaperCount === 1 ? '' : 's'}; kept ${skippedCount} local change${skippedCount === 1 ? '' : 's'}.`, 'success');
     window.dispatchEvent(new CustomEvent('gs-backup-status-refresh'));
     window.dispatchEvent(new CustomEvent('gs-questions-refresh'));
+    window.dispatchEvent(new CustomEvent('gs-papers-refresh'));
     return outcome;
   } catch (error) {
     toast(error.message || 'Question bank restore failed', 'error');

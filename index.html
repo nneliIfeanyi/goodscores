@@ -44,6 +44,13 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- Install app -->
+          <button id="btn-install" class="hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition" aria-label="Install GoodScores" title="Install GoodScores">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14a2 2 0 002-2v-3M3 16v3a2 2 0 002 2"/>
+            </svg>
+          </button>
+
           <!-- Theme toggle -->
           <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition" aria-label="Toggle theme">
             <svg id="icon-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +62,7 @@
           </button>
 
           <!-- Settings / Account -->
-          <button id="btn-settings" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition" aria-label="Settings">
+          <button id="btn-settings" class="hidden" aria-hidden="true" tabindex="-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -101,17 +108,6 @@
     </nav>
   </div>
 
-  <!-- Install PWA prompt (hidden by default) -->
-  <div id="install-banner" class="hidden fixed bottom-20 left-4 right-4 z-50 max-w-sm mx-auto bg-primary-700 text-white rounded-xl shadow-lg p-4 flex items-center gap-3">
-    <div class="flex-1">
-      <p class="font-medium text-sm">Install GoodScores</p>
-      <p class="text-xs text-primary-100">Add to home screen for the best experience</p>
-    </div>
-    <button id="btn-install" class="px-3 py-1.5 bg-white text-primary-700 text-sm font-semibold rounded-lg">Install</button>
-    <button id="btn-install-dismiss" class="p-1 opacity-70 hover:opacity-100">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-  </div>
 <script>
   window.GOODSCORES_API_BASE = ['localhost', '127.0.0.1'].includes(window.location.hostname)
     ? `http://${window.location.host}/goodscores/backend/public`
@@ -129,6 +125,6 @@
         window.setTimeout(revealApp, 5000);
       })();
     </script>
-  <script type="module" src="js/app.js?v=17"></script>
+  <script type="module" src="js/app.js?v=19"></script>
 </body>
 </html>

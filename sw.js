@@ -1,5 +1,5 @@
 /* GoodScores service worker for the domain-root frontend. */
-const CACHE_NAME = 'goodscores-v17';
+const CACHE_NAME = 'goodscores-v19';
 
 // Paths are relative to the service worker at the domain root.
 const ASSETS = [
@@ -82,7 +82,7 @@ self.addEventListener('fetch', (event) => {
 
   if (isCode) {
     event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then((cached) => {
+      caches.match(event.request).then((cached) => {
         const refresh = fetch(networkRequest).then((response) => {
           if (response && response.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, response.clone()));
