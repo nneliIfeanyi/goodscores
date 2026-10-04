@@ -2,7 +2,7 @@ import { getUser, saveUser, setToken, api } from '../../utils/api.js';
 import { isLoggedIn, logout } from '../auth.js';
 import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
-import { confirmModal } from '../../utils/modal.js';
+import { confirmModal, inputModal } from '../../utils/modal.js';
 import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
 import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=25';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
@@ -15,6 +15,21 @@ async function refreshUser() {
     return me.data;
   }
   return getUser();
+}
+
+function bindCollapsibleSections() {
+  document.querySelectorAll('[data-collapse-target]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const content = document.getElementById(button.dataset.collapseTarget);
+      if (!content) return;
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      content.classList.toggle('hidden', expanded);
+      button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      button.setAttribute('aria-label', `${expanded ? 'Expand' : 'Collapse'} ${button.dataset.collapseLabel}`);
+      button.setAttribute('title', `${expanded ? 'Expand' : 'Collapse'} ${button.dataset.collapseLabel}`);
+      button.querySelector('svg')?.classList.toggle('rotate-180', !expanded);
+    });
+  });
 }
 
 export async function renderAccount() {
@@ -137,9 +152,9 @@ export async function renderAccount() {
             <h3 class="font-medium">Question bank backup</h3>
             <p id="settings-sync-state" class="text-xs text-gray-500 dark:text-gray-400 mt-1">Checking local status…</p>
           </div>
-          <span class="flex items-center gap-3 shrink-0"><button id="settings-sync-restore" type="button" class="text-xs font-semibold text-gray-600 dark:text-gray-300 hover:underline">Restore</button><button id="settings-sync-retry" type="button" class="hidden text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Backup now</button></span>
+          <span class="flex items-center gap-3 shrink-0"><button id="settings-sync-restore" type="button" class="text-xs font-semibold text-gray-600 dark:text-gray-300 hover:underline">Restore</button><button id="settings-sync-retry" type="button" class="hidden text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Backup now</button><button type="button" data-collapse-target="settings-sync-content" data-collapse-label="question bank backup" aria-expanded="false" aria-controls="settings-sync-content" aria-label="Expand question bank backup" title="Expand question bank backup" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button></span>
         </div>
-        <div class="grid grid-cols-3 gap-2 text-center">
+        <div id="settings-sync-content" class="hidden grid grid-cols-3 gap-2 text-center">
           <div class="rounded-lg bg-amber-50 dark:bg-amber-900/20 p-2"><p id="settings-sync-pending" class="text-lg font-bold text-amber-700 dark:text-amber-300">0</p><p class="text-[11px] text-gray-500">Pending</p></div>
           <div class="rounded-lg bg-red-50 dark:bg-red-900/20 p-2"><p id="settings-sync-failed" class="text-lg font-bold text-red-700 dark:text-red-300">0</p><p class="text-[11px] text-gray-500">Failed</p></div>
           <div class="rounded-lg bg-green-50 dark:bg-green-900/20 p-2"><p id="settings-sync-synced" class="text-lg font-bold text-green-700 dark:text-green-300">0</p><p class="text-[11px] text-gray-500">Synced</p></div>
@@ -147,18 +162,29 @@ export async function renderAccount() {
       </section>
 
       <section class="rounded-2xl border border-red-200 dark:border-red-900/70 bg-red-50/60 dark:bg-red-950/20 p-5 space-y-3">
-        <div>
+        <div class="flex items-start justify-between gap-3">
+          <div>
           <h3 class="font-semibold text-red-700 dark:text-red-300">Offline storage</h3>
           <p class="text-xs text-red-600/80 dark:text-red-300/80 mt-1">Remove this device's saved questions, papers, subjects, and classes. Server backups and your account are not affected.</p>
+          </div>
+          <button type="button" data-collapse-target="offline-storage-content" data-collapse-label="offline storage" aria-expanded="false" aria-controls="offline-storage-content" aria-label="Expand offline storage" title="Expand offline storage" class="shrink-0 rounded-lg p-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 dark:text-red-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button>
         </div>
-        <button id="btn-clear-offline-storage" type="button" class="w-full py-2.5 rounded-xl border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/30">Clear offline storage</button>
+        <div id="offline-storage-content" class="hidden">
+          <button id="btn-clear-offline-storage" type="button" class="w-full py-2.5 rounded-xl border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/30">Clear offline storage</button>
+        </div>
       </section>
 
       ${(isIndividual || isAdmin) ? `<form id="pdf-settings-form" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-3">
-        <div>
-          <h3 class="font-medium">Paper output</h3>
-          <p class="text-xs text-gray-500 mt-1">Choose the default paper layout. Export uses this choice automatically.</p>
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <h3 class="font-medium">Paper output</h3>
+            <p class="text-xs text-gray-500 mt-1">Choose the default paper layout. Export uses this choice automatically.</p>
+          </div>
+          <button type="button" data-collapse-target="paper-settings-content" data-collapse-label="paper output settings" aria-expanded="false" aria-controls="paper-settings-content" aria-label="Expand paper output settings" title="Expand paper output settings" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+            <svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg>
+          </button>
         </div>
+        <div id="paper-settings-content" class="hidden space-y-3">
         <fieldset>
           <legend class="text-sm font-medium">Default paper format</legend>
           <div class="grid gap-3 sm:grid-cols-2 mt-2">
@@ -223,14 +249,18 @@ export async function renderAccount() {
         </div>
         <label class="flex items-center gap-2 text-xs"><input type="checkbox" name="pdf_show_marks" ${(outputSettings.show_marks !== undefined ? outputSettings.show_marks : user.pdf_show_marks !== false) ? 'checked' : ''} /> Show marks per question</label>
         <button type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save paper settings</button>
+        </div>
       </form>` : ''}
 
       <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-4">
-        <div>
-          <h3 class="font-medium">My subjects and classes</h3>
-          <p class="text-xs text-gray-500 mt-1">Nothing is preloaded. Add your own subjects and classes here before creating questions or building papers.</p>
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="font-medium">My subjects and classes</h3>
+            <p class="text-xs text-gray-500 mt-1">Nothing is preloaded. Add your own subjects and classes here before creating questions or building papers.</p>
+          </div>
+          <button type="button" data-collapse-target="meta-settings-content" data-collapse-label="subjects and classes" aria-expanded="false" aria-controls="meta-settings-content" aria-label="Expand subjects and classes" title="Expand subjects and classes" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button>
         </div>
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div id="meta-settings-content" class="hidden grid gap-4 sm:grid-cols-2">
           <div class="space-y-2">
             <p class="text-xs font-semibold">Subjects</p>
             <div id="my-subject-list" class="space-y-1 text-sm"><p class="text-xs text-gray-400">Loading…</p></div>
@@ -252,21 +282,32 @@ export async function renderAccount() {
       </div>
 
       <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between gap-3">
           <div>
             <h3 class="font-medium">Credit activity</h3>
             <p class="text-xs text-gray-500 mt-0.5">Recent credits added and used</p>
           </div>
-          <button id="btn-refresh-transactions" type="button" class="text-xs text-primary-600 hover:underline">Refresh</button>
+          <span class="flex items-center gap-3 shrink-0">
+            <button id="btn-refresh-transactions" type="button" class="text-xs text-primary-600 hover:underline">Refresh</button>
+            <button type="button" data-collapse-target="credit-activity-content" data-collapse-label="credit activity" aria-expanded="false" aria-controls="credit-activity-content" aria-label="Expand credit activity" title="Expand credit activity" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+              <svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </span>
         </div>
-        <div id="credit-transactions" class="space-y-2 text-sm">
-          <p class="text-xs text-gray-400">Loading activity…</p>
+        <div id="credit-activity-content" class="hidden mt-3">
+          <div id="credit-transactions" class="space-y-2 text-sm">
+            <p class="text-xs text-gray-400">Loading activity…</p>
+          </div>
         </div>
       </div>
 
       ${isAdmin ? `
-      <div id="school-admin-panel" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-4">
-        <h3 class="font-medium">School admin</h3>
+      <div id="school-admin-panel" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="font-medium">School admin</h3>
+          <button type="button" data-collapse-target="school-admin-content" data-collapse-label="school admin" aria-expanded="false" aria-controls="school-admin-content" aria-label="Expand school admin" title="Expand school admin" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <div id="school-admin-content" class="hidden space-y-4">
         <p class="text-xs text-gray-500">Share code <span class="font-mono text-primary-600" id="sch-code">…</span> with teachers.</p>
         <div id="teacher-list" class="space-y-2 text-sm"><p class="text-gray-400">Loading teachers…</p></div>
         <form id="create-teacher-form" class="space-y-2 border-t border-gray-100 dark:border-gray-700 pt-3">
@@ -304,25 +345,37 @@ export async function renderAccount() {
           <label class="flex items-center gap-2 text-xs"><input id="sch-show-marks" type="checkbox" /> Show marks per question</label>
           <button id="btn-save-school" type="button" class="w-full py-2 rounded-xl border border-primary-300 text-primary-700 text-sm font-medium">Save school info</button>
         </div>
+        </div>
       </div>
       ` : ''}
 
       ${isIndividual ? `
-      <form id="school-link-form" class="rounded-2xl bg-white dark:bg-gray-800 border border-primary-100 dark:border-primary-900/60 p-5 space-y-3">
-        <div>
-          <h3 class="font-medium">Join a school</h3>
-          <p class="text-xs text-gray-500 mt-1">Enter the School ID shared by your school administrator to link this account and use the school workspace.</p>
+      <form id="school-link-form" class="rounded-2xl bg-white dark:bg-gray-800 border border-primary-100 dark:border-primary-900/60 p-5">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="font-medium">Join a school</h3>
+            <p class="text-xs text-gray-500 mt-1">Enter the School ID shared by your school administrator to link this account and use the school workspace.</p>
+          </div>
+          <button type="button" data-collapse-target="school-link-content" data-collapse-label="join a school" aria-expanded="false" aria-controls="school-link-content" aria-label="Expand join a school" title="Expand join a school" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button>
         </div>
+        <div id="school-link-content" class="hidden space-y-3">
         <div class="flex gap-2">
           <input name="school_id" required maxlength="10" placeholder="SCH-XXXXXX" class="min-w-0 flex-1 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm uppercase" />
           <button type="submit" class="px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Link</button>
         </div>
         <p id="school-link-error" class="hidden text-xs text-red-600 dark:text-red-400"></p>
+        </div>
       </form>
 
-      <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-3">
-        <h3 class="font-medium">Exam header</h3>
-        <p class="text-xs text-gray-500">Set one header here. It will appear automatically on every exported paper.</p>
+      <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="font-medium">Exam header</h3>
+            <p class="text-xs text-gray-500">Set one header here. It will appear automatically on every exported paper.</p>
+          </div>
+          <button type="button" data-collapse-target="exam-header-content" data-collapse-label="exam header" aria-expanded="false" aria-controls="exam-header-content" aria-label="Expand exam header" title="Expand exam header" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <div id="exam-header-content" class="hidden space-y-3">
         <div id="header-list" class="space-y-2 text-sm"></div>
         <form id="header-form" class="space-y-2 border-t pt-3 border-gray-100 dark:border-gray-700">
           <input name="school_name" required placeholder="School / centre name" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" />
@@ -330,11 +383,18 @@ export async function renderAccount() {
           <label class="block text-xs font-medium">Header logo<input name="logo" type="file" accept="image/png,image/jpeg,image/gif,image/webp" class="mt-1 w-full text-sm" /></label>
           <button type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save header</button>
         </form>
+        </div>
       </div>
       ` : ''}
 
       ${(user.id && (!isSchoolLinked || isAdmin)) ? `<div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5">
-        <h3 class="font-medium mb-1">Buy credits / subscribe</h3>
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="font-medium">Buy credits / subscribe</h3>
+          <button type="button" data-collapse-target="buy-credits-content" data-collapse-label="buy credits" aria-expanded="false" aria-controls="buy-credits-content" aria-label="Expand buy credits" title="Expand buy credits" class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+            <svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+        <div id="buy-credits-content" class="hidden mt-1">
         <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Secure payment via Paystack to <span class="font-semibold text-gray-700 dark:text-gray-200">Goodscores Stanvic Concepts</span>.</p>
         ${isIndividual ? `
         <div class="flex gap-2 mb-3">
@@ -361,6 +421,7 @@ export async function renderAccount() {
             </div>
           `).join('')}
         </div>
+        </div>
       </div>` : ''}
 
       <button id="btn-logout" class="w-full py-2.5 rounded-xl border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 font-medium text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition">
@@ -372,6 +433,8 @@ export async function renderAccount() {
       </section>` : ''}
     </div>
   `;
+
+  bindCollapsibleSections();
 
   document.getElementById('btn-logout')?.addEventListener('click', logout);
   document.getElementById('btn-clear-offline-storage')?.addEventListener('click', async () => {
@@ -619,6 +682,7 @@ async function loadTeacherMetaManager(refresh = true) {
   let classRows = [];
 
   const renderRows = (list, rows, type) => {
+    const resource = type === 'subject' ? 'subjects' : 'classes';
     if (!rows.length) {
       list.innerHTML = '<p class="text-xs text-gray-400">No personal records yet</p>';
       return;
@@ -629,14 +693,15 @@ async function loadTeacherMetaManager(refresh = true) {
     </div>`).join('');
     list.querySelectorAll('[data-edit-meta]').forEach((button) => button.addEventListener('click', async () => {
       const row = rows.find((item) => String(item.id) === button.dataset.editMeta);
-      const name = prompt(`Edit ${type} name`, row?.name || '');
+      const name = await inputModal({ title: `Edit ${type} name`, label: `${type === 'subject' ? 'Subject' : 'Class'} name`, value: row?.name || '' });
       if (!name?.trim()) return;
-      const code = type === 'subject' ? prompt('Subject code (optional)', row?.code || '') : null;
+      const code = type === 'subject' ? await inputModal({ title: 'Edit subject code', label: 'Subject code (optional)', value: row?.code || '' }) : null;
+      if (type === 'subject' && code === null) return;
       try {
         const current = type === 'subject' ? subjectRows : classRows;
         let updated = { ...row, name: name.trim(), ...(type === 'subject' ? { code: code?.trim() || null } : {}) };
         if (!row?.local_only) {
-          await api(`/meta/${type}s/${button.dataset.editMeta}`, { method: 'PUT', body: JSON.stringify({ name: updated.name, ...(type === 'subject' ? { code: updated.code } : {}) }) });
+          await api(`/meta/${resource}/${button.dataset.editMeta}`, { method: 'PUT', body: JSON.stringify({ name: updated.name, ...(type === 'subject' ? { code: updated.code } : {}) }) });
         }
         await updateCachedMeta({ [type === 'subject' ? 'subjects' : 'classes']: current.map((item) => item.id == row.id ? updated : item) });
         toast(`${type === 'subject' ? 'Subject' : 'Class'} updated`, 'success');
@@ -648,7 +713,7 @@ async function loadTeacherMetaManager(refresh = true) {
       try {
         const current = type === 'subject' ? subjectRows : classRows;
         const deleted = current.find((item) => String(item.id) === button.dataset.deleteMeta);
-        if (!deleted?.local_only) await api(`/meta/${type}s/${button.dataset.deleteMeta}`, { method: 'DELETE' });
+        if (!deleted?.local_only) await api(`/meta/${resource}/${button.dataset.deleteMeta}`, { method: 'DELETE' });
         await updateCachedMeta({ [type === 'subject' ? 'subjects' : 'classes']: current.filter((item) => item.id != button.dataset.deleteMeta) });
         toast(`${type === 'subject' ? 'Subject' : 'Class'} deleted`, 'success');
         await loadTeacherMetaManager(false);
@@ -772,11 +837,11 @@ async function loadSchoolAdmin() {
       list.querySelectorAll('.btn-edit-teacher').forEach((b) => {
         b.addEventListener('click', async () => {
           const teacher = rows.find((item) => String(item.id) === b.dataset.id);
-          const name = prompt('Teacher name', teacher?.name || '');
+          const name = await inputModal({ title: 'Edit teacher', label: 'Teacher name', value: teacher?.name || '' });
           if (name === null) return;
-          const email = prompt('Teacher email', teacher?.email || '');
+          const email = await inputModal({ title: 'Edit teacher', label: 'Teacher email', value: teacher?.email || '', type: 'email' });
           if (email === null) return;
-          const password = prompt('New password (leave empty to keep current password)', '');
+          const password = await inputModal({ title: 'Edit teacher password', label: 'New password (leave empty to keep current password)', type: 'password' });
           if (password === null) return;
           try {
             await api('/school/teachers/' + b.dataset.id, { method: 'PUT', body: JSON.stringify({ name: name.trim(), email: email.trim(), password }) });
