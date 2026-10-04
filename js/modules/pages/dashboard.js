@@ -66,6 +66,19 @@ export async function renderDashboard() {
         </button>
       </div>
 
+      <button id="dash-tutorials" type="button" class="group w-full rounded-2xl border border-primary-100 bg-primary-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-primary-300 dark:border-primary-900/50 dark:bg-primary-900/20">
+        <div class="flex items-center gap-3">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.868v4.264a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block font-semibold text-primary-900 dark:text-primary-100">Learn with video guides</span>
+            <span class="mt-0.5 block text-xs text-primary-700 dark:text-primary-300">See how to create questions and build papers in GoodScores.</span>
+          </span>
+          <svg class="h-5 w-5 shrink-0 text-primary-600 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </button>
+
       ${user.role === 'school_admin' ? `
       <div class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-4">
         <h3 class="font-medium mb-2">School Admin</h3>
@@ -94,5 +107,8 @@ export async function renderDashboard() {
   });
   document.getElementById('dash-build-paper')?.addEventListener('click', () => {
     document.querySelector('[data-page="papers"]')?.click();
+  });
+  document.getElementById('dash-tutorials')?.addEventListener('click', () => {
+    document.getElementById('btn-tutorials')?.click();
   });
 }

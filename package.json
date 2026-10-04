@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build:css": "tailwindcss -c tailwind.config.js -i ./css/tailwind.input.css -o ./css/tailwind.css --minify"
+    "build:css": "tailwindcss -c tailwind.config.js -i ./css/tailwind.input.css -o ./css/tailwind.css --minify",
+    "record:ai-tutorial": "node ../test-results/recording/goodscores-ai-tutorial.mjs"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",

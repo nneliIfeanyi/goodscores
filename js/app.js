@@ -6,6 +6,7 @@ import { renderDashboard } from './modules/pages/dashboard.js';
 import { renderAccount } from './modules/pages/account.js?v=25';
 import { renderQuestions } from './modules/pages/questions.js';
 import { renderPapers } from './modules/pages/papers.js';
+import { renderTutorials } from './modules/pages/tutorials.js';
 import { api } from './utils/api.js';
 import { toast } from './utils/toast.js';
 import { renderOnboarding } from './modules/pages/onboarding.js';
@@ -97,6 +98,7 @@ function initNav() {
       navigate(btn.dataset.page);
     });
   });
+  document.getElementById('btn-tutorials')?.addEventListener('click', () => navigate('tutorials'));
 }
 
 // ---------- Router ----------
@@ -105,6 +107,7 @@ const pages = {
   questions: renderQuestions,
   papers: renderPapers,
   account: renderAccount,
+  tutorials: renderTutorials,
 };
 
 function navigate(page) {
@@ -158,7 +161,7 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
 
 // ---------- Service Worker ----------
 const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
-const APP_VERSION = '28';
+const APP_VERSION = '29';
 
 const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
 if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {
@@ -213,6 +216,12 @@ async function boot() {
       window.history.replaceState({}, document.title, window.location.pathname);
       hideSplash();
       renderResetPassword(resetToken);
+      return;
+    }
+
+    if (!isLoggedIn() && localStorage.getItem('gs_onboarding_complete') !== '1') {
+      hideSplash();
+      renderOnboarding();
       return;
     }
 

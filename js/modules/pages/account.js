@@ -658,8 +658,8 @@ async function loadTeacherMetaManager(refresh = true) {
 
   try {
     const meta = await loadMetaData({ refresh: refresh && isLoggedIn() });
-    subjectRows = meta.subjects || [];
-    classRows = meta.classes || [];
+    subjectRows = (meta.subjects || []).filter((row) => row.local_only || row.teacher_id != null);
+    classRows = (meta.classes || []).filter((row) => row.local_only || row.teacher_id != null);
     renderRows(subjectList, subjectRows, 'subject');
     renderRows(classList, classRows, 'class');
   } catch (err) {
@@ -681,7 +681,7 @@ async function loadTeacherMetaManager(refresh = true) {
           try {
             const response = await api('/meta/subjects', { method: 'POST', body: JSON.stringify({ name, code }) });
             const latest = await updateCachedMeta({});
-            await updateCachedMeta({ subjects: latest.subjects.map((item) => item.id === localSubject.id ? response.data : item) });
+            await updateCachedMeta({ subjects: latest.subjects.map((item) => item.id === localSubject.id ? { ...response.data, teacher_id: getUser()?.id } : item) });
           } catch (_) {}
         }
         subjectForm.reset();
@@ -704,7 +704,7 @@ async function loadTeacherMetaManager(refresh = true) {
           try {
             const response = await api('/meta/classes', { method: 'POST', body: JSON.stringify({ name }) });
             const latest = await updateCachedMeta({});
-            await updateCachedMeta({ classes: latest.classes.map((item) => item.id === localClass.id ? response.data : item) });
+            await updateCachedMeta({ classes: latest.classes.map((item) => item.id === localClass.id ? { ...response.data, teacher_id: getUser()?.id } : item) });
           } catch (_) {}
         }
         classForm.reset();
