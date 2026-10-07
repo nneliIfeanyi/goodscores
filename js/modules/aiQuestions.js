@@ -140,7 +140,7 @@ function renderReview(overlay, questions, passage, values, onSaved, close, exist
     card.dataset.index = index;
     card.innerHTML = `<div class="flex items-center justify-between"><label class="flex items-center gap-2 text-xs font-semibold"><input type="checkbox" data-select checked />Question ${index + 1}</label><div class="flex items-center gap-2"><button type="button" data-up class="text-xs text-gray-500" title="Move up">↑</button><button type="button" data-down class="text-xs text-gray-500" title="Move down">↓</button><button type="button" data-copy class="text-xs text-primary-600">Copy</button><button type="button" data-remove class="text-xs text-red-500">Remove</button></div></div>
       <textarea data-body rows="3" class="w-full px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">${esc(question.body)}</textarea>
-      ${diagram ? `<div data-diagram-preview class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2 min-h-40 flex items-center justify-center">${diagram.svg ? diagram.svg : `<span class="text-xs text-gray-600">Illustration will be generated after you accept this question.</span>`}</div>` : ''}
+      ${diagram ? `<div data-diagram-preview class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2 min-h-40 flex items-center justify-center">${diagram.svg ? diagram.svg : `<span class="text-xs text-gray-600">No diagram preview available.</span>`}</div>` : ''}
       ${(question.options || []).map((option) => `<label class="flex gap-2 items-center text-xs"><span class="font-semibold w-4">${esc(option.key)}</span><input data-option="${esc(option.key)}" value="${esc(option.text)}" class="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800" /></label>`).join('')}
       <div class="flex gap-2"><input data-answer value="${esc(question.answer)}" placeholder="Answer" class="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs" /><button type="button" data-accept class="px-3 py-1.5 rounded-lg bg-primary-50 text-primary-700 text-xs font-semibold">Accept</button></div>`;
     items.appendChild(card);
@@ -159,9 +159,21 @@ function renderReview(overlay, questions, passage, values, onSaved, close, exist
     if (!question.body || (question.type === 'mcq' && question.options.length < 2)) throw new Error(`Question ${index + 1} needs a body and at least two options`);
     const duplicate = existingQuestions.some((item) => normalize(item.body) === normalize(question.body));
     if (duplicate) throw new Error(`Question ${index + 1} already exists in your question bank`);
-    const savedResponse = { data: await saveOfflineQuestion({ ...question, diagram_spec: question.diagram_spec || question.diagram_request || null, source: 'ai', ai_generated: true, content_type: values.content_type || 'standard', passage_id: null, subject_id: values.subject_id, class_id: values.class_id, term_id: values.term_id }) };
-    const diagramSpec = normalizeDiagramSpec(question.diagram_spec || question.diagram_request);
-    if (diagramSpec?.type === 'illustration') toast('Illustration request saved successfully and will be available after backup.', 'info');
+
+    const payload = {
+      ...question,
+      diagram_spec: question.diagram_spec || question.diagram_request || null,
+      source: 'ai',
+      ai_generated: true,
+      content_type: values.content_type || 'standard',
+      passage_id: null,
+      subject_id: values.subject_id,
+      class_id: values.class_id,
+      term_id: values.term_id,
+    };
+
+    await saveOfflineQuestion(payload);
+
     accepted.add(index);
     card.classList.add('opacity-50');
     card.querySelector('[data-accept]').disabled = true;

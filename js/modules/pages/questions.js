@@ -118,11 +118,13 @@ function renderList() {
     if (q._pending_image && !diagramImages.some((image) => image.data_url === q._pending_image)) {
       diagramImages.unshift({ data_url: q._pending_image, original_name: 'Question image' });
     }
+    const diagramTitle = String(diagramImages.find((image) => image?.original_name)?.original_name || '').trim();
+    const diagramLabel = diagramTitle || String(diagramSpec?.description || '').trim();
     const diagram = diagramSpec || diagramImages.length
       ? `<div class="mb-4 space-y-2"><p class="text-xs font-semibold text-gray-500 uppercase">Diagram</p>
           ${diagramImages.map((image) => `<img src="${escapeHtml(image.data_url || storageUrl(image.file_path))}" alt="${escapeHtml(image.original_name || diagramSpec?.description || 'Question diagram')}" class="max-h-48 max-w-full object-contain mx-auto rounded-lg border border-gray-200 dark:border-gray-700" />`).join('')}
           ${diagramSpec?.svg ? `<div class="max-h-56 overflow-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white p-2 flex justify-center">${diagramSpec.svg}</div>` : ''}
-          ${diagramSpec?.description ? `<p class="text-xs text-gray-500 dark:text-gray-400">${escapeHtml(diagramSpec.description)}</p>` : ''}
+          ${diagramLabel ? `<p class="text-xs text-gray-500 dark:text-gray-400">${escapeHtml(diagramLabel)}</p>` : ''}
         </div>`
       : '';
     const details = q.type === 'mcq'
@@ -188,6 +190,29 @@ async function openForm(id = null, offlineId = null) {
   if (!q && offlineId) q = await getOfflineQuestion(offlineId);
   const diagramSpec = q?.diagram_spec || q?.diagram_request || null;
   const illustration = q?.images?.find((image) => image.type === 'ai_illustration');
+  let attachedDiagram = null;
+  if (diagramSpec?.type === 'precise_diagram' && diagramSpec.svg) {
+    attachedDiagram = {
+      mode: 'precise_diagram',
+      title: 'Attached SVG diagram',
+      diagram_spec: { ...diagramSpec },
+      image_path: null,
+    };
+  } else if (illustration?.file_path) {
+    attachedDiagram = {
+      mode: 'illustration',
+      title: illustration.caption || 'Attached illustration',
+      diagram_spec: diagramSpec || {
+        type: 'illustration',
+        description: illustration.caption || 'Attached illustration',
+        labels: [],
+        svg: '',
+        image_prompt: illustration.caption || 'Attached illustration',
+      },
+      image_path: illustration.file_path,
+      mime_type: illustration.mime_type || 'image/webp',
+    };
+  }
 
   const overlay = document.createElement('div');
   overlay.id = 'q-form-overlay';
@@ -320,20 +345,13 @@ async function openForm(id = null, offlineId = null) {
         </div>
 
         <div class="rounded-xl border border-primary-100 dark:border-primary-800 bg-primary-50/50 dark:bg-primary-900/10 p-3 space-y-2">
-          <div class="flex items-center justify-between"><label class="text-xs font-semibold">Educational diagram specification</label><span class="text-[10px] text-gray-500">Optional</span></div>
-          <select name="diagram_type" class="w-full px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">
-            <option value="">No generated diagram</option>
-            <option value="precise_diagram" ${(diagramSpec?.type || '') === 'precise_diagram' ? 'selected' : ''}>Precise SVG diagram</option>
-            <option value="illustration" ${(diagramSpec?.type || '') === 'illustration' ? 'selected' : ''}>Educational illustration</option>
-          </select>
-          <textarea name="diagram_description" rows="2" placeholder="Describe the diagram for learners" class="w-full px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">${escapeHtml(diagramSpec?.description || '')}</textarea>
+          <div class="flex items-center justify-between"><label class="text-xs font-semibold">Diagram from library</label><span class="text-[10px] text-gray-500">Optional</span></div>
+          <p class="text-[11px] text-gray-500">Attach from your Diagrams library. To create new visuals, use the Diagrams tab.</p>
           <div class="flex gap-2">
-            <button type="button" id="q-generate-svg" class="flex-1 py-2 rounded-lg border border-primary-200 text-primary-700 dark:text-primary-300 text-xs font-semibold">Generate SVG</button>
-            <button type="button" id="q-generate-illustration" class="flex-1 py-2 rounded-lg border border-primary-200 text-primary-700 dark:text-primary-300 text-xs font-semibold">Generate illustration</button>
+            <button type="button" id="q-attach-diagram" class="flex-1 py-2 rounded-lg border border-primary-200 text-primary-700 dark:text-primary-300 text-xs font-semibold">Attach diagram</button>
+            <button type="button" id="q-clear-diagram" class="py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-semibold">Clear</button>
           </div>
-          <textarea name="diagram_svg" rows="4" placeholder="Precise SVG diagram markup" class="${diagramSpec?.type === 'precise_diagram' ? '' : 'hidden'} w-full px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-[10px] font-mono">${escapeHtml(diagramSpec?.svg || '')}</textarea>
-          ${diagramSpec?.type === 'precise_diagram' && diagramSpec.svg ? `<div class="rounded-lg bg-white border p-2 flex justify-center">${diagramSpec.svg}</div>` : ''}
-          ${illustration ? `<div><p class="text-[10px] text-gray-500 mb-1">Generated illustration</p><img src="${escapeHtml(storageUrl(illustration.file_path))}" alt="${escapeHtml(illustration.caption || diagramSpec?.description || 'Educational illustration')}" class="max-h-40 max-w-full object-contain mx-auto rounded-lg border" /></div>` : ''}
+          <div id="q-attached-diagram-preview" class="${attachedDiagram ? '' : 'hidden'}"></div>
         </div>
 
         <div id="q-form-error" class="hidden text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"></div>
@@ -433,63 +451,76 @@ async function openForm(id = null, offlineId = null) {
     document.getElementById('mcq-options').classList.toggle('hidden', !isMcq);
     document.getElementById('answer-field').classList.toggle('hidden', isMcq);
   });
-  const diagramTypeSelect = overlay.querySelector('[name="diagram_type"]');
-  const diagramSvgField = overlay.querySelector('[name="diagram_svg"]');
-  const diagramDescriptionField = overlay.querySelector('[name="diagram_description"]');
-  const generateSvgButton = overlay.querySelector('#q-generate-svg');
-  const generateIllustrationButton = overlay.querySelector('#q-generate-illustration');
-  diagramTypeSelect?.addEventListener('change', () => {
-    diagramSvgField?.classList.toggle('hidden', diagramTypeSelect.value !== 'precise_diagram');
-  });
-  generateSvgButton?.addEventListener('click', async () => {
-    if (!localStorage.getItem('gs_token')) return requireAuthentication('Generate SVG diagram', () => generateSvgButton.click());
-    if (!navigator.onLine) return toast('SVG generation requires an internet connection.', 'warn');
-    const description = diagramDescriptionField?.value.trim() || '';
-    if (!description) return toast('Describe the diagram first.', 'error');
-    generateSvgButton.disabled = true;
-    generateSvgButton.textContent = 'Generating…';
-    try {
-      const result = await api('/ai/diagram/generate', { method: 'POST', body: JSON.stringify({ type: 'precise_diagram', description }) });
-      diagramTypeSelect.value = 'precise_diagram';
-      diagramSvgField.value = result.data?.svg || '';
-      diagramSvgField.classList.remove('hidden');
-      toast('SVG diagram generated. Review it before saving.', 'success');
-    } catch (error) {
-      toast(error.message || 'Could not generate SVG diagram', 'error');
-    } finally {
-      generateSvgButton.disabled = false;
-      generateSvgButton.textContent = 'Generate SVG';
+  const attachButton = overlay.querySelector('#q-attach-diagram');
+  const clearButton = overlay.querySelector('#q-clear-diagram');
+  const attachedPreview = overlay.querySelector('#q-attached-diagram-preview');
+
+  const renderAttachedPreview = () => {
+    if (!attachedPreview) return;
+    if (!attachedDiagram) {
+      attachedPreview.classList.add('hidden');
+      attachedPreview.innerHTML = '';
+      return;
     }
-  });
-  generateIllustrationButton?.addEventListener('click', async () => {
-    if (!localStorage.getItem('gs_token')) return requireAuthentication('Generate illustration', () => generateIllustrationButton.click());
-    if (!navigator.onLine) return toast('Illustration generation requires an internet connection.', 'warn');
-    if (!q?.offline_id && !id) return toast('Save the question first, then generate its illustration.', 'info');
-    const description = diagramDescriptionField?.value.trim() || '';
-    if (!description) return toast('Describe the illustration first.', 'error');
-    generateIllustrationButton.disabled = true;
-    generateIllustrationButton.textContent = 'Generating…';
+    const isSvg = attachedDiagram.mode === 'precise_diagram' && attachedDiagram.diagram_spec?.svg;
+    const preview = isSvg
+      ? `<div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 max-h-44 overflow-auto">${attachedDiagram.diagram_spec.svg}</div>`
+      : `<div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 flex items-center justify-center"><img src="${escapeHtml(storageUrl(attachedDiagram.image_path || ''))}" alt="${escapeHtml(attachedDiagram.title || 'Attached diagram')}" class="max-h-44 max-w-full object-contain" /></div>`;
+    attachedPreview.classList.remove('hidden');
+    attachedPreview.innerHTML = `
+      <div class="text-[10px] text-primary-700 dark:text-primary-300 mb-1">Attached: ${escapeHtml(attachedDiagram.title || 'Diagram')}</div>
+      ${preview}`;
+  };
+  renderAttachedPreview();
+
+  attachButton?.addEventListener('click', async () => {
+    if (!localStorage.getItem('gs_token')) return requireAuthentication('Attach diagram', () => attachButton.click());
+    if (!navigator.onLine) return toast('Attach from library requires an internet connection.', 'warn');
     try {
-      let serverQuestionId = id || q?.id;
-      if (!serverQuestionId && q?.offline_id) {
-        await backupQuestionBank({ offlineId: q.offline_id });
-        const backedUpQuestion = await getOfflineQuestion(q.offline_id);
-        serverQuestionId = backedUpQuestion?.id;
-        if (!serverQuestionId) throw new Error('The question could not be backed up. Please try Backup now, then generate again.');
-        q = backedUpQuestion;
+      const res = await api('/diagrams');
+      const rows = res.data || [];
+      if (!rows.length) {
+        toast('No diagrams in your library yet. Create one in the Diagrams tab.', 'info');
+        return;
       }
-      const result = await api(`/questions/${serverQuestionId}/generate-illustration`, { method: 'POST' });
-      const generatedImage = { ...result.data, type: 'ai_illustration', caption: description };
-      q.images = [...(q.images || []).filter((image) => image.type !== 'ai_illustration'), generatedImage];
-      await saveOfflineQuestion(q);
-      renderList();
-      toast('Educational illustration generated.', 'success');
+      const picker = document.createElement('div');
+      picker.className = 'fixed inset-0 z-[100] bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';
+      picker.innerHTML = `
+        <div class="bg-white dark:bg-gray-900 w-full sm:max-w-lg max-h-[88vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl shadow-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold">Attach from diagrams</h3>
+            <button data-close class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">✕</button>
+          </div>
+          <div class="space-y-2" id="diagram-picker-list"></div>
+        </div>`;
+      document.body.appendChild(picker);
+      const closePicker = () => picker.remove();
+      picker.querySelector('[data-close]').onclick = closePicker;
+      const list = picker.querySelector('#diagram-picker-list');
+      list.innerHTML = rows.map((d) => `
+        <button type="button" data-pick-id="${d.id}" class="w-full text-left p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300">
+          <div class="font-medium text-sm">${escapeHtml(d.title || 'Diagram')}</div>
+          <div class="text-[11px] text-gray-500">${d.mode === 'precise_diagram' ? 'SVG diagram' : 'Illustration'}</div>
+        </button>`).join('');
+
+      list.querySelectorAll('[data-pick-id]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const picked = rows.find((row) => String(row.id) === btn.dataset.pickId);
+          if (!picked) return;
+          attachedDiagram = picked;
+          renderAttachedPreview();
+          closePicker();
+          toast('Diagram attached', 'success');
+        });
+      });
     } catch (error) {
-      toast(error.message || 'Could not generate illustration', 'error');
-    } finally {
-      generateIllustrationButton.disabled = false;
-      generateIllustrationButton.textContent = 'Generate illustration';
+      toast(error.message || 'Could not load diagram library', 'error');
     }
+  });
+
+  clearButton?.addEventListener('click', () => {
+    attachedDiagram = null;
+    renderAttachedPreview();
   });
 
   const subjectSelect = overlay.querySelector('[name="subject_id"]');
@@ -650,18 +681,14 @@ async function openForm(id = null, offlineId = null) {
       difficulty: 'medium',
     };
 
-    const diagramType = form.diagram_type?.value || '';
-    const diagramDescription = form.diagram_description?.value.trim() || '';
-    const diagramSvg = form.diagram_svg?.value.trim() || '';
-    payload.diagram_spec = diagramType && diagramDescription
-      ? {
-        type: diagramType,
-        description: diagramDescription,
-        labels: [],
-        svg: diagramType === 'precise_diagram' ? diagramSvg : '',
-        image_prompt: diagramType === 'illustration' ? diagramDescription : '',
-      }
-      : null;
+    if (attachedDiagram?.diagram_spec) {
+      payload.diagram_spec = {
+        ...attachedDiagram.diagram_spec,
+        description: attachedDiagram.title || attachedDiagram.diagram_spec?.description || 'Diagram',
+      };
+    } else {
+      payload.diagram_spec = null;
+    }
 
     if (type === 'mcq') {
       const opts = [];
@@ -697,7 +724,17 @@ async function openForm(id = null, offlineId = null) {
       payload.offline_id = q?.offline_id || offlineId || crypto.randomUUID();
       payload.source = q?.source || 'manual';
       const file = fileInput?.files?.[0];
-      if (file) {
+      if (attachedDiagram?.image_path) {
+        payload.images = [{
+          file_path: attachedDiagram.image_path,
+          original_name: attachedDiagram.title || 'Library diagram',
+          mime_type: attachedDiagram.mime_type || 'image/webp',
+          type: 'ai_illustration',
+          position: 'after_body',
+          caption: attachedDiagram.title || null,
+          sort_order: 0,
+        }];
+      } else if (file) {
         const imageData = await prepareStoredImage(file);
         payload._pending_image = imageData;
         payload.images = [{

@@ -86,7 +86,7 @@
 
     <!-- Bottom Navigation (max 5) -->
     <nav id="bottom-nav" class="fixed bottom-0 inset-x-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-t border-gray-200 dark:border-gray-800 safe-bottom">
-      <div class="max-w-3xl mx-auto grid grid-cols-4 h-16">
+      <div class="max-w-3xl mx-auto grid h-16" style="grid-template-columns:repeat(5,minmax(0,1fr))">
         <button data-page="dashboard" class="nav-item flex flex-col items-center justify-center gap-0.5 text-primary-600 dark:text-primary-400">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/>
@@ -104,6 +104,13 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
           <span class="text-[10px] font-medium">Papers</span>
+        </button>
+        <button data-page="diagrams" class="nav-item flex flex-col items-center justify-center gap-0.5 text-gray-500 dark:text-gray-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 19h16M5 16l4-10h1l4 10M8 12h4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 8h4m0 0v4m0-4l-6 6"/>
+          </svg>
+          <span class="text-[10px] font-medium">Diagrams</span>
         </button>
         <button data-page="account" class="nav-item flex flex-col items-center justify-center gap-0.5 text-gray-500 dark:text-gray-400">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,6 +139,6 @@
         window.setTimeout(revealApp, 5000);
       })();
     </script>
-  <script type="module" src="js/app.js?v=28"></script>
+  <script type="module" src="js/app.js?v=29"></script>
 </body>
 </html>

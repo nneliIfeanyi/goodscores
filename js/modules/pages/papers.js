@@ -73,13 +73,8 @@ async function exportPaper(id, button = null) {
   try {
     const localPaper = await findLocalPaper(id);
     if (localPaper) {
-      const clientReferenceId = `local_export_${localPaper.offline_id}_${Date.now()}`;
-      const authorization = await api('/credits/authorize-export', {
-        method: 'POST',
-        body: JSON.stringify({ client_reference_id: clientReferenceId, format: 'pdf' }),
-      });
       await printPaper(localPaper);
-      toast(`Export authorized. ${authorization.data?.credits_left ?? ''} export credits remaining.`, 'success');
+      toast('Paper ready to print', 'success');
       return;
     }
     const exp = await api(`/papers/${id}/export`, { method: 'POST', body: '{}' });

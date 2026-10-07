@@ -33,7 +33,7 @@ export async function renderDashboard() {
           </div>
         </div>
         <div class="mt-4 flex gap-3 text-xs">
-          <span class="bg-white/15 px-2.5 py-1 rounded-full">PDF: 95 credits</span>
+          <span class="bg-white/15 px-2.5 py-1 rounded-full">PDF output: Free</span>
         </div>
         <p class="mt-3 text-xs text-primary-100">✓ Manual question entry works offline</p>
       </div>

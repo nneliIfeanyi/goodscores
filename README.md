@@ -69,7 +69,7 @@ Copy `backend/.env.example` to `backend/.env` and set `PAYSTACK_SECRET_KEY`. Kee
 The key is read only by the backend and can be replaced independently in production. Do not expose it in frontend JavaScript or commit it to source control.
 
 ### PDF export
-- Open a paper → **Export PDF (–95 credits)**
+- Open a paper → **Export PDF (free for all account levels)**
 - With mPDF installed: real PDF file
 - Without mPDF: printable HTML (open in browser → Print → Save as PDF)
 
@@ -85,7 +85,7 @@ For XAMPP, enable `extension=gd` and `extension=mbstring` in `php.ini`, then res
 | Method | Endpoint | Cost |
 |--------|----------|------|
 | POST | /ocr | 35 credits |
-| POST | /papers/{id}/export | 95 credits |
+| POST | /papers/{id}/export | Free |
 
 ## Phase 4 – School admin, Pro Plus, polish
 
@@ -98,7 +98,7 @@ mysql -u root -p question_bank < backend/sql/phase4_migrate.sql
 ### Features
 - **School admin** (Account): list/create/remove teachers, school name/address, share School ID
 - **Pro Plus** (individuals only): multi exam headers; choose Pro vs Pro Plus when buying packs
-- **Feature gating**: OCR/PDF blocked when school pool empty/expired
+- **Feature gating**: OCR blocked when school pool empty/expired
 - **Paper builder**: pick saved header for individuals
 - Subscription packs unlock offline + Pro status
 
