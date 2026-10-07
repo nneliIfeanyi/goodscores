@@ -123,7 +123,9 @@
   </div>
 
 <script>
-  window.GOODSCORES_API_BASE = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  window.GOODSCORES_API_BASE = window.location.protocol === 'file:'
+    ? 'http://localhost/goodscores/backend/public'
+    : ['localhost', '127.0.0.1'].includes(window.location.hostname)
     ? `http://${window.location.host}/goodscores/backend/public`
     : 'https://goodscores.leadstar.com.ng';
 </script>
