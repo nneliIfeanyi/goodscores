@@ -7,6 +7,26 @@ import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from
 import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=25';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
+const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
+
+function setCollapseState(button, expanded) {
+  const content = document.getElementById(button.dataset.collapseTarget);
+  if (!content) return;
+  content.classList.toggle('hidden', !expanded);
+  button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  button.setAttribute('aria-label', `${expanded ? 'Collapse' : 'Expand'} ${button.dataset.collapseLabel}`);
+  button.setAttribute('title', `${expanded ? 'Collapse' : 'Expand'} ${button.dataset.collapseLabel}`);
+  button.querySelector('svg')?.classList.toggle('rotate-180', expanded);
+}
+
+function applyMetaFocusIntent() {
+  if (sessionStorage.getItem(ACCOUNT_META_FOCUS_INTENT_KEY) !== '1') return;
+  sessionStorage.removeItem(ACCOUNT_META_FOCUS_INTENT_KEY);
+  const sectionHeader = document.querySelector('[data-collapse-target="meta-settings-content"]');
+  const sectionInput = document.querySelector('#my-subject-form input[name="name"]');
+  (sectionHeader || sectionInput)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 async function refreshUser() {
   const me = await api('/auth/me');
   if (me.data) {
@@ -20,14 +40,8 @@ async function refreshUser() {
 function bindCollapsibleSections() {
   document.querySelectorAll('[data-collapse-target]').forEach((button) => {
     button.addEventListener('click', () => {
-      const content = document.getElementById(button.dataset.collapseTarget);
-      if (!content) return;
       const expanded = button.getAttribute('aria-expanded') === 'true';
-      content.classList.toggle('hidden', expanded);
-      button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      button.setAttribute('aria-label', `${expanded ? 'Expand' : 'Collapse'} ${button.dataset.collapseLabel}`);
-      button.setAttribute('title', `${expanded ? 'Expand' : 'Collapse'} ${button.dataset.collapseLabel}`);
-      button.querySelector('svg')?.classList.toggle('rotate-180', !expanded);
+      setCollapseState(button, !expanded);
     });
   });
 }
@@ -55,6 +69,7 @@ export async function renderAccount() {
       const { renderLogin } = await import('./login.js');
       renderLogin();
     });
+    applyMetaFocusIntent();
     loadTeacherMetaManager();
     return;
   }
@@ -435,6 +450,7 @@ export async function renderAccount() {
   `;
 
   bindCollapsibleSections();
+  applyMetaFocusIntent();
 
   document.getElementById('btn-logout')?.addEventListener('click', logout);
   document.getElementById('btn-clear-offline-storage')?.addEventListener('click', async () => {

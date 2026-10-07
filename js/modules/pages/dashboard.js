@@ -1,5 +1,28 @@
 import { getUser } from '../../utils/api.js';
 import { getOfflineQuestions, getOfflinePapers } from '../../utils/db.js';
+import { loadMetaData } from '../../utils/meta.js';
+
+const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
+
+function countPersonalRows(rows) {
+  return (rows || []).filter((row) => row?.local_only || row?.teacher_id != null).length;
+}
+
+function openAccountMetaManager(target = 'subject') {
+  sessionStorage.setItem(ACCOUNT_META_FOCUS_INTENT_KEY, '1');
+  document.querySelector('[data-page="account"]')?.click();
+}
+
+function updateMetaEmptyHints(subjectCount, classCount) {
+  const subjectHint = document.getElementById('dash-subject-hint');
+  const classHint = document.getElementById('dash-class-hint');
+  if (subjectHint) {
+    subjectHint.classList.toggle('hidden', Number(subjectCount) > 0);
+  }
+  if (classHint) {
+    classHint.classList.toggle('hidden', Number(classCount) > 0);
+  }
+}
 
 export async function renderDashboard() {
   const user = getUser() || {};
@@ -39,7 +62,25 @@ export async function renderDashboard() {
       </div>
 
       <!-- Quick actions -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+          <p class="text-xs text-gray-500">Subjects</p>
+          <p id="dash-subject-count" class="text-2xl font-bold mt-1">—</p>
+          <p id="dash-subject-hint" class="hidden mt-1 text-[11px] text-amber-700 dark:text-amber-300">No subjects yet. Tap Add.</p>
+          <button type="button" data-dash-add-meta="subject" class="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-primary-600 dark:text-primary-300 hover:underline">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add
+          </button>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+          <p class="text-xs text-gray-500">Classes</p>
+          <p id="dash-class-count" class="text-2xl font-bold mt-1">—</p>
+          <p id="dash-class-hint" class="hidden mt-1 text-[11px] text-amber-700 dark:text-amber-300">No classes yet. Tap Add.</p>
+          <button type="button" data-dash-add-meta="class" class="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-primary-600 dark:text-primary-300 hover:underline">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add
+          </button>
+        </div>
         <div class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
           <p class="text-xs text-gray-500">Question bank</p>
           <p id="dash-question-count" class="text-2xl font-bold mt-1">—</p>
@@ -90,16 +131,28 @@ export async function renderDashboard() {
   `;
 
   try {
-    const [questions, papers] = await Promise.all([getOfflineQuestions(), getOfflinePapers()]);
+    const [questions, papers, meta] = await Promise.all([getOfflineQuestions(), getOfflinePapers(), loadMetaData()]);
     const questionCount = document.getElementById('dash-question-count');
     const paperCount = document.getElementById('dash-paper-count');
+    const subjectCount = document.getElementById('dash-subject-count');
+    const classCount = document.getElementById('dash-class-count');
     if (questionCount) questionCount.textContent = questions.length;
     if (paperCount) paperCount.textContent = papers.length;
+    const subjectTotal = countPersonalRows(meta.subjects);
+    const classTotal = countPersonalRows(meta.classes);
+    if (subjectCount) subjectCount.textContent = subjectTotal;
+    if (classCount) classCount.textContent = classTotal;
+    updateMetaEmptyHints(subjectTotal, classTotal);
   } catch (_) {
     const questionCount = document.getElementById('dash-question-count');
     const paperCount = document.getElementById('dash-paper-count');
+    const subjectCount = document.getElementById('dash-subject-count');
+    const classCount = document.getElementById('dash-class-count');
     if (questionCount) questionCount.textContent = '0';
     if (paperCount) paperCount.textContent = '0';
+    if (subjectCount) subjectCount.textContent = '0';
+    if (classCount) classCount.textContent = '0';
+    updateMetaEmptyHints(0, 0);
   }
 
   document.getElementById('dash-new-q')?.addEventListener('click', () => {
@@ -107,6 +160,9 @@ export async function renderDashboard() {
   });
   document.getElementById('dash-build-paper')?.addEventListener('click', () => {
     document.querySelector('[data-page="papers"]')?.click();
+  });
+  document.querySelectorAll('[data-dash-add-meta]').forEach((button) => {
+    button.addEventListener('click', () => openAccountMetaManager(button.dataset.dashAddMeta));
   });
   document.getElementById('dash-tutorials')?.addEventListener('click', () => {
     document.getElementById('btn-tutorials')?.click();

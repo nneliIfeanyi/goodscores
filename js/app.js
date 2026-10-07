@@ -99,6 +99,7 @@ function initNav() {
       navigate(btn.dataset.page);
     });
   });
+  document.getElementById('brand-home')?.addEventListener('click', () => navigate('dashboard'));
   document.getElementById('btn-tutorials')?.addEventListener('click', () => navigate('tutorials'));
 }
 

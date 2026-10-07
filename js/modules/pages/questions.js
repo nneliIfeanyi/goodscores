@@ -332,21 +332,9 @@ async function openForm(id = null, offlineId = null) {
             placeholder="Expected answer or marking points">${q?.type !== 'mcq' ? (q?.answer || '') : ''}</textarea>
         </div>
 
-        <div>
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <label class="block text-xs font-medium">Diagram / Image (optional)</label>
-            <button type="button" id="q-ocr" class="text-[11px] font-medium text-primary-600 dark:text-primary-400 hover:underline">Extract text with OCR</button>
-          </div>
-          <input type="file" id="q-image" accept="image/*" class="w-full text-sm" />
-          <p class="text-[10px] text-gray-400 mt-1">OCR reads text only; the scanned image is ignored and will not be saved as the question diagram. Costs 35 credits.</p>
-          <div id="q-image-preview" class="mt-2 hidden">
-            <img class="max-h-32 rounded-lg border" />
-          </div>
-        </div>
-
         <div class="rounded-xl border border-primary-100 dark:border-primary-800 bg-primary-50/50 dark:bg-primary-900/10 p-3 space-y-2">
           <div class="flex items-center justify-between"><label class="text-xs font-semibold">Diagram from library</label><span class="text-[10px] text-gray-500">Optional</span></div>
-          <p class="text-[11px] text-gray-500">Attach from your Diagrams library. To create new visuals, use the Diagrams tab.</p>
+          <p class="text-[11px] text-gray-500">Attach from your Diagrams library only. To create or upload visuals, use the Diagrams tab.</p>
           <div class="flex gap-2">
             <button type="button" id="q-attach-diagram" class="flex-1 py-2 rounded-lg border border-primary-200 text-primary-700 dark:text-primary-300 text-xs font-semibold">Attach diagram</button>
             <button type="button" id="q-clear-diagram" class="py-2 px-3 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-semibold">Clear</button>
@@ -568,100 +556,6 @@ async function openForm(id = null, offlineId = null) {
 
   initRichEditors();
 
-  let ocrController = null;
-  overlay.querySelector('#q-ocr')?.addEventListener('click', async (event) => {
-    if (!localStorage.getItem('gs_token')) {
-      requireAuthentication('OCR', () => openForm(editingId, q?.offline_id));
-      return;
-    }
-    if (!navigator.onLine) {
-      toast('OCR is unavailable while offline.', 'warn');
-      return;
-    }
-    if (ocrController) {
-      ocrController.abort();
-      return;
-    }
-    const file = fileInput?.files?.[0];
-    if (!file) {
-      toast('Choose an image for OCR first', 'warn');
-      return;
-    }
-    const button = event.currentTarget;
-    ocrController = new AbortController();
-    button.classList.add('text-red-600');
-    button.title = 'Click to cancel OCR';
-    button.disabled = false;
-    button.textContent = 'Reading image…';
-    try {
-      const image = await prepareOcrImage(file, (stage) => { button.textContent = stage; });
-      button.textContent = 'Recognizing text…';
-      const result = await api('/ocr', {
-        method: 'POST',
-        body: JSON.stringify({ image }),
-        signal: ocrController.signal,
-      });
-      button.textContent = 'Preparing questions…';
-      const scannedQuestions = result.data?.questions || (result.data?.parsed ? [result.data.parsed] : []);
-      if (scannedQuestions.length > 1) {
-        const scanValues = {
-          subject_id: subjectSelect.value,
-          class_id: overlay.querySelector('[name="class_id"]')?.value,
-          term_id: overlay.querySelector('[name="term_id"]')?.value,
-          content_type: overlay.querySelector('[name="content_type"]')?.value || 'standard',
-        };
-        overlay.remove();
-        renderOcrReview(scannedQuestions, scanValues);
-        return;
-      }
-      const parsed = result.data?.parsed || {};
-      const setContent = (field, value) => {
-        const editor = editors[field];
-        if (editor) editor.setContent(value || '');
-        else {
-          const input = overlay.querySelector(`[name="${field}"]`);
-          if (input) input.value = value || '';
-        }
-      };
-      setContent('body', parsed.body || result.data?.text || '');
-      if (parsed.type) {
-        typeSelect.value = parsed.type;
-        typeSelect.dispatchEvent(new Event('change'));
-      }
-      (parsed.options || []).forEach((option) => {
-        const input = overlay.querySelector(`[name="opt_text"][data-key="${option.key}"]`);
-        if (input) {
-          if (editors[input.id]) editors[input.id].setContent(option.text || '');
-          else input.value = option.text || '';
-        }
-      });
-      if (parsed.answer) setContent(typeSelect.value === 'mcq' ? 'answer' : 'answer_other', parsed.answer);
-      toast(`OCR complete. ${result.data?.credits_left ?? ''} credits remaining. Review before saving.`, 'success');
-    } catch (err) {
-      if (err.name === 'AbortError') toast('OCR cancelled', 'info');
-      else toast(err.message || 'OCR failed', 'error');
-    } finally {
-      ocrController = null;
-      button.classList.remove('text-red-600');
-      button.title = '';
-      button.textContent = 'Extract text with OCR';
-    }
-  });
-
-  // Image preview
-  const fileInput = document.getElementById('q-image');
-  fileInput?.addEventListener('change', () => {
-    const file = fileInput.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const prev = document.getElementById('q-image-preview');
-      prev.classList.remove('hidden');
-      prev.querySelector('img').src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-
   document.getElementById('q-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -723,7 +617,6 @@ async function openForm(id = null, offlineId = null) {
 
       payload.offline_id = q?.offline_id || offlineId || crypto.randomUUID();
       payload.source = q?.source || 'manual';
-      const file = fileInput?.files?.[0];
       if (attachedDiagram?.image_path) {
         payload.images = [{
           file_path: attachedDiagram.image_path,
@@ -732,17 +625,6 @@ async function openForm(id = null, offlineId = null) {
           type: 'ai_illustration',
           position: 'after_body',
           caption: attachedDiagram.title || null,
-          sort_order: 0,
-        }];
-      } else if (file) {
-        const imageData = await prepareStoredImage(file);
-        payload._pending_image = imageData;
-        payload.images = [{
-          data_url: imageData,
-          original_name: file.name,
-          mime_type: 'image/jpeg',
-          type: 'diagram',
-          position: 'after_body',
           sort_order: 0,
         }];
       }

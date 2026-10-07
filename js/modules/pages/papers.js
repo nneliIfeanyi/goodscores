@@ -48,6 +48,15 @@ async function loadMeta() {
   meta = await loadMetaData();
 }
 
+async function loadPassages() {
+  try {
+    const response = await api('/passages');
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (_) {
+    return [];
+  }
+}
+
 async function loadPapers() {
   const localPapers = await getOfflinePapers();
   papers = localPapers;
@@ -180,7 +189,7 @@ async function openBuilder(existingPaper = null) {
   }
 
   const selectedQuestionIds = new Set((existingPaper?.questions || []).map(questionKey));
-  const passages = [];
+  const passages = await loadPassages();
 
   const savedSections = existingPaper?.paper_settings?.sections || [];
   const sections = savedSections.length
@@ -190,6 +199,7 @@ async function openBuilder(existingPaper = null) {
         title: section.title || `Section ${String.fromCharCode(65 + index)}`,
         instructions: section.instructions || '',
         passage_id: section.passage_id || null,
+        passage: section.passage || null,
         question_ids: (section.question_ids || []).map(String),
       }))
     : [
@@ -199,6 +209,7 @@ async function openBuilder(existingPaper = null) {
           title: 'Section A: Objective Questions',
           instructions: 'Answer all questions. Choose the correct option or complete the gap.',
           passage_id: null,
+          passage: null,
           question_ids: [],
         },
         {
@@ -207,6 +218,7 @@ async function openBuilder(existingPaper = null) {
           title: 'Section B: Theory Questions',
           instructions: 'Answer any three questions.',
           passage_id: null,
+          passage: null,
           question_ids: [],
         },
       ];
@@ -364,7 +376,8 @@ async function openBuilder(existingPaper = null) {
           </select>
           <select data-section-passage class="px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">
             <option value="">No passage attached</option>
-            ${passages.map((passage) => `<option value="${passage.id}" ${String(section.passage_id || '') === String(passage.id) ? 'selected' : ''}>${passage.title}</option>`).join('')}
+            ${[...passages, ...(section.passage && !passages.some((passage) => String(passage.id) === String(section.passage.id)) ? [section.passage] : [])]
+              .map((passage) => `<option value="${passage.id}" ${String(section.passage_id || '') === String(passage.id) ? 'selected' : ''}>${passage.title}</option>`).join('')}
           </select>
         </div>
         <textarea data-section-instructions rows="2" placeholder="Instructions, e.g. Answer any three questions" class="w-full px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">${section.instructions}</textarea>
@@ -375,7 +388,10 @@ async function openBuilder(existingPaper = null) {
       const index = Number(card.dataset.sectionIndex);
       card.querySelector('[data-section-title]').addEventListener('input', (event) => { sections[index].title = event.target.value; });
       card.querySelector('[data-section-type]').addEventListener('change', (event) => { sections[index].type = event.target.value; });
-      card.querySelector('[data-section-passage]').addEventListener('change', (event) => { sections[index].passage_id = event.target.value || null; });
+      card.querySelector('[data-section-passage]').addEventListener('change', (event) => {
+        sections[index].passage_id = event.target.value || null;
+        sections[index].passage = passages.find((passage) => String(passage.id) === String(event.target.value)) || null;
+      });
       card.querySelector('[data-section-instructions]').addEventListener('input', (event) => { sections[index].instructions = event.target.value; });
       card.querySelector('[data-section-up]').addEventListener('click', () => {
         [sections[index - 1], sections[index]] = [sections[index], sections[index - 1]];
@@ -399,7 +415,7 @@ async function openBuilder(existingPaper = null) {
   };
 
   document.getElementById('pb-add-section').addEventListener('click', () => {
-    sections.push({ key: '', type: 'custom', title: `Section ${String.fromCharCode(65 + sections.length)}`, instructions: '', passage_id: null, question_ids: [] });
+    sections.push({ key: '', type: 'custom', title: `Section ${String.fromCharCode(65 + sections.length)}`, instructions: '', passage_id: null, passage: null, question_ids: [] });
     renderSections();
     renderQuestions();
   });
@@ -647,8 +663,16 @@ async function openBuilder(existingPaper = null) {
     btn.disabled = true;
     try {
       const questionMap = new Map(allQuestions.map((question) => [questionKey(question), question]));
+      const localPaperSettings = {
+        ...payload.paper_settings,
+        sections: payload.paper_settings.sections.map((section) => ({
+          ...section,
+          passage: sections.find((item) => item.key === section.key)?.passage || null,
+        })),
+      };
       const localPaper = await saveOfflinePaper({
         ...payload,
+        paper_settings: localPaperSettings,
         offline_id: existingPaper?.offline_id,
         id: existingPaper?.id,
         subject_name: form.subject_id.selectedOptions[0]?.textContent.trim() || '',
