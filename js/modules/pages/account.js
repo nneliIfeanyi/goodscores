@@ -43,7 +43,43 @@ function bindCollapsibleSections() {
       const expanded = button.getAttribute('aria-expanded') === 'true';
       setCollapseState(button, !expanded);
     });
+
+    const card = button.closest('section, form, div.rounded-2xl');
+    if (!card) return;
+    card.classList.add('cursor-pointer');
+    card.addEventListener('click', (event) => {
+      if (event.target.closest('button, a, input, select, textarea, label')) return;
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      setCollapseState(button, !expanded);
+    });
   });
+}
+
+function renderAccountSkeleton() {
+  const main = document.getElementById('main-content');
+  if (!main) return;
+  main.setAttribute('aria-busy', 'true');
+  main.innerHTML = `
+    <div class="page-enter max-w-3xl mx-auto p-4 space-y-6 pb-24" aria-label="Loading account settings">
+      <div class="loading-skeleton" style="height:1.75rem;width:8rem"></div>
+      <section class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="loading-skeleton rounded-full" style="height:3rem;width:3rem"></div>
+          <div class="flex-1 space-y-2">
+            <div class="loading-skeleton" style="height:1rem;width:10rem"></div>
+            <div class="loading-skeleton" style="height:.75rem;width:14rem"></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="loading-skeleton" style="height:4rem"></div>
+          <div class="loading-skeleton" style="height:4rem"></div>
+          <div class="loading-skeleton" style="height:4rem"></div>
+          <div class="loading-skeleton" style="height:4rem"></div>
+        </div>
+      </section>
+      <div class="loading-skeleton" style="height:7rem"></div>
+      <div class="loading-skeleton" style="height:7rem"></div>
+    </div>`;
 }
 
 export async function renderAccount() {
@@ -73,12 +109,15 @@ export async function renderAccount() {
     loadTeacherMetaManager();
     return;
   }
+  renderAccountSkeleton();
   let user = getUser() || {};
   try {
     user = await refreshUser();
   } catch (_) {}
 
   const main = document.getElementById('main-content');
+  main?.setAttribute('aria-busy', 'false');
+  if (!main) return;
   main.innerHTML = `
     <div class="page-enter max-w-3xl mx-auto p-4 space-y-6 pb-24">
       <h2 class="text-xl font-semibold">Account</h2>

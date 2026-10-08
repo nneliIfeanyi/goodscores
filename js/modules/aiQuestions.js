@@ -54,8 +54,7 @@ export function openAiQuestionFlow(meta, onSaved, existingQuestions = []) {
           <label class="text-xs font-medium">Content type<select name="content_type" class="mt-1 w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"><option value="standard">Standard</option></select></label>
           <label class="text-xs font-medium">Difficulty<select name="difficulty" class="mt-1 w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option><option value="mixed">Mixed</option></select></label>
         </div>
-        <label class="block text-xs font-medium">Topic (optional)<input name="topic" maxlength="120" placeholder="e.g. Addition and subtraction" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm" /></label>
-        <label class="block text-xs font-medium">Optional educational focus <span class="font-normal text-gray-400">(max 500 characters)</span><textarea name="focus" maxlength="500" rows="3" placeholder="e.g. Use everyday Nigerian examples and avoid decimals" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"></textarea></label>
+        <label class="block text-xs font-medium">Topics and educational focus <span class="font-normal text-gray-400">(optional, max 500 characters)</span><textarea name="focus" maxlength="500" rows="3" placeholder="Enter topics separated by commas, e.g. Fractions, indices, number line, etc" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"></textarea></label>
         <div data-ai-error class="hidden text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"></div>
         <div class="flex gap-2"><button data-ai-clear type="button" class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">Clear</button><button data-ai-generate type="submit" class="flex-1 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm">Generate questions</button></div>
       </form>
@@ -81,6 +80,7 @@ export function openAiQuestionFlow(meta, onSaved, existingQuestions = []) {
     const button = overlay.querySelector('[data-ai-generate]');
     const error = overlay.querySelector('[data-ai-error]');
     const values = Object.fromEntries(new FormData(form).entries());
+    values.topic = values.focus || '';
     const selectedTypes = [...form.querySelectorAll('[name="types"]:checked')].map((input) => input.value);
     values.type = selectedTypes.length ? selectedTypes : 'mixed';
     values.count = Number(values.count);

@@ -166,14 +166,16 @@ function renderList() {
       </div>`;
   }).join('');
 
-  listEl.querySelectorAll('.btn-toggle-details').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.bg-white[data-id]');
-      const details = card?.querySelector('.question-details');
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
+  listEl.querySelectorAll('[data-id]').forEach((card) => {
+    card.classList.add('cursor-pointer');
+    card.addEventListener('click', (event) => {
+      if (event.target.closest('.btn-edit, .btn-del')) return;
+      const btn = card.querySelector('.btn-toggle-details');
+      const details = card.querySelector('.question-details');
+      const expanded = btn?.getAttribute('aria-expanded') === 'true';
       details?.classList.toggle('hidden', expanded);
-      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-      btn.querySelector('svg')?.classList.toggle('rotate-180', !expanded);
+      btn?.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      btn?.querySelector('svg')?.classList.toggle('rotate-180', !expanded);
     });
   });
   listEl.querySelectorAll('.btn-edit').forEach((btn) => {
@@ -724,7 +726,12 @@ function openOcrScan() {
       }
       const image = await prepareOcrImage(file, (stage) => { button.textContent = stage; });
       button.textContent = 'Recognizing text…';
-      const result = await api('/ocr', { method: 'POST', body: JSON.stringify({ image }), signal: scanController.signal });
+      const result = await api('/ocr', {
+        method: 'POST',
+        body: JSON.stringify({ image }),
+        signal: scanController.signal,
+        timeoutMs: 60000,
+      });
       button.textContent = 'Preparing questions…';
       const scannedQuestions = result.data?.questions || (result.data?.parsed ? [result.data.parsed] : []);
       if (!scannedQuestions.length) throw new Error('No questions were found in the image');
