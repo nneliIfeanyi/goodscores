@@ -164,7 +164,7 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
 
 // ---------- Service Worker ----------
 const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
-const APP_VERSION = '29';
+const APP_VERSION = '30';
 
 const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
 if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {
@@ -182,6 +182,7 @@ function showAppUpdatePrompt() {
     <button type="button" data-update-refresh class="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-primary-700">Update now</button>`;
   document.body.appendChild(banner);
   banner.querySelector('[data-update-refresh]').addEventListener('click', () => {
+    localStorage.removeItem(APP_UPDATE_PENDING_KEY);
     window.location.reload();
   });
 }
