@@ -215,7 +215,11 @@ async function boot() {
 
     await new Promise((resolve) => setTimeout(resolve, 1900));
 
-    const resetToken = new URLSearchParams(window.location.search).get('reset_token');
+    const queryResetToken = new URLSearchParams(window.location.search).get('reset_token');
+    const hashResetToken = window.location.hash.startsWith('#reset-password?')
+      ? new URLSearchParams(window.location.hash.slice('#reset-password?'.length)).get('token')
+      : null;
+    const resetToken = window.__goodscoresResetToken || queryResetToken || hashResetToken;
     if (resetToken) {
       window.history.replaceState({}, document.title, window.location.pathname);
       hideSplash();

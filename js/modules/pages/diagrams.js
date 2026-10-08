@@ -62,9 +62,9 @@ function promptFieldMarkup(id, value = '', placeholder = 'Describe what learners
           </button>
           <span id="${esc(guideId)}" data-help-tooltip role="tooltip" class="rounded-lg border border-gray-200 bg-white p-3 text-xs font-normal leading-relaxed text-gray-700 shadow-xl dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100" style="position:fixed;left:0;top:0;z-index:120;box-sizing:border-box;width:min(20rem,calc(100vw - 2rem));visibility:hidden;opacity:0;pointer-events:none;transition:opacity 120ms ease;">
             <strong class="block mb-1 text-gray-900 dark:text-white">Tell us the format you need</strong>
-            <span class="block">For math, geometry, graphs, or exact positions, include <strong>“SVG diagram”</strong> in your prompt.</span>
-            <span class="block mt-1">For a scene or concept where exact measurements do not matter, include <strong>“illustration”</strong>.</span>
-            <span class="block mt-2 text-gray-500 dark:text-gray-300">Example: “SVG diagram of a football pitch with exact player positions” or “illustration of children playing football.”</span>
+            <span class="block">Describe the educational subject, scene, objects, and learner level you want to show.</span>
+            <span class="block mt-1">The generator creates a classroom-friendly education illustration through the image service.</span>
+            <span class="block mt-2 text-gray-500 dark:text-gray-300">Example: “Illustration of children sorting objects by size for a primary mathematics lesson.”</span>
           </span>
         </span>
       </div>
@@ -137,7 +137,7 @@ function renderCards() {
         <div class="flex items-start justify-between gap-2">
           <div>
             <h3 class="font-semibold text-sm">${esc(item.title || 'Diagram')}</h3>
-            <p class="text-[11px] text-gray-500">${item.mode === 'precise_diagram' ? 'SVG diagram' : 'Illustration'} · ${esc(item.source || 'ai')}</p>
+            <p class="text-[11px] text-gray-500">${item.mode === 'precise_diagram' ? 'Legacy SVG' : 'Education illustration'} · ${esc(item.source || 'ai')}</p>
           </div>
           <div class="flex items-center gap-2">
             <button class="text-xs text-primary-600" data-edit-diagram="${item.id}">Edit</button>
@@ -193,9 +193,7 @@ function renderCards() {
           <label class="block text-xs font-medium">Audience
             <select data-audience class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">${audienceOptionsMarkup(context.audience_profile)}</select>
           </label>
-          <label class="text-xs font-medium">Learner/class level<input data-learner class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.learner_level)}" placeholder="e.g. SS2" /></label>
-          <label class="text-xs font-medium">Required labels (comma separated)<input data-labels class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.required_labels.join(', '))}" placeholder="e.g. nucleus, pseudopodia" /></label>
-          <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.orientation)}" placeholder="e.g. left-to-right with clear labels" /></label>
+          <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.orientation)}" placeholder="e.g. left-to-right process or central subject" /></label>
           <label class="text-xs font-medium">What must not appear<input data-exclude class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.exclude)}" placeholder="e.g. unrelated organisms" /></label>
           <div class="flex gap-2 pt-1">
             <button data-cancel class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">Cancel</button>
@@ -216,7 +214,6 @@ function renderCards() {
           toast('Prompt is required', 'error');
           return;
         }
-        const labelsRaw = overlay.querySelector('[data-labels]').value.trim();
         submit.disabled = true;
         submit.textContent = 'Regenerating…';
         try {
@@ -228,8 +225,6 @@ function renderCards() {
               title: overlay.querySelector('[data-title]').value.trim() || 'Diagram',
               description,
               audience_profile: overlay.querySelector('[data-audience]').value.trim(),
-              learner_level: overlay.querySelector('[data-learner]').value.trim(),
-              required_labels: labelsRaw ? labelsRaw.split(',').map((x) => x.trim()).filter(Boolean) : [],
               orientation: overlay.querySelector('[data-orientation]').value.trim(),
               exclude: overlay.querySelector('[data-exclude]').value.trim(),
             }),
@@ -284,9 +279,7 @@ function openNewDiagramModal() {
         <label class="text-xs font-medium">Audience
           <select data-audience class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">${audienceOptionsMarkup('')}</select>
         </label>
-        <label class="text-xs font-medium">Learner/class level<input data-learner class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. SS2" /></label>
-        <label class="text-xs font-medium">Required labels (comma separated)<input data-labels class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. nucleus, pseudopodia" /></label>
-        <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. left-to-right with clear labels" /></label>
+        <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. left-to-right process or central subject" /></label>
         <label class="text-xs font-medium">What must not appear<input data-exclude class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. unrelated organisms" /></label>
       </div>
       <div class="flex gap-2 pt-1">
@@ -316,7 +309,6 @@ function openNewDiagramModal() {
     submit.disabled = true;
     submit.textContent = 'Creating…';
     try {
-      const labelsRaw = overlay.querySelector('[data-labels]').value.trim();
       await api('/diagrams', {
         method: 'POST',
         body: JSON.stringify({
@@ -324,8 +316,6 @@ function openNewDiagramModal() {
           title: overlay.querySelector('[data-title]').value.trim() || 'Diagram',
           description,
           audience_profile: overlay.querySelector('[data-audience]').value.trim(),
-          learner_level: overlay.querySelector('[data-learner]').value.trim(),
-          required_labels: labelsRaw ? labelsRaw.split(',').map((x) => x.trim()).filter(Boolean) : [],
           orientation: overlay.querySelector('[data-orientation]').value.trim(),
           exclude: overlay.querySelector('[data-exclude]').value.trim(),
         }),

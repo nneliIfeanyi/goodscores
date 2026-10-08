@@ -133,6 +133,11 @@
       (() => {
           const savedTheme = localStorage.getItem('gs_theme') || 'light';
           document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+        const queryResetToken = new URLSearchParams(window.location.search).get('reset_token');
+        const hashResetToken = window.location.hash.startsWith('#reset-password?')
+          ? new URLSearchParams(window.location.hash.slice('#reset-password?'.length)).get('token')
+          : null;
+        window.__goodscoresResetToken = queryResetToken || hashResetToken || '';
         const revealApp = () => {
           document.getElementById('splash')?.classList.add('hidden');
           document.getElementById('app')?.classList.remove('hidden');
@@ -141,6 +146,6 @@
         window.setTimeout(revealApp, 5000);
       })();
     </script>
-  <script type="module" src="js/app.js?v=29"></script>
+  <script type="module" src="js/app.js?v=30"></script>
 </body>
 </html>
