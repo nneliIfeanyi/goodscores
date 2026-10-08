@@ -50,6 +50,10 @@ function audienceOptionsMarkup(selected = '') {
   return AUDIENCE_OPTIONS.map((option) => `<option value="${esc(option.value)}"${option.value === selected ? ' selected' : ''}>${esc(option.label)}</option>`).join('');
 }
 
+function requiredLabelsValue(value) {
+  return String(value || '').split(',').map((label) => label.trim()).filter(Boolean);
+}
+
 function promptFieldMarkup(id, value = '', placeholder = 'Describe what learners should see') {
   const guideId = `${id}-guide`;
   return `
@@ -193,7 +197,7 @@ function renderCards() {
           <label class="block text-xs font-medium">Audience
             <select data-audience class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">${audienceOptionsMarkup(context.audience_profile)}</select>
           </label>
-          <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.orientation)}" placeholder="e.g. left-to-right process or central subject" /></label>
+          <label class="text-xs font-medium">Required labels<input data-required-labels class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.required_labels.join(', '))}" placeholder="e.g. nucleus, cytoplasm, cell membrane" /></label>
           <label class="text-xs font-medium">What must not appear<input data-exclude class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" value="${esc(context.exclude)}" placeholder="e.g. unrelated organisms" /></label>
           <div class="flex gap-2 pt-1">
             <button data-cancel class="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm">Cancel</button>
@@ -225,7 +229,7 @@ function renderCards() {
               title: overlay.querySelector('[data-title]').value.trim() || 'Diagram',
               description,
               audience_profile: overlay.querySelector('[data-audience]').value.trim(),
-              orientation: overlay.querySelector('[data-orientation]').value.trim(),
+              required_labels: requiredLabelsValue(overlay.querySelector('[data-required-labels]').value),
               exclude: overlay.querySelector('[data-exclude]').value.trim(),
             }),
             timeoutMs: 180000,
@@ -261,7 +265,7 @@ function renderCards() {
   });
 }
 
-function openNewDiagramModal() {
+export function openNewDiagramModal(onCreated) {
   const overlay = document.createElement('div');
   overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';
   overlay.innerHTML = `
@@ -279,7 +283,7 @@ function openNewDiagramModal() {
         <label class="text-xs font-medium">Audience
           <select data-audience class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">${audienceOptionsMarkup('')}</select>
         </label>
-        <label class="text-xs font-medium">Orientation/layout<input data-orientation class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. left-to-right process or central subject" /></label>
+        <label class="text-xs font-medium">Required labels<input data-required-labels class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. nucleus, cytoplasm, cell membrane" /></label>
         <label class="text-xs font-medium">What must not appear<input data-exclude class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="e.g. unrelated organisms" /></label>
       </div>
       <div class="flex gap-2 pt-1">
@@ -309,22 +313,23 @@ function openNewDiagramModal() {
     submit.disabled = true;
     submit.textContent = 'Creating…';
     try {
-      await api('/diagrams', {
+      const result = await api('/diagrams', {
         method: 'POST',
         body: JSON.stringify({
           source: 'ai',
           title: overlay.querySelector('[data-title]').value.trim() || 'Diagram',
           description,
           audience_profile: overlay.querySelector('[data-audience]').value.trim(),
-          orientation: overlay.querySelector('[data-orientation]').value.trim(),
+          required_labels: requiredLabelsValue(overlay.querySelector('[data-required-labels]').value),
           exclude: overlay.querySelector('[data-exclude]').value.trim(),
         }),
         timeoutMs: 180000,
       });
       await loadDiagrams();
-      renderCards();
+      if (document.getElementById('diagram-list')) renderCards();
       toast('Diagram created', 'success');
       close();
+      onCreated?.(result.data);
     } catch (error) {
       toast(error.message || 'Could not create diagram', 'error');
     } finally {

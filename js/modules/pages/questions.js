@@ -5,6 +5,7 @@ import { loadMetaData, optionsHtml } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
 import { openAiQuestionFlow } from '../aiQuestions.js';
+import { openNewDiagramModal } from './diagrams.js';
 import { requireAuthentication } from '../../utils/authGate.js';
 import { normalizeDiagramSpec } from '../aiQuestionContract.js';
 
@@ -468,18 +469,17 @@ async function openForm(id = null, offlineId = null) {
     if (!navigator.onLine) return toast('Attach from library requires an internet connection.', 'warn');
     try {
       const res = await api('/diagrams');
-      const rows = res.data || [];
-      if (!rows.length) {
-        toast('No diagrams in your library yet. Create one in the Diagrams tab.', 'info');
-        return;
-      }
+      let rows = res.data || [];
       const picker = document.createElement('div');
       picker.className = 'fixed inset-0 z-[100] bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';
       picker.innerHTML = `
         <div class="bg-white dark:bg-gray-900 w-full sm:max-w-lg max-h-[88vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl shadow-xl p-4">
           <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold">Attach from diagrams</h3>
-            <button data-close class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">✕</button>
+            <div class="flex items-center gap-1">
+              <button data-new-diagram type="button" class="px-2.5 py-1.5 rounded-lg bg-primary-600 text-white text-xs font-semibold">New</button>
+              <button data-close type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">✕</button>
+            </div>
           </div>
           <div class="space-y-2" id="diagram-picker-list"></div>
         </div>`;
@@ -487,22 +487,31 @@ async function openForm(id = null, offlineId = null) {
       const closePicker = () => picker.remove();
       picker.querySelector('[data-close]').onclick = closePicker;
       const list = picker.querySelector('#diagram-picker-list');
-      list.innerHTML = rows.map((d) => `
-        <button type="button" data-pick-id="${d.id}" class="w-full text-left p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300">
-          <div class="font-medium text-sm">${escapeHtml(d.title || 'Diagram')}</div>
-          <div class="text-[11px] text-gray-500">${d.mode === 'precise_diagram' ? 'SVG diagram' : 'Illustration'}</div>
-        </button>`).join('');
+      const renderList = () => {
+        list.innerHTML = rows.length
+          ? rows.map((d) => `
+            <button type="button" data-pick-id="${d.id}" class="w-full text-left p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-300">
+              <div class="font-medium text-sm">${escapeHtml(d.title || 'Diagram')}</div>
+              <div class="text-[11px] text-gray-500">${d.mode === 'precise_diagram' ? 'SVG diagram' : 'Illustration'}</div>
+            </button>`).join('')
+          : '<div class="text-sm text-gray-500 text-center py-6">No diagrams yet. Create one to attach it.</div>';
 
-      list.querySelectorAll('[data-pick-id]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const picked = rows.find((row) => String(row.id) === btn.dataset.pickId);
-          if (!picked) return;
-          attachedDiagram = picked;
-          renderAttachedPreview();
-          closePicker();
-          toast('Diagram attached', 'success');
+        list.querySelectorAll('[data-pick-id]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const picked = rows.find((row) => String(row.id) === btn.dataset.pickId);
+            if (!picked) return;
+            attachedDiagram = picked;
+            renderAttachedPreview();
+            closePicker();
+            toast('Diagram attached', 'success');
+          });
         });
-      });
+      };
+      renderList();
+      picker.querySelector('[data-new-diagram]').onclick = () => {
+        closePicker();
+        openNewDiagramModal(() => attachButton.click());
+      };
     } catch (error) {
       toast(error.message || 'Could not load diagram library', 'error');
     }
