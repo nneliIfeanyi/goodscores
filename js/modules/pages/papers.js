@@ -563,12 +563,13 @@ async function openBuilder(existingPaper = null) {
     structureList.innerHTML = theoryQuestions.map((q) => {
       const level = Math.max(0, Math.min(2, structureState.get(questionKey(q))?.level || 0));
       const label = labels.get(questionKey(q));
+      const id = questionKey(q);
       return `<div class="grid grid-cols-[1fr_5rem] gap-2 items-center">
         <div class="min-w-0">
           <p class="text-xs truncate">${(q.body || '').replace(/<[^>]+>/g, '').slice(0, 70)}</p>
-          <span data-structure-label="${q.id}" class="mt-1 block text-xs font-semibold text-primary-600">${label}</span>
+          <span data-structure-label="${id}" class="mt-1 block text-xs font-semibold text-primary-600">${label}</span>
         </div>
-        <select data-structure-level="${q.id}" aria-label="Question nesting level"
+        <select data-structure-level="${id}" aria-label="Question nesting level"
           class="px-1 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">
           <option value="0" ${level === 0 ? 'selected' : ''}>Main</option>
           <option value="1" ${level === 1 ? 'selected' : ''}>Part</option>

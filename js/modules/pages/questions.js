@@ -703,7 +703,16 @@ function openOcrScan() {
           <label class="text-xs font-medium">Class<select name="class_id" class="mt-1 w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"><option value="">${meta.classes.length ? '—' : 'Add in Account settings'}</option>${meta.classes.map((x) => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('')}</select></label>
           <label class="text-xs font-medium">Term<select name="term_id" class="mt-1 w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm"><option value="">—</option>${meta.terms.map((x) => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('')}</select></label>
         </div>
-        <label class="block text-xs font-medium">Paper image<input name="image" type="file" accept="image/*" required class="mt-1 w-full text-sm" /></label>
+        <div class="space-y-2">
+          <span class="block text-xs font-medium">Paper image</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" data-ocr-camera class="rounded-xl border border-cyan-200 dark:border-cyan-800 px-3 py-2.5 text-sm font-semibold text-cyan-700 dark:text-cyan-300 hover:border-cyan-500">Take photo</button>
+            <button type="button" data-ocr-file class="rounded-xl border border-gray-200 dark:border-gray-700 px-3 py-2.5 text-sm font-semibold hover:border-primary-400">Choose image</button>
+          </div>
+          <input data-ocr-camera-input type="file" accept="image/*" capture="environment" class="hidden" />
+          <input data-ocr-file-input type="file" accept="image/*" class="hidden" />
+          <p data-ocr-file-name class="text-xs text-gray-500">Take a new photo or choose an existing image.</p>
+        </div>
         <p class="text-xs text-gray-500">OCR reads text only. The scanned image is ignored and will not be saved with the questions. OCR costs 35 credits. Nothing is saved until you review and accept the questions.</p>
         <div data-ocr-error class="hidden text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"></div>
         <div class="flex gap-2"><button type="submit" class="flex-1 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold">Extract questions</button><button type="button" data-ocr-cancel class="hidden px-3 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm">Cancel</button></div>
@@ -711,8 +720,20 @@ function openOcrScan() {
     </div>`;
   document.body.appendChild(overlay);
   let scanController = null;
+  let selectedFile = null;
   const close = () => { scanController?.abort(); overlay.remove(); };
   overlay.querySelector('[data-close]').onclick = close;
+  const cameraInput = overlay.querySelector('[data-ocr-camera-input]');
+  const fileInput = overlay.querySelector('[data-ocr-file-input]');
+  const fileName = overlay.querySelector('[data-ocr-file-name]');
+  const selectFile = (event) => {
+    selectedFile = event.target.files?.[0] || null;
+    fileName.textContent = selectedFile?.name || 'Take a new photo or choose an existing image.';
+  };
+  overlay.querySelector('[data-ocr-camera]').onclick = () => cameraInput.click();
+  overlay.querySelector('[data-ocr-file]').onclick = () => fileInput.click();
+  cameraInput.addEventListener('change', selectFile);
+  fileInput.addEventListener('change', selectFile);
   const cancelButton = overlay.querySelector('[data-ocr-cancel]');
   cancelButton.onclick = () => scanController?.abort();
   overlay.querySelector('[data-ocr-form]').addEventListener('submit', async (event) => {
@@ -720,8 +741,12 @@ function openOcrScan() {
     const form = event.currentTarget;
     const button = form.querySelector('button[type="submit"]');
     const error = form.querySelector('[data-ocr-error]');
-    const file = form.image.files?.[0];
-    if (!file) return;
+    const file = selectedFile;
+    if (!file) {
+      error.textContent = 'Choose an image or take a photo first.';
+      error.classList.remove('hidden');
+      return;
+    }
     scanController = new AbortController();
     button.disabled = true;
     cancelButton.classList.remove('hidden');
