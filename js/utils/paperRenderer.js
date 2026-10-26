@@ -1,4 +1,5 @@
 import { api, getUser, storageUrl } from './api.js';
+import { mathHtml } from './math.js';
 
 const escapeHtml = (value) => String(value ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -34,19 +35,19 @@ function renderQuestions(paper, settings) {
   return sections.map((section) => {
     const passage = section.passage;
     const passageHtml = passage
-      ? `<div class="paper-passage"><strong>${escapeHtml(passage.title || 'Passage')}</strong><div>${passage.body || ''}</div></div>`
+      ? `<div class="paper-passage"><strong>${escapeHtml(passage.title || 'Passage')}</strong><div>${mathHtml(passage.body || '')}</div></div>`
       : '';
     const itemList = (section.question_ids || []).map((id) => questions.get(String(id))).filter(Boolean).map((question) => {
       number += 1;
       const label = layout.get(String(question.id ?? question.offline_id))?.label || String(number);
       const options = question.type === 'mcq'
         ? (settings.paper_format === 'inline_options'
-          ? `<span class="inline-options">\t${(question.options || []).map((option) => `<span class="inline-option"><strong>${escapeHtml(option.key)}.</strong> ${escapeHtml(option.text)}</span>`).join('')}</span>`
-          : `<div class="options">${(question.options || []).map((option) => `<div><strong>${escapeHtml(option.key)}.</strong> ${escapeHtml(option.text)}</div>`).join('')}</div>`)
+          ? `<span class="inline-options">\t${(question.options || []).map((option) => `<span class="inline-option"><strong>${escapeHtml(option.key)}.</strong> ${mathHtml(option.text)}</span>`).join('')}</span>`
+          : `<div class="options">${(question.options || []).map((option) => `<div><strong>${escapeHtml(option.key)}.</strong> ${mathHtml(option.text)}</div>`).join('')}</div>`)
         : '';
       const images = (question.images || (question._pending_image ? [{ data_url: question._pending_image, original_name: 'Question image' }] : [])).map((image) => `<figure class="question-image"><img style="max-width:400px;width:100%;height:auto;max-height:300px;margin:0 auto;object-fit:contain" src="${escapeHtml(image.data_url || storageUrl(image.file_path))}" alt="${escapeHtml(image.original_name || 'Question image')}"></figure>`).join('');
       const marks = settings.show_marks === false ? '' : `<span class="marks">[${escapeHtml(question.marks || 1)} mark${Number(question.marks) === 1 ? '' : 's'}]</span>`;
-      return `<article style="margin-bottom:8px"><div><strong>${escapeHtml(label)}.</strong> ${question.body || ''}${marks}</div>${images}${options}</article>`;
+      return `<article style="margin-bottom:8px"><div><strong>${escapeHtml(label)}.</strong> ${mathHtml(question.body || '')}${marks}</div>${images}${options}</article>`;
     });
     const items = settings.paper_format === 'inline_options'
       ? `<div class="inline-question-column">${itemList.slice(0, Math.ceil(itemList.length / 2)).join('')}</div><div class="inline-question-column">${itemList.slice(Math.ceil(itemList.length / 2)).join('')}</div>`

@@ -12,6 +12,41 @@
   padding-bottom: var(--safe-bottom);
 }
 
+.math-expression {
+  font-family: Georgia, 'Times New Roman', serif;
+  white-space: nowrap;
+}
+
+.math-display {
+  display: block;
+  margin: 0.4rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.math-frac {
+  display: inline-flex;
+  vertical-align: middle;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+  margin: 0 0.12em;
+}
+
+.math-frac > span:first-child {
+  border-bottom: 1px solid currentColor;
+  padding: 0 0.18em 0.08em;
+}
+
+.math-frac > span:last-child {
+  padding: 0.08em 0.18em 0;
+}
+
+.math-root > span {
+  border-top: 1px solid currentColor;
+  padding: 0 0.12em;
+}
+
 /* Shared brand treatment: a soft teal atmosphere with luminous primary actions. */
 body {
   background-image: radial-gradient(circle at 12% 0%, rgba(45, 212, 191, 0.12), transparent 34rem);

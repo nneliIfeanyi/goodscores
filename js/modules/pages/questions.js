@@ -8,6 +8,7 @@ import { openAiQuestionFlow } from '../aiQuestions.js';
 import { openNewDiagramModal } from './diagrams.js';
 import { requireAuthentication } from '../../utils/authGate.js';
 import { normalizeDiagramSpec } from '../aiQuestionContract.js';
+import { mathHtml } from '../../utils/math.js';
 
 let meta = { subjects: [], classes: [], terms: [] };
 let questions = [];
@@ -133,9 +134,9 @@ function renderList() {
         const optionKey = String(option.key || '').trim();
         const optionText = String(option.text || '').trim();
         const isCorrect = correctAnswer === optionKey.toLowerCase() || correctAnswer === optionText.toLowerCase();
-        return `<div class="flex items-start gap-2 text-sm ${isCorrect ? 'text-green-700 dark:text-green-300 font-medium' : 'text-gray-600 dark:text-gray-300'}"><span class="shrink-0 font-semibold">${escapeHtml(optionKey)}.</span><span>${escapeHtml(optionText)}</span>${isCorrect ? '<span class="text-[10px] uppercase tracking-wide">Correct</span>' : ''}</div>`;
+        return `<div class="flex items-start gap-2 text-sm ${isCorrect ? 'text-green-700 dark:text-green-300 font-medium' : 'text-gray-600 dark:text-gray-300'}"><span class="shrink-0 font-semibold">${escapeHtml(optionKey)}.</span><span>${mathHtml(optionText)}</span>${isCorrect ? '<span class="text-[10px] uppercase tracking-wide">Correct</span>' : ''}</div>`;
       }).join('') : '<p class="text-sm text-gray-400">No options saved</p>'}</div>`
-      : `<div><p class="text-xs font-semibold text-gray-500 uppercase">${q.type === 'fill' ? 'Correct answer' : 'Answer / marking guide'}</p><p class="mt-1 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">${answer ? escapeHtml(answer) : 'No answer saved'}</p></div>`;
+      : `<div><p class="text-xs font-semibold text-gray-500 uppercase">${q.type === 'fill' ? 'Correct answer' : 'Answer / marking guide'}</p><p class="mt-1 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">${answer ? mathHtml(answer) : 'No answer saved'}</p></div>`;
 
     return `
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 hover:border-primary-300 transition" data-id="${q.id || q.offline_id}">
@@ -148,7 +149,7 @@ function renderList() {
               ${q.passage_id ? `<span class="text-xs text-primary-600">Passage: ${q.passage_title || 'linked'}</span>` : ''}
               ${q.image_count > 0 ? `<span class="text-xs text-primary-600">📷 ${q.image_count}</span>` : ''}
             </div>
-            <p class="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">${preview}${preview.length >= 100 ? '…' : ''}</p>
+            <p class="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">${mathHtml(preview)}${preview.length >= 100 ? '…' : ''}</p>
             <p class="text-xs text-gray-400 mt-1">${q.marks || 1} mark(s)</p>
           </div>
           <div class="flex gap-1 shrink-0">

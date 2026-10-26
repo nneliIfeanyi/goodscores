@@ -5,6 +5,7 @@ import { MAX_QUESTIONS_PER_REQUEST, normalizeDiagramSpec } from './aiQuestionCon
 import { requireAuthentication } from '../utils/authGate.js';
 import { saveOfflineQuestion } from '../utils/db.js';
 import { loadMetaData } from '../utils/meta.js';
+import { mathHtml } from '../utils/math.js';
 
 const esc = (value) => String(value ?? '')
   .replace(/&/g, '&amp;')
@@ -139,11 +140,19 @@ function renderReview(overlay, questions, passage, values, onSaved, close, exist
     card.className = 'rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-2';
     card.dataset.index = index;
     card.innerHTML = `<div class="flex items-center justify-between"><label class="flex items-center gap-2 text-xs font-semibold"><input type="checkbox" data-select checked />Question ${index + 1}</label><div class="flex items-center gap-2"><button type="button" data-up class="text-xs text-gray-500" title="Move up">↑</button><button type="button" data-down class="text-xs text-gray-500" title="Move down">↓</button><button type="button" data-copy class="text-xs text-primary-600">Copy</button><button type="button" data-remove class="text-xs text-red-500">Remove</button></div></div>
+      <div data-math-preview class="rounded-lg bg-gray-50 dark:bg-gray-800/60 p-2 text-sm">${mathHtml(question.body)}</div>
       <textarea data-body rows="3" class="w-full px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">${esc(question.body)}</textarea>
       ${diagram ? `<div data-diagram-preview class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2 min-h-40 flex items-center justify-center">${diagram.svg ? diagram.svg : `<span class="text-xs text-gray-600">No diagram preview available.</span>`}</div>` : ''}
       ${(question.options || []).map((option) => `<label class="flex gap-2 items-center text-xs"><span class="font-semibold w-4">${esc(option.key)}</span><input data-option="${esc(option.key)}" value="${esc(option.text)}" class="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800" /></label>`).join('')}
       <div class="flex gap-2"><input data-answer value="${esc(question.answer)}" placeholder="Answer" class="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs" /><button type="button" data-accept class="px-3 py-1.5 rounded-lg bg-primary-50 text-primary-700 text-xs font-semibold">Accept</button></div>`;
     items.appendChild(card);
+  });
+
+  items.querySelectorAll('[data-body]').forEach((textarea) => {
+    textarea.addEventListener('input', () => {
+      const preview = textarea.closest('[data-index]')?.querySelector('[data-math-preview]');
+      if (preview) preview.innerHTML = mathHtml(textarea.value);
+    });
   });
 
   const accepted = new Set();
