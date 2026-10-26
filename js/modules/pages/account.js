@@ -431,11 +431,12 @@ export async function renderAccount() {
         </div>
         <div id="exam-header-content" class="hidden space-y-3">
         <div id="header-list" class="space-y-2 text-sm"></div>
+        <p id="header-edit-notice" class="text-xs text-gray-500 dark:text-gray-400">After creating your header, you can edit the school/centre name and extra line one time. The logo can be changed at any time.</p>
         <form id="header-form" class="space-y-2 border-t pt-3 border-gray-100 dark:border-gray-700">
           <input name="school_name" required placeholder="School / centre name" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" />
           <input name="extra_line" placeholder="Extra line" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" />
           <label class="block text-xs font-medium">Header logo<input name="logo" type="file" accept="image/png,image/jpeg,image/gif,image/webp" class="mt-1 w-full text-sm" /></label>
-          <button type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save header</button>
+          <button id="header-save-button" type="submit" class="w-full py-2 rounded-xl bg-primary-600 text-white text-sm font-medium">Save header</button>
         </form>
         </div>
       </div>
@@ -659,21 +660,39 @@ export async function renderAccount() {
       const f = e.target;
       try {
         const headerId = f.dataset.headerId;
-        const res = await api(headerId ? `/headers/${headerId}` : '/headers', {
-          method: headerId ? 'PUT' : 'POST',
-          body: JSON.stringify({
-            school_name: f.school_name.value.trim(),
-            extra_line: f.extra_line.value.trim() || undefined,
-          }),
-        });
-        const logo = f.logo.files?.[0];
-        if (logo && (headerId || res.data?.id)) {
-          await api(`/headers/${headerId || res.data.id}/logo`, { method: 'POST', body: JSON.stringify({ image: await fileToDataUrl(logo) }) });
+        const detailsEditUsed = f.dataset.detailsEditUsed === 'true';
+        let savedHeaderId = headerId;
+        if (detailsEditUsed && !f.logo.files?.[0]) {
+          throw new Error('Header details are locked. Select a logo to make a logo-only update.');
         }
-        toast('Header saved', 'success');
-        loadHeaders();
+        if (!headerId) {
+          const res = await api('/headers', {
+            method: 'POST',
+            body: JSON.stringify({
+              school_name: f.school_name.value.trim(),
+              extra_line: f.extra_line.value.trim() || undefined,
+            }),
+          });
+          savedHeaderId = res.data?.id;
+        } else if (!detailsEditUsed) {
+          await api(`/headers/${headerId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              school_name: f.school_name.value.trim(),
+              extra_line: f.extra_line.value.trim() || undefined,
+            }),
+          });
+        }
+        const logo = f.logo.files?.[0];
+        if (logo && savedHeaderId) {
+          await api(`/headers/${savedHeaderId}/logo`, { method: 'POST', body: JSON.stringify({ image: await fileToDataUrl(logo) }) });
+        }
+        f.logo.value = '';
+        toast(detailsEditUsed ? 'Header logo updated' : 'Header saved', 'success');
       } catch (err) {
         toast(err.message || 'Failed', 'error');
+      } finally {
+        await loadHeaders();
       }
     });
   }
@@ -989,18 +1008,43 @@ async function loadHeaders() {
     const res = await api('/headers');
     const list = res.data || [];
     if (list[0]) localStorage.setItem('gs_exam_header', JSON.stringify(list[0]));
+    const form = document.getElementById('header-form');
+    const notice = document.getElementById('header-edit-notice');
+    const saveButton = document.getElementById('header-save-button');
     if (!list.length) {
       el.innerHTML = '<p class="text-xs text-gray-400">No headers saved yet</p>';
+      if (form) {
+        form.dataset.headerId = '';
+        form.dataset.detailsEditUsed = 'false';
+        form.school_name.disabled = false;
+        form.extra_line.disabled = false;
+        form.school_name.value = '';
+        form.extra_line.value = '';
+      }
+      if (notice) notice.textContent = 'After creating your header, you can edit the school/centre name and extra line one time. The logo can be changed at any time.';
+      if (saveButton) saveButton.textContent = 'Save header';
       return;
     }
-      const header = list[0];
-      el.innerHTML = `<p class="text-xs text-primary-600">Current header: ${header.school_name}</p>`;
-      const form = document.getElementById('header-form');
-      if (form) {
-        form.dataset.headerId = header.id;
-        form.school_name.value = header.school_name || '';
-        form.extra_line.value = header.extra_line || '';
-      }
+    const header = list[0];
+    const detailsEditUsed = Boolean(Number(header.details_edit_used));
+    const summary = document.createElement('p');
+    summary.className = 'text-xs text-primary-600';
+    summary.textContent = `Current header: ${header.school_name}`;
+    el.replaceChildren(summary);
+    if (form) {
+      form.dataset.headerId = header.id;
+      form.dataset.detailsEditUsed = detailsEditUsed ? 'true' : 'false';
+      form.school_name.value = header.school_name || '';
+      form.extra_line.value = header.extra_line || '';
+      form.school_name.disabled = detailsEditUsed;
+      form.extra_line.disabled = detailsEditUsed;
+    }
+    if (notice) {
+      notice.textContent = detailsEditUsed
+        ? 'Your one edit has been used. The school/centre name and extra line are locked; you can still change the logo at any time.'
+        : 'You have one edit available for the school/centre name and extra line. Saving those changes will lock them; the logo can be changed at any time.';
+    }
+    if (saveButton) saveButton.textContent = detailsEditUsed ? 'Update logo' : 'Save header changes';
   } catch (err) {
     el.innerHTML = '<p class="text-xs text-red-500">' + (err.message || 'Error') + '</p>';
   }

@@ -98,6 +98,7 @@ mysql -u root -p question_bank < backend/sql/phase4_migrate.sql
 ### Features
 - **School admin** (Account): list/create/remove teachers, school name/address, share School ID
 - **Pro Plus** (individuals only): multi exam headers; choose Pro vs Pro Plus when buying packs
+- **Individual exam header**: school name and extra line can be edited once after creation; logo updates remain available
 - **Feature gating**: OCR blocked when school pool empty/expired
 - **Paper builder**: pick saved header for individuals
 - Subscription packs unlock offline + Pro status

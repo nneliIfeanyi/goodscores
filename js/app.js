@@ -3,7 +3,7 @@ import { getUser, clearToken } from './utils/api.js';
 import { renderLogin, renderResetPassword } from './modules/pages/login.js';
 import { renderRegister } from './modules/pages/register.js';
 import { renderDashboard } from './modules/pages/dashboard.js';
-import { renderAccount } from './modules/pages/account.js?v=25';
+import { renderAccount } from './modules/pages/account.js?v=26';
 import { renderDiagrams } from './modules/pages/diagrams.js';
 import { renderQuestions } from './modules/pages/questions.js';
 import { renderPapers } from './modules/pages/papers.js';
