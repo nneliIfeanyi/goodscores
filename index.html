@@ -144,9 +144,23 @@
           document.getElementById('app')?.classList.remove('hidden');
         };
         window.__goodscoresRevealApp = revealApp;
-        window.setTimeout(revealApp, 5000);
+        window.__goodscoresAppBootStarted = false;
+        window.setTimeout(() => {
+          if (window.__goodscoresAppBootStarted) return;
+          const message = navigator.onLine
+            ? 'The app could not finish loading. Please reload and try again.'
+            : 'This device is missing some app files for offline startup. Connect to the internet, open the app once, then try again.';
+          const mainContent = document.getElementById('main-content');
+          if (mainContent) {
+            mainContent.innerHTML = `<section class="m-4 rounded-xl border border-amber-300 bg-amber-50 p-5 text-amber-950" role="alert"><h1 class="text-lg font-semibold">GoodScores could not start</h1><p class="mt-2">${message}</p><button class="mt-4 rounded-lg bg-amber-800 px-4 py-2 font-medium text-white" type="button" onclick="window.location.reload()">Reload app</button></section>`;
+          }
+          document.querySelectorAll('#bottom-nav .nav-item').forEach((item) => {
+            item.disabled = true;
+          });
+          revealApp();
+        }, 5000);
       })();
     </script>
-  <script type="module" src="js/app.js?v=31"></script>
+  <script type="module" src="js/app.js?v=32"></script>
 </body>
 </html>

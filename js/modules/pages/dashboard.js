@@ -1,9 +1,21 @@
-import { getUser } from '../../utils/api.js';
-import { getOfflinePapers } from '../../utils/db.js';
+import { api, getUser } from '../../utils/api.js';
 import { getQuestionBank } from '../../utils/questionBank.js';
 import { loadMetaData } from '../../utils/meta.js';
+import { toast } from '../../utils/toast.js';
 
 const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
+let dashboardRefreshTimer;
+
+function refreshDashboardWhenVisible() {
+  if (!document.getElementById('dash-question-count')) return;
+  clearTimeout(dashboardRefreshTimer);
+  dashboardRefreshTimer = setTimeout(() => renderDashboard(), 0);
+}
+
+window.addEventListener('offline', refreshDashboardWhenVisible);
+window.addEventListener('online', refreshDashboardWhenVisible);
+window.addEventListener('gs-questions-refresh', refreshDashboardWhenVisible);
+window.addEventListener('gs-papers-refresh', refreshDashboardWhenVisible);
 
 function countPersonalRows(rows) {
   return (rows || []).filter((row) => row?.local_only || row?.teacher_id != null).length;
@@ -85,12 +97,12 @@ export async function renderDashboard() {
         <div class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
           <p class="text-xs text-gray-500">Question bank</p>
           <p id="dash-question-count" class="text-2xl font-bold mt-1">—</p>
-          <p class="text-[11px] text-gray-400 mt-1">Your questions</p>
+          <p id="dash-question-hint" class="text-[11px] text-gray-400 mt-1">Your questions</p>
         </div>
         <div class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
           <p class="text-xs text-gray-500">Papers built</p>
           <p id="dash-paper-count" class="text-2xl font-bold mt-1">—</p>
-          <p class="text-[11px] text-gray-400 mt-1">Your papers</p>
+          <p id="dash-paper-hint" class="text-[11px] text-gray-400 mt-1">Your papers</p>
         </div>
         <button id="dash-new-q" class="p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-left hover:border-primary-300 transition">
           <div class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 flex items-center justify-center mb-3">
@@ -132,28 +144,53 @@ export async function renderDashboard() {
   `;
 
   try {
-    const [questions, papers, meta] = await Promise.all([getQuestionBank(), getOfflinePapers(), loadMetaData()]);
+    const [questions, meta] = await Promise.all([getQuestionBank(), loadMetaData()]);
     const questionCount = document.getElementById('dash-question-count');
     const paperCount = document.getElementById('dash-paper-count');
+    const questionHint = document.getElementById('dash-question-hint');
+    const paperHint = document.getElementById('dash-paper-hint');
     const subjectCount = document.getElementById('dash-subject-count');
     const classCount = document.getElementById('dash-class-count');
     if (questionCount) questionCount.textContent = questions.length;
-    if (paperCount) paperCount.textContent = papers.length;
+    if (questionHint) {
+      questionHint.textContent = navigator.onLine && localStorage.getItem('gs_token')
+        ? 'Server bank; cached for offline use'
+        : questions.length ? 'Cached on this device' : 'Connect to load your questions';
+    }
+    if (navigator.onLine && localStorage.getItem('gs_token')) {
+      try {
+        const result = await api('/papers');
+        if (!Array.isArray(result.data)) throw new Error('The server returned an invalid paper list');
+        if (paperCount) paperCount.textContent = result.data.length;
+        if (paperHint) paperHint.textContent = 'Current server count';
+      } catch (error) {
+        if (paperCount) paperCount.textContent = '—';
+        if (paperHint) paperHint.textContent = 'Could not load online';
+        toast(error.message || 'Could not load paper count', 'warn');
+      }
+    } else {
+      if (paperCount) paperCount.textContent = '—';
+      if (paperHint) paperHint.textContent = 'Connect to view papers';
+    }
     const subjectTotal = countPersonalRows(meta.subjects);
     const classTotal = countPersonalRows(meta.classes);
     if (subjectCount) subjectCount.textContent = subjectTotal;
     if (classCount) classCount.textContent = classTotal;
     updateMetaEmptyHints(subjectTotal, classTotal);
-  } catch (_) {
+  } catch (error) {
     const questionCount = document.getElementById('dash-question-count');
     const paperCount = document.getElementById('dash-paper-count');
+    const questionHint = document.getElementById('dash-question-hint');
+    const paperHint = document.getElementById('dash-paper-hint');
     const subjectCount = document.getElementById('dash-subject-count');
     const classCount = document.getElementById('dash-class-count');
-    if (questionCount) questionCount.textContent = '0';
-    if (paperCount) paperCount.textContent = '0';
-    if (subjectCount) subjectCount.textContent = '0';
-    if (classCount) classCount.textContent = '0';
-    updateMetaEmptyHints(0, 0);
+    if (questionCount) questionCount.textContent = '—';
+    if (paperCount) paperCount.textContent = '—';
+    if (questionHint) questionHint.textContent = 'Unavailable';
+    if (paperHint) paperHint.textContent = navigator.onLine ? 'Unavailable' : 'Connect to view papers';
+    if (subjectCount) subjectCount.textContent = '—';
+    if (classCount) classCount.textContent = '—';
+    toast(error.message || 'Could not load dashboard data', 'warn');
   }
 
   document.getElementById('dash-new-q')?.addEventListener('click', () => {

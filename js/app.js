@@ -27,14 +27,14 @@ function initConnectivity() {
       el = document.createElement('div');
       el.id = bannerId;
       el.className = 'fixed top-14 inset-x-0 z-50 text-center text-xs font-medium py-1.5 bg-amber-500 text-white';
-      el.textContent = 'You are offline - do not refresh the page';
+      el.textContent = 'Offline: questions saved here will sync when connected; paper tools need internet.';
       document.body.appendChild(el);
     }
   }
   window.addEventListener('offline', () => show(true));
   window.addEventListener('online', () => {
     show(false);
-    if (localStorage.getItem('gs_token')) void backupQuestionBank();
+    if (localStorage.getItem('gs_token')) void backupQuestionBank({ silent: true });
   });
   if (!navigator.onLine) show(true);
 }
@@ -168,7 +168,7 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
 
 // ---------- Service Worker ----------
 const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
-const APP_VERSION = '30';
+const APP_VERSION = '31';
 
 const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
 if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {
@@ -217,7 +217,7 @@ async function boot() {
     initNav();
     initConnectivity();
 
-    await new Promise((resolve) => setTimeout(resolve, 1900));
+    if (navigator.onLine) await new Promise((resolve) => setTimeout(resolve, 1900));
 
     const queryResetToken = new URLSearchParams(window.location.search).get('reset_token');
     const hashResetToken = window.location.hash.startsWith('#reset-password?')
@@ -289,4 +289,5 @@ async function boot() {
   }
 }
 
+window.__goodscoresAppBootStarted = true;
 boot();

@@ -64,6 +64,8 @@ export async function backupQuestionBank({ offlineId = null, silent = false } = 
     await backupPendingPapers();
     if (!questions.length && !silent) toast('Your question bank is already synced.', 'info');
     window.dispatchEvent(new CustomEvent('gs-backup-status-refresh'));
+    window.dispatchEvent(new CustomEvent('gs-questions-refresh'));
+    window.dispatchEvent(new CustomEvent('gs-papers-refresh'));
     return true;
   } catch (error) {
     toast(error.message || 'Question bank backup failed', 'error');
