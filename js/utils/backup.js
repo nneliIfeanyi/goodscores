@@ -1,10 +1,11 @@
-import { api, getUser, saveUser, storageUrl } from './api.js';
-import { getUnsyncedQuestions, getOfflineQuestions, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers } from './db.js?v=25';
+import { api, storageUrl } from './api.js';
+import { saveOfflineQuestion, getUnsyncedQuestions, getOfflineQuestions, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers } from './db.js?v=26';
 import { toast } from './toast.js';
 import { requireAuthentication } from './authGate.js';
 import { loadMetaData } from './meta.js';
 
 let backupInProgress = false;
+let backupRequested = false;
 let restoreInProgress = false;
 
 async function cacheRestoreImages(question) {
@@ -29,15 +30,18 @@ async function cacheRestoreImages(question) {
   return { ...question, images };
 }
 
-export async function backupQuestionBank({ offlineId = null } = {}) {
+export async function backupQuestionBank({ offlineId = null, silent = false } = {}) {
   if (!localStorage.getItem('gs_token')) {
     requireAuthentication('Question bank backup', () => backupQuestionBank({ offlineId }));
     return;
   }
-  if (backupInProgress) return;
+  if (backupInProgress) {
+    backupRequested = true;
+    return false;
+  }
   if (!navigator.onLine) {
-    toast('Backup requires an internet connection. Your questions remain saved successfully.', 'warn');
-    return;
+    if (!silent) toast('Sync requires an internet connection. Your questions remain saved successfully.', 'warn');
+    return false;
   }
   backupInProgress = true;
   try {
@@ -55,21 +59,31 @@ export async function backupQuestionBank({ offlineId = null } = {}) {
         const local = questions.find((question) => question.offline_id === item.offline_id);
         if (local) await markQuestionBackedUp(item.offline_id, item.id, result.data?.revision);
       }
-      const cost = result.data?.cost ?? processed.filter((item) => !item.deleted).length;
-      const balance = result.data?.credits_left;
-      const user = getUser();
-      if (user && balance !== undefined && balance !== -1) saveUser({ ...user, credits: balance });
-      const balanceText = balance === undefined ? '' : ` ${balance} credits remaining.`;
-      toast(`Backed up ${processed.length} question${processed.length === 1 ? '' : 's'} for ${cost} credit${cost === 1 ? '' : 's'}.${balanceText}`, 'success');
+      if (!silent) toast(`Synced ${processed.length} question${processed.length === 1 ? '' : 's'}.`, 'success');
     }
     await backupPendingPapers();
-    if (!questions.length) toast('Your question bank is already backed up.', 'info');
+    if (!questions.length && !silent) toast('Your question bank is already synced.', 'info');
     window.dispatchEvent(new CustomEvent('gs-backup-status-refresh'));
+    return true;
   } catch (error) {
     toast(error.message || 'Question bank backup failed', 'error');
+    return false;
   } finally {
     backupInProgress = false;
+    if (backupRequested && navigator.onLine && localStorage.getItem('gs_token')) {
+      backupRequested = false;
+      void backupQuestionBank({ silent: true });
+    }
   }
+}
+
+export async function saveQuestion(question) {
+  const saved = await saveOfflineQuestion(question);
+  let synced = false;
+  if (navigator.onLine && localStorage.getItem('gs_token')) {
+    synced = await backupQuestionBank({ offlineId: saved.offline_id, silent: true });
+  }
+  return { ...saved, synced };
 }
 
 async function backupPendingPapers() {

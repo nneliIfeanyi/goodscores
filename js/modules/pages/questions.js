@@ -1,6 +1,7 @@
 import { api, storageUrl } from '../../utils/api.js';
-import { saveOfflineQuestion, getOfflineQuestions, getOfflineQuestion, deleteOfflineQuestion } from '../../utils/db.js';
-import { backupQuestionBank } from '../../utils/backup.js';
+import { getOfflineQuestions, getOfflineQuestion, deleteOfflineQuestion } from '../../utils/db.js';
+import { backupQuestionBank, saveQuestion } from '../../utils/backup.js?v=26';
+import { getQuestionBank } from '../../utils/questionBank.js';
 import { loadMetaData, optionsHtml } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
@@ -59,18 +60,17 @@ async function renderOfflineDraftStatus() {
   panel.innerHTML = `
     <div class="flex items-start justify-between gap-3">
       <div>
-        <p class="text-sm font-semibold">Offline drafts</p>
-        <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">${drafts.length} local change${drafts.length === 1 ? '' : 's'} since the last backup.</p>
+        <p class="text-sm font-semibold">Pending sync</p>
+        <p class="mt-1 text-xs text-gray-600 dark:text-gray-300">${drafts.length} local change${drafts.length === 1 ? '' : 's'} waiting to sync.</p>
       </div>
       <div class="flex shrink-0 gap-2">
-        <button id="offline-backup" type="button" class="text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Backup now</button>
+        <button id="offline-backup" type="button" class="text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Sync now</button>
       </div>
     </div>`;
-  panel.querySelector('#offline-backup')?.addEventListener('click', async () => {
-    const { backupQuestionBank } = await import('../../utils/backup.js');
-    await backupQuestionBank();
-    await renderOfflineDraftStatus();
-  });
+    panel.querySelector('#offline-backup')?.addEventListener('click', async () => {
+      await backupQuestionBank();
+      await renderOfflineDraftStatus();
+    });
 }
 
 async function loadQuestions(filters = {}) {
@@ -78,12 +78,12 @@ async function loadQuestions(filters = {}) {
   if (listEl) {
     listEl.innerHTML = '<div class="loading-skeleton"></div><div class="loading-skeleton"></div><div class="loading-skeleton"></div>';
   }
-  const offline = await getOfflineQuestions();
-  questions = offline.filter((q) => (!filters.type || q.type === filters.type)
-    && (!filters.subject_id || String(q.subject_id) === String(filters.subject_id))
-    && (!filters.class_id || String(q.class_id) === String(filters.class_id))
-    && (!filters.search || String(q.body || '').toLowerCase().includes(filters.search.toLowerCase())))
-    .map((q) => ({ ...q, subject_name: meta.subjects.find((s) => s.id == q.subject_id)?.name, class_name: meta.classes.find((c) => c.id == q.class_id)?.name }));
+  questions = await getQuestionBank(filters);
+  questions = questions.map((question) => ({
+    ...question,
+    subject_name: question.subject_name || meta.subjects.find((subject) => subject.id == question.subject_id)?.name,
+    class_name: question.class_name || meta.classes.find((item) => item.id == question.class_id)?.name,
+  }));
   renderList();
 }
 
@@ -640,9 +640,11 @@ async function openForm(id = null, offlineId = null) {
           sort_order: 0,
         }];
       }
-      await saveOfflineQuestion(payload);
+      const saved = await saveQuestion(payload);
       closeForm();
-      toast(editingId ? 'Question updated locally' : 'saved successfully', 'success');
+      toast(saved.synced
+        ? 'Question saved successfully'
+        : 'Question saved on this device and will sync when online.', saved.synced ? 'success' : 'info');
       await loadQuestions();
     } catch (err) {
       errEl.textContent = err.message || 'Failed to save';
@@ -817,19 +819,27 @@ function renderOcrReview(scannedQuestions, values) {
     button.disabled = true;
     let saved = 0;
     let failed = '';
+    let pendingSync = false;
     for (const card of selected) {
       const source = scannedQuestions[Number(card.dataset.index)];
       const type = source.type || (card.querySelectorAll('[data-option]').length >= 2 ? 'mcq' : 'theory');
       const payload = { ...source, type, content_type: values.content_type || 'standard', body: card.querySelector('[data-body]').value.trim(), answer: card.querySelector('[data-answer]').value.trim(), options: [...card.querySelectorAll('[data-option]')].map((input) => ({ key: input.dataset.option, text: input.value.trim() })).filter((option) => option.text), subject_id: values.subject_id || null, class_id: values.class_id || null, term_id: values.term_id || null, marks: 1 };
       try {
         if (!payload.body || (payload.type === 'mcq' && payload.options.length < 2)) throw new Error('A question needs text and at least two options for MCQ');
-        await saveOfflineQuestion({ ...payload, source: 'ocr' });
+        const result = await saveQuestion({ ...payload, source: 'ocr' });
+        if (!result.synced) pendingSync = true;
         saved += 1;
       } catch (err) { failed = err.message || 'Could not save a question'; }
     }
     if (saved) await loadQuestions();
     if (failed) toast(`${saved} added, but one failed: ${failed}`, 'error');
-    else { toast(`${saved} scanned question${saved === 1 ? '' : 's'} added`, 'success'); close(); }
+    else {
+      toast(pendingSync
+        ? `${saved} scanned question${saved === 1 ? '' : 's'} saved on this device and will sync online.`
+        : `${saved} scanned question${saved === 1 ? '' : 's'} added`,
+      pendingSync ? 'info' : 'success');
+      close();
+    }
     button.disabled = false;
   };
 }
@@ -912,7 +922,13 @@ async function deleteQuestion(id) {
   try {
     const question = questions.find((item) => String(item.id || item.offline_id) === String(id));
     await deleteOfflineQuestion(question?.offline_id || id);
-    toast('Question deleted locally. It will be removed from the cloud on the next backup.', 'success');
+    const synced = navigator.onLine && localStorage.getItem('gs_token')
+      ? await backupQuestionBank({ silent: true })
+      : false;
+    toast(synced
+      ? 'Question deleted successfully'
+      : 'Question deleted on this device and will sync online.',
+    synced ? 'success' : 'info');
     await loadQuestions();
   } catch (err) {
     toast(err.message || 'Delete failed', 'error');

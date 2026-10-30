@@ -1,4 +1,4 @@
-/** Local-first question bank storage. The server is only written by backup.js. */
+/** Offline question drafts and cache. Pending changes are synced through backup.js. */
 const DB_NAME = 'goodscores';
 const DB_VERSION = 3;
 
@@ -59,14 +59,19 @@ export async function saveOfflineQuestion(question) {
 }
 
 export async function cacheQuestion(question) {
+  const offlineId = question.offline_id || `server:${question.id}`;
+  const existing = await getOfflineQuestion(offlineId);
+  if (existing && existing.backup_state !== 'backed_up') return existing;
   const now = question.updated_at || question.created_at || new Date().toISOString();
   return putQuestion({
+    ...(existing || {}),
     ...question,
-    offline_id: question.offline_id || `server:${question.id}`,
+    images: question.images || existing?.images,
+    offline_id: offlineId,
     owner_key: ownerKey(),
     deleted: false,
     backup_state: 'backed_up',
-    backup_revision: question.backup_revision || 0,
+    backup_revision: question.backup_revision || existing?.backup_revision || 0,
     updated_at: now,
   });
 }

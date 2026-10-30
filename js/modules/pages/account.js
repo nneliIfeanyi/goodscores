@@ -4,7 +4,7 @@ import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal, inputModal } from '../../utils/modal.js';
 import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
-import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=25';
+import { backupQuestionBank, restoreQuestionBank } from '../../utils/backup.js?v=26';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
 const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
@@ -203,10 +203,10 @@ export async function renderAccount() {
       <section class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-5 space-y-4">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <h3 class="font-medium">Question bank backup</h3>
+            <h3 class="font-medium">Question bank sync</h3>
             <p id="settings-sync-state" class="text-xs text-gray-500 dark:text-gray-400 mt-1">Checking local status…</p>
           </div>
-          <span class="flex items-center gap-3 shrink-0"><button id="settings-sync-restore" type="button" class="text-xs font-semibold text-gray-600 dark:text-gray-300 hover:underline">Restore</button><button id="settings-sync-retry" type="button" class="hidden text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Backup now</button><button type="button" data-collapse-target="settings-sync-content" data-collapse-label="question bank backup" aria-expanded="false" aria-controls="settings-sync-content" aria-label="Expand question bank backup" title="Expand question bank backup" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button></span>
+          <span class="flex items-center gap-3 shrink-0"><button id="settings-sync-restore" type="button" class="text-xs font-semibold text-gray-600 dark:text-gray-300 hover:underline">Restore</button><button id="settings-sync-retry" type="button" class="hidden text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Sync now</button><button type="button" data-collapse-target="settings-sync-content" data-collapse-label="question bank sync" aria-expanded="false" aria-controls="settings-sync-content" aria-label="Expand question bank sync" title="Expand question bank sync" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"><svg class="h-5 w-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9 6 6 6-6"/></svg></button></span>
         </div>
         <div id="settings-sync-content" class="hidden grid grid-cols-3 gap-2 text-center">
           <div class="rounded-lg bg-amber-50 dark:bg-amber-900/20 p-2"><p id="settings-sync-pending" class="text-lg font-bold text-amber-700 dark:text-amber-300">0</p><p class="text-[11px] text-gray-500">Pending</p></div>
@@ -522,10 +522,10 @@ export async function renderAccount() {
     state.textContent = !status.online
       ? 'Offline: new questions stay on this device.'
       : status.failed
-        ? 'Local changes are waiting for your explicit backup.'
+        ? 'Local changes are waiting to sync.'
         : status.pending
-          ? 'Connect to the internet to back up your local changes.'
-          : 'Everything is backed up.';
+          ? 'Syncing local changes when the connection is available.'
+          : 'Everything is synced.';
     document.getElementById('settings-sync-pending').textContent = status.pending;
     document.getElementById('settings-sync-failed').textContent = status.failed;
     document.getElementById('settings-sync-synced').textContent = status.synced;

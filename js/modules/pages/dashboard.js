@@ -1,5 +1,6 @@
 import { getUser } from '../../utils/api.js';
-import { getOfflineQuestions, getOfflinePapers } from '../../utils/db.js';
+import { getOfflinePapers } from '../../utils/db.js';
+import { getQuestionBank } from '../../utils/questionBank.js';
 import { loadMetaData } from '../../utils/meta.js';
 
 const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
@@ -131,7 +132,7 @@ export async function renderDashboard() {
   `;
 
   try {
-    const [questions, papers, meta] = await Promise.all([getOfflineQuestions(), getOfflinePapers(), loadMetaData()]);
+    const [questions, papers, meta] = await Promise.all([getQuestionBank(), getOfflinePapers(), loadMetaData()]);
     const questionCount = document.getElementById('dash-question-count');
     const paperCount = document.getElementById('dash-paper-count');
     const subjectCount = document.getElementById('dash-subject-count');

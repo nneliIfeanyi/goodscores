@@ -70,8 +70,9 @@ The key is read only by the backend and can be replaced independently in product
 
 ### PDF export
 - Open a paper → **Export PDF (free for all account levels)**
-- With mPDF installed: real PDF file
-- Without mPDF: printable HTML (open in browser → Print → Save as PDF)
+- The frontend opens a printable paper; use the browser print dialog to save it as PDF.
+- Online saved papers also have a printable HTML fallback from the backend.
+- **Export Word** downloads an editable `.docx` file for 45 export credits; PDF remains free.
 
 Install the locked Composer dependencies:
 ```bash

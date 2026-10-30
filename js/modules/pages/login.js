@@ -1,4 +1,5 @@
 import { login, requestPasswordReset, resetPassword } from '../auth.js';
+import { backupQuestionBank } from '../../utils/backup.js?v=26';
 import { renderRegister } from './register.js';
 import { updateCreditsBadge } from '../../app.js';
 import { getUser } from '../../utils/api.js';
@@ -69,6 +70,7 @@ export function renderLogin({ message = '' } = {}) {
       updateCreditsBadge(res.data.user);
       document.getElementById('bottom-nav')?.classList.remove('hidden');
       await resumeAuthenticationAction();
+      void backupQuestionBank({ silent: true });
       document.querySelector('[data-page="dashboard"]')?.click();
     } catch (err) {
       errEl.textContent = err.message || 'Login failed';

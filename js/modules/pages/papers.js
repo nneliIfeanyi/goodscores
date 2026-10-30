@@ -1,12 +1,10 @@
 import { api } from '../../utils/api.js';
-import { getUser } from '../../utils/api.js';
 import { loadMetaData } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
 import { API_BASE, storageUrl } from '../../utils/api.js';
 import { requireAuthentication } from '../../utils/authGate.js';
-import { getOfflineQuestions, getOfflinePapers, getOfflinePaper, saveOfflinePaper, deleteOfflinePaper } from '../../utils/db.js';
-import { printPaper, downloadPaperHtml } from '../../utils/paperRenderer.js';
+import { getQuestionBank } from '../../utils/questionBank.js';
 
 let meta = { subjects: [], classes: [], terms: [] };
 let allQuestions = [];
@@ -15,14 +13,28 @@ let papers = [];
 window.addEventListener('gs-papers-refresh', () => {
   if (document.getElementById('paper-list')) loadPapers();
 });
+window.addEventListener('online', () => {
+  if (document.getElementById('paper-list')) loadPapers();
+});
+window.addEventListener('offline', () => {
+  if (document.getElementById('paper-list')) {
+    papers = [];
+    renderList();
+  }
+});
 
 const questionKey = (question) => String(question?.id ?? question?.offline_id ?? '');
 
-async function findLocalPaper(id) {
-  const direct = await getOfflinePaper(id);
-  if (direct) return direct;
-  const localPapers = await getOfflinePapers({ includeDeleted: true });
-  return localPapers.find((paper) => String(paper.id) === String(id) || String(paper.offline_id) === String(id)) || null;
+function hasOnlinePaperAccess(feature) {
+  if (!localStorage.getItem('gs_token')) {
+    requireAuthentication(feature, () => renderPapers());
+    return false;
+  }
+  if (!navigator.onLine) {
+    toast(`${feature} requires an internet connection.`, 'warn');
+    return false;
+  }
+  return true;
 }
 
 function isTheoryQuestion(question) {
@@ -49,29 +61,36 @@ async function loadMeta() {
 }
 
 async function loadPassages() {
-  try {
-    const response = await api('/passages');
-    return Array.isArray(response.data) ? response.data : [];
-  } catch (_) {
-    return [];
-  }
+  const response = await api('/passages');
+  if (!Array.isArray(response.data)) throw new Error('The server returned an invalid passage list');
+  return response.data;
 }
 
 async function loadPapers() {
-  const localPapers = await getOfflinePapers();
-  papers = localPapers;
+  if (!navigator.onLine || !localStorage.getItem('gs_token')) {
+    papers = [];
+    renderList();
+    return;
+  }
+  try {
+    const response = await api('/papers');
+    if (!Array.isArray(response.data)) throw new Error('The server returned an invalid paper list');
+    papers = response.data;
+  } catch (error) {
+    papers = [];
+    toast(error.message || 'Could not load papers from the server', 'error');
+  }
   renderList();
 }
 
 async function exportPaper(id, button = null) {
   const ownerOverlay = button?.closest('.fixed.inset-0');
-  if (!localStorage.getItem('gs_token')) {
-    requireAuthentication('Export', () => exportPaper(id, button));
+  if (!hasOnlinePaperAccess('PDF export')) {
+    ownerOverlay?.remove();
     return;
   }
-  if (!navigator.onLine) {
-    ownerOverlay?.remove();
-    toast('PDF export requires an internet connection. You can still prepare papers when online.', 'warn');
+  if (!/^[1-9]\d*$/.test(String(id || ''))) {
+    toast('Save this paper online before exporting it.', 'warn');
     return;
   }
   const originalLabel = button?.textContent || 'Export PDF';
@@ -80,12 +99,6 @@ async function exportPaper(id, button = null) {
     button.textContent = 'Generating…';
   }
   try {
-    const localPaper = await findLocalPaper(id);
-    if (localPaper) {
-      await printPaper(localPaper);
-      toast('Paper ready to print', 'success');
-      return;
-    }
     const exp = await api(`/papers/${id}/export`, { method: 'POST', body: '{}' });
     const url = exp.data?.download_url;
     if (url) {
@@ -109,6 +122,46 @@ async function exportPaper(id, button = null) {
   }
 }
 
+async function exportPaperWord(id, button = null) {
+  const ownerOverlay = button?.closest('.fixed.inset-0');
+  if (!hasOnlinePaperAccess('Word export')) return;
+  if (!/^[1-9]\d*$/.test(String(id || ''))) {
+    toast('Save this paper online before exporting it to Word.', 'warn');
+    return;
+  }
+
+  const originalLabel = button?.textContent || 'Word · 45';
+  if (button) {
+    button.disabled = true;
+    button.textContent = 'Generating…';
+  }
+  try {
+    const result = await api(`/papers/${id}/export/word`, {
+      method: 'POST',
+      body: '{}',
+      timeoutMs: 60000,
+    });
+    const url = result.data?.download_url;
+    if (!url) throw new Error('Word document was not generated');
+    const full = url.startsWith('http')
+      ? url
+      : (url.startsWith('/storage/') ? `${API_BASE}${url}` : storageUrl(url));
+    const downloadWindow = window.open(full, '_blank');
+    if (downloadWindow) downloadWindow.opener = null;
+    else window.location.assign(full);
+    toast('Editable Word document ready. 45 credits used.', 'success');
+    if (result.data?.credits_left !== undefined) toast(`Credits left: ${result.data.credits_left}`, 'info');
+  } catch (err) {
+    toast(err.message || 'Word export failed', 'error');
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
+    if (ownerOverlay?.isConnected) ownerOverlay.remove();
+  }
+}
+
 function renderList() {
   const el = document.getElementById('paper-list');
   if (!el) return;
@@ -119,14 +172,14 @@ function renderList() {
         <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        <p class="font-medium">No exam papers yet</p>
-        <p class="text-sm mt-1">Build a paper from your questions</p>
+        <p class="font-medium">${navigator.onLine ? 'No exam papers yet' : 'Connect to view and manage papers'}</p>
+        <p class="text-sm mt-1">${navigator.onLine ? 'Build a paper from your questions' : 'Paper building and exports are online-only.'}</p>
       </div>`;
     return;
   }
 
   el.innerHTML = papers.map((p) => `
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 cursor-pointer hover:border-primary-300 transition" data-paper-card data-id="${p.id || p.offline_id}">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 cursor-pointer hover:border-primary-300 transition" data-paper-card data-id="${p.id}">
       <div class="flex items-start justify-between gap-2">
         <div>
           <h3 class="font-medium text-sm">${p.title}</h3>
@@ -136,9 +189,10 @@ function renderList() {
           <p class="text-xs text-gray-400 mt-1">${p.questions ? p.questions.length : (p.question_count ?? 0)} questions · ${p.total_marks || 0} marks · ${p.status}</p>
         </div>
         <div class="flex gap-1">
-          <button class="btn-edit-paper p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-sm" data-id="${p.id || p.offline_id}">Edit</button>
-          <button class="btn-export-paper p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm" data-id="${p.id || p.offline_id}" title="Export PDF">PDF</button>
-          <button class="btn-del-paper p-2 rounded-lg hover:bg-red-50 text-red-500" data-id="${p.id || p.offline_id}" data-offline-id="${p.offline_id || ''}">
+          <button class="btn-edit-paper p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-sm" data-id="${p.id}">Edit</button>
+          <button class="btn-export-paper p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm" data-id="${p.id}" title="Export PDF">PDF</button>
+          <button class="btn-export-word p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm disabled:opacity-40" data-id="${p.id}" title="Export editable Word document (45 credits)">Word · 45</button>
+          <button class="btn-del-paper p-2 rounded-lg hover:bg-red-50 text-red-500" data-id="${p.id}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           </button>
         </div>
@@ -153,8 +207,7 @@ function renderList() {
     b.addEventListener('click', async (event) => {
       event.stopPropagation();
       try {
-        const local = await findLocalPaper(b.dataset.id);
-        if (local) openBuilder(local);
+        openBuilder(b.dataset.id);
       } catch (err) {
         toast(err.message || 'Could not open paper', 'error');
       }
@@ -166,30 +219,55 @@ function renderList() {
       exportPaper(b.dataset.id, b);
     });
   });
+  el.querySelectorAll('.btn-export-word').forEach((b) => {
+    b.addEventListener('click', (event) => {
+      event.stopPropagation();
+      exportPaperWord(b.dataset.id, b);
+    });
+  });
   el.querySelectorAll('.btn-del-paper').forEach((b) => {
     b.addEventListener('click', async (event) => {
       event.stopPropagation();
       if (!await confirmModal({ title: 'Delete paper?', message: 'This paper will be deleted permanently.', confirmLabel: 'Delete', danger: true })) return;
-      if (b.dataset.offlineId) {
-        await deleteOfflinePaper(b.dataset.offlineId);
+      if (!hasOnlinePaperAccess('Paper deletion')) return;
+      try {
+        await api(`/papers/${b.dataset.id}`, { method: 'DELETE' });
+        toast('Paper deleted', 'success');
+        await loadPapers();
+      } catch (error) {
+        toast(error.message || 'Could not delete paper', 'error');
       }
-      await loadPapers();
     });
   });
 }
 
-async function openBuilder(existingPaper = null) {
+async function openBuilder(paperOrId = null) {
+  if (!hasOnlinePaperAccess('Paper building')) return;
   document.getElementById('paper-builder')?.remove();
 
-  // Load questions for selection
+  const paperId = typeof paperOrId === 'object' ? paperOrId?.id : paperOrId;
+  let existingPaper = null;
   try {
-    allQuestions = await getOfflineQuestions();
-  } catch {
-    allQuestions = [];
+    if (paperId) {
+      const response = await api(`/papers/${paperId}`);
+      existingPaper = response.data;
+      if (!existingPaper) throw new Error('Paper not found');
+    }
+    allQuestions = await getQuestionBank({}, { onlineOnly: true, serverOnly: true });
+  } catch (error) {
+    toast(error.message || 'Could not open the online paper builder', 'error');
+    return;
+  }
+
+  let passages;
+  try {
+    passages = await loadPassages();
+  } catch (error) {
+    toast(error.message || 'Could not load passages', 'error');
+    return;
   }
 
   const selectedQuestionIds = new Set((existingPaper?.questions || []).map(questionKey));
-  const passages = await loadPassages();
 
   const savedSections = existingPaper?.paper_settings?.sections || [];
   const sections = savedSections.length
@@ -589,11 +667,18 @@ async function openBuilder(existingPaper = null) {
     questionStatus.textContent = 'Loading questions…';
     questionStatus.classList.remove('hidden');
     questionList.innerHTML = '';
-    allQuestions = (await getOfflineQuestions()).filter((question) =>
-      (!form.subject_id.value || String(question.subject_id) === String(form.subject_id.value))
-      && (!form.class_id.value || String(question.class_id) === String(form.class_id.value))
-      && (!form.term_id.value || String(question.term_id) === String(form.term_id.value)));
-    questionStatus.textContent = `${allQuestions.length} local question${allQuestions.length === 1 ? '' : 's'} found`;
+    try {
+      allQuestions = await getQuestionBank({
+        subject_id: form.subject_id.value,
+        class_id: form.class_id.value,
+        term_id: form.term_id.value,
+      }, { onlineOnly: true, serverOnly: true });
+    } catch (error) {
+      questionStatus.textContent = error.message || 'Could not load server questions';
+      questionStatus.classList.remove('hidden');
+      return;
+    }
+    questionStatus.textContent = `${allQuestions.length} question${allQuestions.length === 1 ? '' : 's'} found`;
     renderQuestions();
     renderStructure();
   };
@@ -630,6 +715,12 @@ async function openBuilder(existingPaper = null) {
       document.getElementById('pb-error').classList.remove('hidden');
       return;
     }
+    if (!hasOnlinePaperAccess('Saving a paper')) return;
+    if (!qids.every((id) => /^[1-9]\d*$/.test(String(id)))) {
+      document.getElementById('pb-error').textContent = 'Only questions saved on the server can be added to a paper';
+      document.getElementById('pb-error').classList.remove('hidden');
+      return;
+    }
 
     const theoryIds = qids.filter((id) => isTheoryQuestion(allQuestions.find((q) => questionKey(q) === String(id))));
     const questionLayout = theoryIds.map((questionId, index) => ({
@@ -663,46 +754,15 @@ async function openBuilder(existingPaper = null) {
     const btn = form.querySelector('[type="submit"]');
     btn.disabled = true;
     try {
-      const questionMap = new Map(allQuestions.map((question) => [questionKey(question), question]));
-      const localPaperSettings = {
-        ...payload.paper_settings,
-        sections: payload.paper_settings.sections.map((section) => ({
-          ...section,
-          passage: sections.find((item) => item.key === section.key)?.passage || null,
-        })),
-      };
-      const localPaper = await saveOfflinePaper({
-        ...payload,
-        paper_settings: localPaperSettings,
-        offline_id: existingPaper?.offline_id,
-        id: existingPaper?.id,
-        subject_name: form.subject_id.selectedOptions[0]?.textContent.trim() || '',
-        class_name: form.class_id.selectedOptions[0]?.textContent.trim() || '',
-        term_name: form.term_id.selectedOptions[0]?.textContent.trim() || '',
-        questions: qids.map((id) => questionMap.get(String(id))).filter(Boolean),
-        total_marks: qids.reduce((total, id) => total + Number(questionMap.get(String(id))?.marks || 0), 0),
+      const endpoint = existingPaper?.id ? `/papers/${existingPaper.id}` : '/papers';
+      const response = await api(endpoint, {
+        method: existingPaper?.id ? 'PUT' : 'POST',
+        body: JSON.stringify(payload),
       });
-      const serverQuestionIds = qids.every((id) => Number.isInteger(Number(id)) && Number(id) > 0);
-      if (navigator.onLine && localStorage.getItem('gs_token') && serverQuestionIds) {
-        try {
-          const endpoint = existingPaper?.id ? `/papers/${existingPaper.id}` : '/papers';
-          const response = await api(endpoint, {
-            method: existingPaper?.id ? 'PUT' : 'POST',
-            body: JSON.stringify(payload),
-          });
-          const serverPaper = response.data || {};
-          Object.assign(localPaper, serverPaper, {
-            offline_id: localPaper.offline_id,
-            backup_state: 'backed_up',
-          });
-          await saveOfflinePaper(localPaper);
-        } catch (syncError) {
-          toast(`Paper saved locally. Server sync failed: ${syncError.message}`, 'warn');
-        }
-      }
+      if (!response.data?.id) throw new Error('The server did not confirm the paper save');
       overlay.remove();
       await loadPapers();
-      viewPaper(localPaper.offline_id);
+      await viewPaper(response.data.id);
     } catch (err) {
       document.getElementById('pb-error').textContent = err.message || 'Failed';
       document.getElementById('pb-error').classList.remove('hidden');
@@ -713,9 +773,11 @@ async function openBuilder(existingPaper = null) {
 }
 
 async function viewPaper(id) {
+  if (!hasOnlinePaperAccess('Viewing a paper')) return;
   try {
-    let p = await findLocalPaper(id);
-    if (!p) return;
+    const response = await api(`/papers/${id}`);
+    const p = response.data;
+    if (!p) throw new Error('Paper not found');
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';
     overlay.innerHTML = `
@@ -769,7 +831,10 @@ async function viewPaper(id) {
         <button id="btn-export-pdf" class="mt-4 w-full py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm">
           Export PDF
         </button>
-        <p class="mt-2 text-xs text-gray-400 text-center">Requires online connection. File downloads when ready.</p>
+        <button id="btn-export-word" class="mt-2 w-full py-2.5 rounded-xl border border-primary-300 text-primary-700 dark:text-primary-300 font-semibold text-sm ${p.id ? '' : 'opacity-50'}" ${p.id ? '' : 'disabled'}>
+          Export Word document · 45 credits
+        </button>
+        <p class="mt-2 text-xs text-gray-400 text-center">Paper exports require an internet connection. PDF is free; Word costs 45 credits.</p>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -783,18 +848,26 @@ async function viewPaper(id) {
       event.stopPropagation();
       exportPaper(id, document.getElementById('btn-export-pdf'));
     });
+    document.getElementById('btn-export-word')?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      exportPaperWord(p.id, document.getElementById('btn-export-word'));
+    });
   } catch (err) {
     toast(err.message || 'Could not open paper', 'error');
   }
 }
 
 export async function renderPapers() {
+  if (!localStorage.getItem('gs_token')) {
+    requireAuthentication('Exam papers', () => renderPapers());
+    return;
+  }
   const main = document.getElementById('main-content');
   main.innerHTML = `
     <div class="page-enter max-w-3xl mx-auto p-4 pb-24">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold">Exam Papers</h2>
-        <button id="btn-new-paper" class="floating-action-button" title="Build a paper" aria-label="Build a paper">
+        <button id="btn-new-paper" class="floating-action-button" title="Build a paper online" aria-label="Build a paper">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         </button>
       </div>

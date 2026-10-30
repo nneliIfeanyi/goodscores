@@ -6,9 +6,10 @@ import { renderDashboard } from './modules/pages/dashboard.js';
 import { renderAccount } from './modules/pages/account.js?v=26';
 import { renderDiagrams } from './modules/pages/diagrams.js';
 import { renderQuestions } from './modules/pages/questions.js';
-import { renderPapers } from './modules/pages/papers.js';
+import { renderPapers } from './modules/pages/papers.js?v=31';
 import { renderTutorials } from './modules/pages/tutorials.js';
 import { api } from './utils/api.js';
+import { backupQuestionBank } from './utils/backup.js?v=26';
 import { toast } from './utils/toast.js';
 import { renderOnboarding } from './modules/pages/onboarding.js';
 
@@ -31,7 +32,10 @@ function initConnectivity() {
     }
   }
   window.addEventListener('offline', () => show(true));
-  window.addEventListener('online', () => show(false));
+  window.addEventListener('online', () => {
+    show(false);
+    if (localStorage.getItem('gs_token')) void backupQuestionBank();
+  });
   if (!navigator.onLine) show(true);
 }
 
@@ -233,7 +237,7 @@ async function boot() {
       return;
     }
 
-    // The question bank is local-first. Authentication is requested by gated features.
+    // Server data is authoritative online; locally saved drafts remain available offline.
     updateCreditsBadge(getUser());
     hideSplash();
     const initialPage = getInitialPage();
@@ -259,6 +263,7 @@ async function boot() {
       updateCreditsBadge(user);
       hideSplash();
       navigate(initialPage);
+      void backupQuestionBank({ silent: true });
     } catch (err) {
       if (err.status === 401) {
         console.warn('Session expired', err);
@@ -274,6 +279,7 @@ async function boot() {
       updateCreditsBadge(cachedUser);
       hideSplash();
       navigate(initialPage);
+      if (err.offline) void backupQuestionBank({ silent: true });
     }
   } catch (fatalErr) {
     // Never leave the splash spinning forever – fall back to the login screen.

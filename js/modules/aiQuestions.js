@@ -3,7 +3,7 @@ import { toast } from '../utils/toast.js';
 import { confirmModal } from '../utils/modal.js';
 import { MAX_QUESTIONS_PER_REQUEST, normalizeDiagramSpec } from './aiQuestionContract.js';
 import { requireAuthentication } from '../utils/authGate.js';
-import { saveOfflineQuestion } from '../utils/db.js';
+import { saveQuestion } from '../utils/backup.js?v=26';
 import { loadMetaData } from '../utils/meta.js';
 import { mathHtml } from '../utils/math.js';
 
@@ -181,7 +181,7 @@ function renderReview(overlay, questions, passage, values, onSaved, close, exist
       term_id: values.term_id,
     };
 
-    await saveOfflineQuestion(payload);
+    await saveQuestion(payload);
 
     accepted.add(index);
     card.classList.add('opacity-50');
@@ -191,7 +191,10 @@ function renderReview(overlay, questions, passage, values, onSaved, close, exist
 
   items.querySelectorAll('[data-accept]').forEach((button) => button.addEventListener('click', async () => {
     if (!await confirmModal({ title: 'Add question?', message: 'Add this reviewed question to your question bank?', confirmLabel: 'Add question' })) return;
-    try { await saveQuestion(button.closest('[data-index]')); toast('Question added to your bank', 'success'); } catch (err) { toast(err.message, 'error'); }
+    try {
+      const saved = await saveQuestion(button.closest('[data-index]'));
+      toast(saved.synced ? 'Question added to your bank' : 'Question saved on this device and will sync when online.', saved.synced ? 'success' : 'info');
+    } catch (err) { toast(err.message, 'error'); }
   }));
   items.querySelectorAll('[data-remove]').forEach((button) => button.addEventListener('click', () => button.closest('[data-index]').remove()));
   items.querySelectorAll('[data-up]').forEach((button) => button.addEventListener('click', () => {
