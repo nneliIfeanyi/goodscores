@@ -163,6 +163,9 @@ export async function renderAccount() {
     ...(user.pdf_settings || {}),
     ...(isAdmin ? (user.school?.paper_settings || {}) : {}),
   };
+  const mcqOptionCount = [3, 4, 5].includes(Number(outputSettings.mcq_option_count))
+    ? Number(outputSettings.mcq_option_count)
+    : 4;
   const planLabel = user.is_pro_plus ? 'Pro Plus' : user.is_pro ? (user.is_unlimited ? 'Unlimited' : 'Pro') : 'Free';
 
   main.innerHTML = `
@@ -274,6 +277,14 @@ export async function renderAccount() {
               <option value="portrait" ${((outputSettings.orientation || 'portrait') === 'portrait') ? 'selected' : ''}>Portrait</option>
               <option value="landscape" ${outputSettings.orientation === 'landscape' ? 'selected' : ''}>Landscape</option>
             </select>
+          </label>
+          <label class="text-xs font-medium">MCQ options per question
+            <select name="mcq_option_count" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm">
+              <option value="3" ${mcqOptionCount === 3 ? 'selected' : ''}>A to C (3 options)</option>
+              <option value="4" ${mcqOptionCount === 4 ? 'selected' : ''}>A to D (4 options)</option>
+              <option value="5" ${mcqOptionCount === 5 ? 'selected' : ''}>A to E (5 options)</option>
+            </select>
+            <span class="block mt-1 text-[11px] text-gray-500">Default for new and AI-generated MCQs.</span>
           </label>
           ${[['margin_top', 'Top'], ['margin_bottom', 'Bottom'], ['margin_left', 'Left'], ['margin_right', 'Right']].map(([name, label]) => `<label class="text-xs font-medium">Margin ${label} (mm)<input name="${name}" type="number" min="0" max="50" step="1" value="${outputSettings[name] ?? (name.includes('left') || name.includes('right') ? 8 : 10)}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>`).join('')}
           <label class="text-xs font-medium">Header height (px)<input name="header_height" type="number" min="0" max="300" step="1" value="${outputSettings.header_height ?? 80}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
@@ -606,6 +617,7 @@ export async function renderAccount() {
             show_logo: form.show_logo.checked,
             show_school_name: form.show_school_name.checked,
             footer_text: form.footer_text.value,
+            mcq_option_count: Number(form.mcq_option_count.value),
           },
         }),
       });

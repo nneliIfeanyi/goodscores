@@ -125,6 +125,7 @@ mysql -u root -p question_bank < backend/sql/phase6_migrate.sql
 ```
 
 Users can choose the PDF font size and font family from Account. The selection applies to both mPDF exports and the printable HTML fallback.
+Paper output settings also let users choose the default number of MCQ options (A–C, A–D, or A–E); this preference is stored in the existing settings JSON and needs no additional migration.
 
 Phase 7 adds the per-question mark visibility setting:
 ```bash

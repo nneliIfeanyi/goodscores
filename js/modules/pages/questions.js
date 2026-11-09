@@ -1,4 +1,4 @@
-import { api, storageUrl } from '../../utils/api.js';
+import { api, getUser, storageUrl } from '../../utils/api.js';
 import { getOfflineQuestions, getOfflineQuestion, deleteOfflineQuestion } from '../../utils/db.js';
 import { backupQuestionBank, saveQuestion } from '../../utils/backup.js?v=26';
 import { getQuestionBank } from '../../utils/questionBank.js';
@@ -20,6 +20,13 @@ const escapeHtml = (value) => String(value ?? '')
   .replace(/</g, '&lt;')
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;');
+
+function defaultMcqOptions() {
+  const user = getUser() || {};
+  const optionCount = Number(user.school?.paper_settings?.mcq_option_count ?? user.pdf_settings?.mcq_option_count ?? 4);
+  const count = [3, 4, 5].includes(optionCount) ? optionCount : 4;
+  return Array.from({ length: count }, (_, index) => ({ key: String.fromCharCode(65 + index), text: '' }));
+}
 
 function isLanguageSubject(subjectId) {
   const subject = meta.subjects.find((item) => String(item.id) === String(subjectId));
@@ -314,7 +321,7 @@ async function openForm(id = null, offlineId = null) {
         <div id="mcq-options" class="${(q?.type || 'mcq') !== 'mcq' ? 'hidden' : ''}">
           <label class="block text-xs font-medium mb-1">Options</label>
           <div id="options-list" class="space-y-2">
-            ${(q?.options || [{ key: 'A', text: '' }, { key: 'B', text: '' }, { key: 'C', text: '' }, { key: 'D', text: '' }])
+            ${(q?.options || defaultMcqOptions())
               .map((o, i) => `
               <div class="flex gap-2 items-center">
                 <span class="w-6 text-center font-semibold text-sm text-primary-600">${o.key || String.fromCharCode(65 + i)}</span>
