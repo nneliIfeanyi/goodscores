@@ -159,10 +159,11 @@ export async function renderDashboard() {
     }
     if (navigator.onLine && localStorage.getItem('gs_token')) {
       try {
-        const result = await api('/papers');
+        const papersEndpoint = user.role === 'school_admin' && user.school_id ? '/school/papers' : '/papers';
+        const result = await api(papersEndpoint);
         if (!Array.isArray(result.data)) throw new Error('The server returned an invalid paper list');
         if (paperCount) paperCount.textContent = result.data.length;
-        if (paperHint) paperHint.textContent = 'Current server count';
+        if (paperHint) paperHint.textContent = user.role === 'school_admin' ? 'Papers across your school' : 'Your papers';
       } catch (error) {
         if (paperCount) paperCount.textContent = '—';
         if (paperHint) paperHint.textContent = 'Could not load online';

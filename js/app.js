@@ -3,13 +3,13 @@ import { getUser, clearToken } from './utils/api.js';
 import { renderLogin, renderResetPassword } from './modules/pages/login.js';
 import { renderRegister } from './modules/pages/register.js';
 import { renderDashboard } from './modules/pages/dashboard.js';
-import { renderAccount } from './modules/pages/account.js?v=26';
+import { renderAccount } from './modules/pages/account.js?v=27';
 import { renderDiagrams } from './modules/pages/diagrams.js';
 import { renderQuestions } from './modules/pages/questions.js';
-import { renderPapers } from './modules/pages/papers.js?v=31';
+import { renderPapers } from './modules/pages/papers.js?v=35';
 import { renderTutorials } from './modules/pages/tutorials.js';
 import { api } from './utils/api.js';
-import { backupQuestionBank } from './utils/backup.js?v=26';
+import { backupQuestionBank } from './utils/backup.js?v=28';
 import { toast } from './utils/toast.js';
 import { renderOnboarding } from './modules/pages/onboarding.js';
 
@@ -168,7 +168,7 @@ document.getElementById('btn-install')?.addEventListener('click', async () => {
 
 // ---------- Service Worker ----------
 const APP_UPDATE_PENDING_KEY = 'gs_app_update_pending';
-const APP_VERSION = '31';
+const APP_VERSION = '35';
 
 const pendingAppVersion = localStorage.getItem(APP_UPDATE_PENDING_KEY);
 if (pendingAppVersion && pendingAppVersion !== APP_VERSION) {

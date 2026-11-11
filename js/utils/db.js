@@ -1,6 +1,6 @@
 /** Offline question drafts and cache. Pending changes are synced through backup.js. */
 const DB_NAME = 'goodscores';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 function ownerKey() {
   let key = localStorage.getItem('gs_device_key');
@@ -25,6 +25,15 @@ function openDB() {
       ['owner_key', 'updated_at', 'deleted', 'backup_revision'].forEach((index) => {
         if (!questions.indexNames.contains(index)) questions.createIndex(index, index, { unique: false });
       });
+      let passages;
+      if (!db.objectStoreNames.contains('passages')) {
+        passages = db.createObjectStore('passages', { keyPath: 'offline_id' });
+      } else {
+        passages = event.target.transaction.objectStore('passages');
+      }
+      ['owner_key', 'backup_state', 'updated_at'].forEach((index) => {
+        if (!passages.indexNames.contains(index)) passages.createIndex(index, index, { unique: false });
+      });
       if (!db.objectStoreNames.contains('papers')) db.createObjectStore('papers', { keyPath: 'offline_id' });
       if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'key' });
     };
@@ -37,6 +46,15 @@ function putQuestion(record) {
   return openDB().then((db) => new Promise((resolve, reject) => {
     const tx = db.transaction('questions', 'readwrite');
     tx.objectStore('questions').put(record);
+    tx.oncomplete = () => resolve(record);
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+function putPassage(record) {
+  return openDB().then((db) => new Promise((resolve, reject) => {
+    const tx = db.transaction('passages', 'readwrite');
+    tx.objectStore('passages').put(record);
     tx.oncomplete = () => resolve(record);
     tx.onerror = () => reject(tx.error);
   }));
@@ -55,6 +73,24 @@ export async function saveOfflineQuestion(question) {
     updated_at: now,
     backup_state: 'pending',
     backup_revision: (existing?.backup_revision || 0) + 1,
+  });
+}
+
+export async function saveOfflinePassage(passage) {
+  const offlineId = passage.offline_id || crypto.randomUUID();
+  const existing = await getOfflinePassage(offlineId);
+  const changed = !existing || ['title', 'body', 'subject_id', 'class_id', 'term_id']
+    .some((key) => String(existing[key] ?? '') !== String(passage[key] ?? ''));
+  const now = new Date().toISOString();
+  return putPassage({
+    ...(existing || {}),
+    ...passage,
+    offline_id: offlineId,
+    owner_key: ownerKey(),
+    deleted: false,
+    backup_state: changed ? 'pending' : (existing.backup_state || 'pending'),
+    created_at: passage.created_at || existing?.created_at || now,
+    updated_at: changed ? now : (existing.updated_at || now),
   });
 }
 
@@ -134,6 +170,65 @@ export async function getOfflineQuestions({ includeDeleted = false } = {}) {
   });
 }
 
+export async function getOfflinePassage(offlineId) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction('passages', 'readonly').objectStore('passages').get(offlineId);
+    request.onsuccess = () => resolve(request.result?.owner_key === ownerKey() ? request.result : null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getOfflinePassages({ includeDeleted = false } = {}) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction('passages', 'readonly').objectStore('passages').getAll();
+    request.onsuccess = () => resolve((request.result || []).filter((passage) => passage.owner_key === ownerKey() && (includeDeleted || !passage.deleted)));
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getUnsyncedPassages() {
+  return (await getOfflinePassages({ includeDeleted: true })).filter((passage) => passage.backup_state !== 'backed_up');
+}
+
+export async function getQuestionsForRecovery() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction('questions', 'readonly').objectStore('questions').getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function prepareQuestionsForRecovery(questions) {
+  if (!questions.length) return;
+
+  const db = await openDB();
+  const owner = ownerKey();
+  const now = new Date().toISOString();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('questions', 'readwrite');
+    const store = tx.objectStore('questions');
+    for (const question of questions) {
+      store.put({
+        ...question,
+        offline_id: question.offline_id || crypto.randomUUID(),
+        owner_key: owner,
+        deleted: false,
+        source: question.source || 'manual',
+        created_at: question.created_at || now,
+        updated_at: now,
+        backup_state: 'pending',
+        backup_revision: (question.backup_revision || 0) + 1,
+      });
+    }
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error('Could not prepare local questions for recovery'));
+    tx.onabort = () => reject(tx.error || new Error('Local question recovery was cancelled'));
+  });
+}
+
 export async function getUnsyncedQuestions() {
   return (await getOfflineQuestions({ includeDeleted: true })).filter((q) => q.backup_state !== 'backed_up');
 }
@@ -148,6 +243,72 @@ export async function markQuestionBackedUp(offlineId, serverId, revision) {
   delete record._pending_image;
   if (record.deleted) return deleteStoredQuestion(offlineId);
   return putQuestion(record);
+}
+
+export async function markPassageBackedUp(offlineId, serverId) {
+  const passage = await getOfflinePassage(offlineId);
+  if (!passage) return;
+  passage.id = serverId || passage.id;
+  passage.backup_state = 'backed_up';
+  passage.last_backup_at = new Date().toISOString();
+  return putPassage(passage);
+}
+
+export async function replaceOfflinePassageReferences(offlineId, serverId, passage) {
+  const db = await openDB();
+  const owner = ownerKey();
+  const now = new Date().toISOString();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(['questions', 'papers'], 'readwrite');
+    const questionCursor = tx.objectStore('questions').openCursor();
+    questionCursor.onsuccess = () => {
+      const cursor = questionCursor.result;
+      if (!cursor) return;
+      const question = cursor.value;
+      if (question.owner_key === owner && String(question.passage_id) === String(offlineId)) {
+        cursor.update({
+          ...question,
+          passage_id: serverId,
+          passage_title: question.passage_title || passage.title,
+          passage_body: question.passage_body || passage.body,
+        });
+      }
+      cursor.continue();
+    };
+
+    const paperStore = tx.objectStore('papers');
+    const paperCursor = paperStore.openCursor();
+    paperCursor.onsuccess = () => {
+      const cursor = paperCursor.result;
+      if (!cursor) return;
+      const paper = cursor.value;
+      if (paper.owner_key === owner && Array.isArray(paper.paper_settings?.sections)) {
+        let changed = false;
+        const sections = paper.paper_settings.sections.map((section) => {
+          if (String(section.passage_id ?? '') !== String(offlineId)) return section;
+          changed = true;
+          return {
+            ...section,
+            passage_id: serverId,
+            passage: { ...(section.passage || {}), id: serverId, title: passage.title, body: passage.body },
+          };
+        });
+        if (changed) {
+          cursor.update({
+            ...paper,
+            paper_settings: { ...paper.paper_settings, sections },
+            backup_state: 'pending',
+            updated_at: now,
+          });
+        }
+      }
+      cursor.continue();
+    };
+
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error('Could not update local passage links'));
+    tx.onabort = () => reject(tx.error || new Error('Updating local passage links was cancelled'));
+  });
 }
 
 async function deleteStoredQuestion(offlineId) {
@@ -234,8 +395,9 @@ export async function getOfflinePapers({ includeDeleted = false } = {}) {
 export async function clearOfflineStorage() {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(['questions', 'papers', 'meta'], 'readwrite');
+    const tx = db.transaction(['questions', 'passages', 'papers', 'meta'], 'readwrite');
     tx.objectStore('questions').clear();
+    tx.objectStore('passages').clear();
     tx.objectStore('papers').clear();
     tx.objectStore('meta').clear();
     tx.oncomplete = () => {

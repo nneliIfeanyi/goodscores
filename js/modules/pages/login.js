@@ -1,5 +1,5 @@
 import { login, requestPasswordReset, resetPassword } from '../auth.js';
-import { backupQuestionBank } from '../../utils/backup.js?v=26';
+import { backupQuestionBank } from '../../utils/backup.js?v=28';
 import { renderRegister } from './register.js';
 import { updateCreditsBadge } from '../../app.js';
 import { getUser } from '../../utils/api.js';

@@ -1,5 +1,5 @@
 /* GoodScores service worker for the domain-root frontend. */
-const CACHE_NAME = 'goodscores-v35';
+const CACHE_NAME = 'goodscores-v47';
 
 // Paths are relative to the service worker at the domain root.
 const CORE_ASSETS = [
@@ -43,7 +43,7 @@ const OPTIONAL_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      await cache.addAll(CORE_ASSETS);
+      await cache.addAll(CORE_ASSETS.map((asset) => new Request(asset, { cache: 'reload' })));
       await Promise.all(OPTIONAL_ASSETS.map((asset) => cache.add(asset).catch((err) => {
         console.warn(`SW precache skipped ${asset}`, err);
       })));

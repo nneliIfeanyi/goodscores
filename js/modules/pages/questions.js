@@ -1,6 +1,6 @@
 import { api, getUser, storageUrl } from '../../utils/api.js';
 import { getOfflineQuestions, getOfflineQuestion, deleteOfflineQuestion } from '../../utils/db.js';
-import { backupQuestionBank, saveQuestion } from '../../utils/backup.js?v=26';
+import { backupQuestionBank, saveQuestion } from '../../utils/backup.js?v=28';
 import { getQuestionBank } from '../../utils/questionBank.js';
 import { loadMetaData, optionsHtml } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';

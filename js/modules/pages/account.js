@@ -4,10 +4,44 @@ import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal, inputModal } from '../../utils/modal.js';
 import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
-import { backupQuestionBank } from '../../utils/backup.js?v=26';
+import { backupQuestionBank } from '../../utils/backup.js?v=28';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
 const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
+
+function escapeMetaHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function ensureMetaSyncStatus(subjectList) {
+  let status = document.getElementById('meta-sync-status');
+  if (status) return status;
+
+  status = document.createElement('div');
+  status.id = 'meta-sync-status';
+  status.className = 'rounded-lg bg-gray-50 dark:bg-gray-900/50 px-3 py-2 text-xs text-gray-600 dark:text-gray-300 flex items-center justify-between gap-3';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+  status.innerHTML = '<span data-meta-sync-message></span><button type="button" data-meta-sync-retry class="hidden shrink-0 underline font-medium text-primary-700 dark:text-primary-300">Retry sync</button>';
+  const grid = subjectList.closest('.grid');
+  if (grid?.parentElement) grid.parentElement.insertBefore(status, grid);
+  else subjectList.parentElement.insertBefore(status, subjectList);
+  status.querySelector('[data-meta-sync-retry]').addEventListener('click', () => loadTeacherMetaManager(true));
+  return status;
+}
+
+function setMetaSyncStatus(status, message, { retry = false, checking = false } = {}) {
+  status.querySelector('[data-meta-sync-message]').textContent = message;
+  const retryButton = status.querySelector('[data-meta-sync-retry]');
+  retryButton.classList.toggle('hidden', !retry);
+  retryButton.disabled = checking;
+  retryButton.textContent = checking ? 'Checking…' : 'Retry sync';
+}
 
 function setCollapseState(button, expanded) {
   const content = document.getElementById(button.dataset.collapseTarget);
@@ -154,6 +188,9 @@ export async function renderAccount() {
   if (mainContent && !mainContent.dataset.metaRefreshBound) {
     mainContent.dataset.metaRefreshBound = '1';
     window.addEventListener('gs-meta-refresh', () => loadTeacherMetaManager(true));
+    window.addEventListener('online', () => {
+      if (document.getElementById('meta-sync-status')) loadTeacherMetaManager(true);
+    });
   }
 
   const isAdmin = user.role === 'school_admin';
@@ -756,6 +793,29 @@ async function loadTeacherMetaManager(refresh = true) {
   const subjectList = document.getElementById('my-subject-list');
   const classList = document.getElementById('my-class-list');
   if (!subjectList || !classList) return;
+  const status = ensureMetaSyncStatus(subjectList);
+  const authenticated = isLoggedIn();
+  const shouldRefresh = refresh && authenticated;
+  let syncStatusReported = false;
+  const showSyncStatus = ({ state, pending = 0, error } = {}) => {
+    syncStatusReported = true;
+    const retry = authenticated && navigator.onLine && ['error', 'pending', 'storage-error'].includes(state);
+    if (state === 'checking') {
+      setMetaSyncStatus(status, 'Checking your account for subject and class changes…', { checking: true });
+    } else if (state === 'synced') {
+      setMetaSyncStatus(status, 'Subjects and classes are synced with your account.');
+    } else if (state === 'pending') {
+      const count = Number(pending) || 0;
+      const detail = error?.message ? ` Last sync error: ${error.message}` : '';
+      setMetaSyncStatus(status, `${count} local change${count === 1 ? '' : 's'} still need to sync.${detail}`, { retry });
+    } else if (state === 'offline') {
+      setMetaSyncStatus(status, 'Offline — showing saved records. Local changes will sync when you reconnect.');
+    } else if (state === 'storage-error') {
+      setMetaSyncStatus(status, `Could not save the latest metadata to this device: ${error?.message || 'storage error'}`, { retry });
+    } else if (state === 'error') {
+      setMetaSyncStatus(status, `Could not refresh from your account. Showing saved records. ${error?.message || ''}`.trim(), { retry });
+    }
+  };
   let subjectRows = [];
   let classRows = [];
 
@@ -765,10 +825,13 @@ async function loadTeacherMetaManager(refresh = true) {
       list.innerHTML = '<p class="text-xs text-gray-400">No personal records yet</p>';
       return;
     }
-    list.innerHTML = rows.map((row) => `<div class="flex items-center justify-between gap-2 py-1 border-b border-gray-100 dark:border-gray-700 last:border-0">
-      <span class="truncate">${row.name}${type === 'subject' && row.code ? ` <span class="text-[10px] text-gray-400">(${row.code})</span>` : ''}</span>
-      <span class="shrink-0 flex gap-2"><button type="button" data-edit-meta="${row.id}" class="text-xs text-primary-600">Edit</button><button type="button" data-delete-meta="${row.id}" class="text-xs text-red-500">Delete</button></span>
-    </div>`).join('');
+    list.innerHTML = rows.map((row) => {
+      const localOnly = row.local_only || String(row.id || '').startsWith('local-');
+      return `<div class="flex items-center justify-between gap-2 py-1 border-b border-gray-100 dark:border-gray-700 last:border-0">
+      <span class="truncate">${escapeMetaHtml(row.name)}${type === 'subject' && row.code ? ` <span class="text-[10px] text-gray-400">(${escapeMetaHtml(row.code)})</span>` : ''}</span>
+      <span class="shrink-0 flex items-center gap-2">${localOnly ? '<span class="text-[10px] text-amber-700 dark:text-amber-300">On this device</span>' : '<span class="text-[10px] text-green-700 dark:text-green-300">In account</span>'}<button type="button" data-edit-meta="${escapeMetaHtml(row.id)}" class="text-xs text-primary-600">Edit</button><button type="button" data-delete-meta="${escapeMetaHtml(row.id)}" class="text-xs text-red-500">Delete</button></span>
+    </div>`;
+    }).join('');
     list.querySelectorAll('[data-edit-meta]').forEach((button) => button.addEventListener('click', async () => {
       const row = rows.find((item) => String(item.id) === button.dataset.editMeta);
       const name = await inputModal({ title: `Edit ${type} name`, label: `${type === 'subject' ? 'Subject' : 'Class'} name`, value: row?.name || '' });
@@ -778,12 +841,13 @@ async function loadTeacherMetaManager(refresh = true) {
       try {
         const current = type === 'subject' ? subjectRows : classRows;
         let updated = { ...row, name: name.trim(), ...(type === 'subject' ? { code: code?.trim() || null } : {}) };
-        if (!row?.local_only) {
+        const localOnly = row?.local_only || String(row?.id || '').startsWith('local-');
+        if (!localOnly) {
           await api(`/meta/${resource}/${button.dataset.editMeta}`, { method: 'PUT', body: JSON.stringify({ name: updated.name, ...(type === 'subject' ? { code: updated.code } : {}) }) });
         }
         await updateCachedMeta({ [type === 'subject' ? 'subjects' : 'classes']: current.map((item) => item.id == row.id ? updated : item) });
-        toast(`${type === 'subject' ? 'Subject' : 'Class'} updated`, 'success');
-        await loadTeacherMetaManager(false);
+        toast(localOnly ? 'Updated on this device' : `${type === 'subject' ? 'Subject' : 'Class'} updated in your account`, localOnly ? 'info' : 'success');
+        await loadTeacherMetaManager(true);
       } catch (err) { toast(err.message || 'Update failed', 'error'); }
     }));
     list.querySelectorAll('[data-delete-meta]').forEach((button) => button.addEventListener('click', async () => {
@@ -791,22 +855,35 @@ async function loadTeacherMetaManager(refresh = true) {
       try {
         const current = type === 'subject' ? subjectRows : classRows;
         const deleted = current.find((item) => String(item.id) === button.dataset.deleteMeta);
-        if (!deleted?.local_only) await api(`/meta/${resource}/${button.dataset.deleteMeta}`, { method: 'DELETE' });
+        const localOnly = deleted?.local_only || String(deleted?.id || '').startsWith('local-');
+        if (!localOnly) await api(`/meta/${resource}/${button.dataset.deleteMeta}`, { method: 'DELETE' });
         await updateCachedMeta({ [type === 'subject' ? 'subjects' : 'classes']: current.filter((item) => item.id != button.dataset.deleteMeta) });
-        toast(`${type === 'subject' ? 'Subject' : 'Class'} deleted`, 'success');
-        await loadTeacherMetaManager(false);
+        toast(localOnly ? 'Removed from this device' : `${type === 'subject' ? 'Subject' : 'Class'} deleted from your account`, localOnly ? 'info' : 'success');
+        await loadTeacherMetaManager(true);
       } catch (err) { toast(err.message || 'Delete failed', 'error'); }
     }));
   };
 
+  if (shouldRefresh) showSyncStatus({ state: navigator.onLine ? 'checking' : 'offline' });
   try {
-    const meta = await loadMetaData({ refresh: refresh && isLoggedIn() });
+    const meta = await loadMetaData({ refresh: shouldRefresh, onSyncStatus: showSyncStatus });
     subjectRows = (meta.subjects || []).filter((row) => row.local_only || row.teacher_id != null);
     classRows = (meta.classes || []).filter((row) => row.local_only || row.teacher_id != null);
     renderRows(subjectList, subjectRows, 'subject');
     renderRows(classList, classRows, 'class');
+    const pending = [...subjectRows, ...classRows].filter((row) => row.local_only || String(row.id || '').startsWith('local-')).length;
+    if (!syncStatusReported) {
+      if (!authenticated) {
+        setMetaSyncStatus(status, 'Saved on this device only. Sign in to sync subjects and classes across devices.');
+      } else if (!navigator.onLine) {
+        setMetaSyncStatus(status, `Offline — showing saved records. ${pending} local change${pending === 1 ? '' : 's'} will sync when you reconnect.`);
+      } else if (pending) {
+        setMetaSyncStatus(status, `${pending} local change${pending === 1 ? '' : 's'} still need to sync.`, { retry: true });
+      }
+    }
   } catch (err) {
     subjectList.innerHTML = classList.innerHTML = `<p class="text-xs text-red-500">${err.message || 'Could not load metadata'}</p>`;
+    showSyncStatus({ state: 'error', error: err });
   }
 
   const subjectForm = document.getElementById('my-subject-form');
@@ -814,23 +891,50 @@ async function loadTeacherMetaManager(refresh = true) {
     subjectForm.dataset.bound = '1';
     subjectForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const submitButton = subjectForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Saving…';
       try {
         const name = subjectForm.name.value.trim();
         const code = subjectForm.code.value.trim() || null;
+        if (!name) throw new Error('Subject name is required');
         const cached = await updateCachedMeta({});
+        if (cached.subjects.some((item) => String(item.name || '').trim().toLowerCase() === name.toLowerCase())) {
+          throw new Error('A subject with this name already exists');
+        }
         const localSubject = { id: `local-${crypto.randomUUID()}`, name, code, local_only: true };
         await updateCachedMeta({ subjects: [...cached.subjects, localSubject] });
-        if (navigator.onLine && localStorage.getItem('gs_token')) {
+        const canSync = navigator.onLine && !!localStorage.getItem('gs_token');
+        let remoteError = null;
+        if (canSync) {
           try {
             const response = await api('/meta/subjects', { method: 'POST', body: JSON.stringify({ name, code }) });
+            if (!response.data?.id) throw new Error('The server did not confirm the new subject');
             const latest = await updateCachedMeta({});
             await updateCachedMeta({ subjects: latest.subjects.map((item) => item.id === localSubject.id ? { ...response.data, teacher_id: getUser()?.id } : item) });
-          } catch (_) {}
+          } catch (error) {
+            remoteError = error;
+          }
         }
         subjectForm.reset();
-        toast('Subject saved successfully', 'success');
-        await loadTeacherMetaManager(false);
-      } catch (err) { toast(err.message || 'Could not add subject', 'error'); }
+        if (canSync && !remoteError) {
+          toast('Subject saved to your account', 'success');
+          await loadTeacherMetaManager(true);
+        } else {
+          const reason = remoteError?.message
+            ? ` Sync failed: ${remoteError.message}`
+            : !navigator.onLine
+              ? ' It will sync when you reconnect.'
+              : ' Sign in to sync it across devices.';
+          toast(`Subject saved on this device.${reason}`, remoteError ? 'warn' : 'info');
+          await loadTeacherMetaManager(false);
+        }
+      } catch (err) {
+        toast(err.message || 'Could not add subject', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add';
+      }
     });
   }
   const classForm = document.getElementById('my-class-form');
@@ -838,22 +942,49 @@ async function loadTeacherMetaManager(refresh = true) {
     classForm.dataset.bound = '1';
     classForm.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const submitButton = classForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Saving…';
       try {
         const name = classForm.name.value.trim();
+        if (!name) throw new Error('Class name is required');
         const cached = await updateCachedMeta({});
+        if (cached.classes.some((item) => String(item.name || '').trim().toLowerCase() === name.toLowerCase())) {
+          throw new Error('A class with this name already exists');
+        }
         const localClass = { id: `local-${crypto.randomUUID()}`, name, local_only: true };
         await updateCachedMeta({ classes: [...cached.classes, localClass] });
-        if (navigator.onLine && localStorage.getItem('gs_token')) {
+        const canSync = navigator.onLine && !!localStorage.getItem('gs_token');
+        let remoteError = null;
+        if (canSync) {
           try {
             const response = await api('/meta/classes', { method: 'POST', body: JSON.stringify({ name }) });
+            if (!response.data?.id) throw new Error('The server did not confirm the new class');
             const latest = await updateCachedMeta({});
             await updateCachedMeta({ classes: latest.classes.map((item) => item.id === localClass.id ? { ...response.data, teacher_id: getUser()?.id } : item) });
-          } catch (_) {}
+          } catch (error) {
+            remoteError = error;
+          }
         }
         classForm.reset();
-        toast('Class saved successfully', 'success');
-        await loadTeacherMetaManager(false);
-      } catch (err) { toast(err.message || 'Could not add class', 'error'); }
+        if (canSync && !remoteError) {
+          toast('Class saved to your account', 'success');
+          await loadTeacherMetaManager(true);
+        } else {
+          const reason = remoteError?.message
+            ? ` Sync failed: ${remoteError.message}`
+            : !navigator.onLine
+              ? ' It will sync when you reconnect.'
+              : ' Sign in to sync it across devices.';
+          toast(`Class saved on this device.${reason}`, remoteError ? 'warn' : 'info');
+          await loadTeacherMetaManager(false);
+        }
+      } catch (err) {
+        toast(err.message || 'Could not add class', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add';
+      }
     });
   }
 }

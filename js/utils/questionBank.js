@@ -10,7 +10,7 @@ function matchesFilters(question, filters) {
     && (!filters.search || String(question.body || '').toLowerCase().includes(filters.search.toLowerCase()));
 }
 
-async function fetchServerQuestions(filters) {
+export async function fetchServerQuestions(filters = {}) {
   const limit = 100;
   const questions = [];
   let offset = 0;

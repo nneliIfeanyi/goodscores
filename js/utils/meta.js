@@ -46,21 +46,35 @@ function isPendingRow(row) {
 async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
   const remoteNames = new Set((remoteRows || []).map((row) => String(row?.name || '').trim().toLowerCase()).filter(Boolean));
   const synced = [];
+  let failed = 0;
+  let lastError = null;
   for (const row of rows.filter(isPendingRow)) {
     const name = String(row.name || '').trim();
     const normalizedName = name.toLowerCase();
-    if (!name || remoteNames.has(normalizedName)) continue;
+    if (!name) {
+      failed += 1;
+      lastError = new Error('A saved subject or class is missing its name.');
+      synced.push(row);
+      continue;
+    }
+    if (remoteNames.has(normalizedName)) continue;
     try {
       const response = await api(endpoint, { method: 'POST', body: JSON.stringify(toPayload(row, name)) });
-      if (response.data) {
+      if (response.data?.id) {
         synced.push(response.data);
         remoteNames.add(normalizedName);
+      } else {
+        failed += 1;
+        lastError = new Error('The server did not confirm the saved record.');
+        synced.push(row);
       }
-    } catch (_) {
+    } catch (error) {
+      failed += 1;
+      lastError = error;
       synced.push(row);
     }
   }
-  return synced;
+  return { rows: synced, failed, error: lastError };
 }
 
 /**
@@ -68,7 +82,7 @@ async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
  * Account CRUD may explicitly write changes to the server, but ordinary
  * question, paper, and AI workflows never read metadata from the server.
  */
-export async function loadMetaData({ refresh = false } = {}) {
+export async function loadMetaData({ refresh = false, onSyncStatus = null } = {}) {
   const user = getUser();
   const cacheKey = `all-v2:${user?.id || 'anonymous'}`;
   let cached = null;
@@ -87,19 +101,23 @@ export async function loadMetaData({ refresh = false } = {}) {
   });
 
   if (refresh && user && navigator.onLine) {
+    onSyncStatus?.({ state: 'checking' });
     try {
       const [subjectsResponse, classesResponse, termsResponse] = await Promise.all([
         api('/meta/subjects'),
         api('/meta/classes'),
         api('/meta/terms'),
       ]);
-      const syncedSubjects = await syncPendingRows(
+      if (!Array.isArray(subjectsResponse.data) || !Array.isArray(classesResponse.data) || !Array.isArray(termsResponse.data)) {
+        throw new Error('The server returned invalid subject or class data.');
+      }
+      const subjectSync = await syncPendingRows(
         '/meta/subjects',
         fallback.subjects,
         subjectsResponse.data,
         (row, name) => ({ name, code: row.code || null })
       );
-      const syncedClasses = await syncPendingRows(
+      const classSync = await syncPendingRows(
         '/meta/classes',
         fallback.classes,
         classesResponse.data,
@@ -107,18 +125,30 @@ export async function loadMetaData({ refresh = false } = {}) {
       );
       fallback = removeLegacyDefaults({
         ...fallback,
-        subjects: mergeRows(subjectsResponse.data, fallback.subjects.filter((row) => !isPendingRow(row)), syncedSubjects),
-        classes: mergeRows(classesResponse.data, fallback.classes.filter((row) => !isPendingRow(row)), syncedClasses),
+        subjects: mergeRows(subjectsResponse.data, fallback.subjects.filter((row) => !isPendingRow(row)), subjectSync.rows),
+        classes: mergeRows(classesResponse.data, fallback.classes.filter((row) => !isPendingRow(row)), classSync.rows),
         terms: mergeRows(termsResponse.data, fallback.terms),
       });
-    } catch (_) {
-      // Keep the cached metadata when the server is unavailable.
+      const pending = [...fallback.subjects, ...fallback.classes].filter(isPendingRow).length;
+      const failed = subjectSync.failed + classSync.failed;
+      onSyncStatus?.({
+        state: pending ? 'pending' : 'synced',
+        pending,
+        failed,
+        error: subjectSync.error || classSync.error,
+      });
+    } catch (error) {
+      onSyncStatus?.({ state: 'error', error });
     }
+  } else if (refresh && user) {
+    onSyncStatus?.({ state: 'offline' });
   }
 
   try {
     await cacheMeta(cacheKey, fallback);
-  } catch (_) {}
+  } catch (error) {
+    onSyncStatus?.({ state: 'storage-error', error });
+  }
   return fallback;
 }
 

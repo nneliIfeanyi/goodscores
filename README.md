@@ -62,7 +62,7 @@ Copy `backend/.env.example` to `backend/.env` and set `PAYSTACK_SECRET_KEY`. Kee
 2. Put it in `backend/.env`:
    ```
    OPENAI_API_KEY=your_key_here
-   OPENAI_VISION_MODEL=gpt-4o-mini
+   OPENAI_VISION_MODEL=gpt-6-luna
    ```
 3. In the app: **Questions → New → Extract text with OCR** (costs **35 credits**)
 
