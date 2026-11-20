@@ -52,7 +52,9 @@ function contentTypeOptions(subjectId) {
 }
 
 async function loadMeta() {
-  meta = await loadMetaData();
+  meta = await loadMetaData({ refresh: true, onSyncStatus: ({ state, error }) => {
+    if (state === 'error' || state === 'storage-error') toast(error?.message || 'Could not refresh subjects, classes and terms.', 'error');
+  } });
 }
 
 async function renderOfflineDraftStatus() {

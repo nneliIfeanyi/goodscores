@@ -60,6 +60,14 @@ function putPassage(record) {
   }));
 }
 
+function preservedLocalCategories(existing, question) {
+  const preserved = Object.fromEntries(['subject_id', 'class_id'].filter((field) =>
+    !question[field] && String(existing?.[field] || '').startsWith('local-')
+  ).map((field) => [field, existing[field]]));
+  if (Object.keys(preserved).length && !question.term_id && existing?.term_id) preserved.term_id = existing.term_id;
+  return preserved;
+}
+
 export async function saveOfflineQuestion(question) {
   const existing = question.offline_id ? await getOfflineQuestion(question.offline_id) : null;
   const now = new Date().toISOString();
@@ -102,6 +110,7 @@ export async function cacheQuestion(question) {
   return putQuestion({
     ...(existing || {}),
     ...question,
+    ...preservedLocalCategories(existing, question),
     images: question.images || existing?.images,
     offline_id: offlineId,
     owner_key: ownerKey(),
@@ -109,6 +118,40 @@ export async function cacheQuestion(question) {
     backup_state: 'backed_up',
     backup_revision: question.backup_revision || existing?.backup_revision || 0,
     updated_at: now,
+  });
+}
+
+export async function remapOfflineMetadata(mappings) {
+  const db = await openDB();
+  const owner = ownerKey();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(['questions', 'passages'], 'readwrite');
+    for (const storeName of ['questions', 'passages']) {
+      const request = tx.objectStore(storeName).openCursor();
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (!cursor) return;
+        const record = cursor.value;
+        if (record.owner_key === owner) {
+          let changed = false;
+          for (const [field, mapping] of Object.entries(mappings)) {
+            const replacement = mapping.get(String(record[field] ?? ''));
+            if (replacement !== undefined) {
+              record[field] = replacement;
+              changed = true;
+            }
+          }
+          if (changed) {
+            if (storeName === 'passages') record.backup_state = 'pending';
+            cursor.update(record);
+          }
+        }
+        cursor.continue();
+      };
+    }
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error('Could not update local question categories'));
+    tx.onabort = () => reject(tx.error || new Error('Updating local question categories was cancelled'));
   });
 }
 
@@ -137,6 +180,7 @@ export async function mergeRestoredQuestions(serverQuestions) {
     await putQuestion({
       ...(existing || {}),
       ...question,
+      ...preservedLocalCategories(existing, question),
       offline_id: offlineId,
       owner_key: ownerKey(),
       deleted: false,

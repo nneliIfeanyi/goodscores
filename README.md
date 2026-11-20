@@ -39,6 +39,7 @@ Copy `backend/.env.example` to `backend/.env` and set `PAYSTACK_SECRET_KEY`. Kee
 - Image upload limits (5MB, image MIME only, magic-byte check)
 - Uploads folder blocks PHP execution
 - Offline question sync when back online
+- Sync refreshes account subjects, classes and terms before uploading questions. If older synced questions lost categories, sync again on the original device while its local category information is still available; categories no longer present there must be reassigned manually.
 - Toast notifications instead of raw alerts
 - Clearer network error messages
 - PWA icons + relative manifest/SW

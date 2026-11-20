@@ -52,6 +52,11 @@ export async function backupQuestionBank({ offlineId = null, silent = false } = 
   let recoveredCount = 0;
   try {
     recoveredCount = await recoverLegacyQuestions();
+    let metaError = null;
+    await loadMetaData({ refresh: true, onSyncStatus: ({ state, error }) => {
+      if (['error', 'storage-error', 'pending'].includes(state)) metaError = error || new Error('Some subjects or classes could not be synced.');
+    } });
+    if (metaError) throw metaError;
     await backupPendingPassages();
     const unsyncedQuestions = await getUnsyncedQuestions();
     const targetOfflineId = recoveredCount ? null : offlineId;
@@ -349,7 +354,11 @@ export async function restoreQuestionBank() {
     const outcome = await mergeRestoredQuestions(questions);
     const paperResult = await api('/backup/papers');
     const paperOutcome = await mergeRestoredPapers(paperResult.data?.papers || []);
-    await loadMetaData({ refresh: true });
+    let metaError = null;
+    await loadMetaData({ refresh: true, onSyncStatus: ({ state, error }) => {
+      if (['error', 'storage-error', 'pending'].includes(state)) metaError = error || new Error('Some subjects or classes could not be synced.');
+    } });
+    if (metaError) throw metaError;
     const restoredCount = outcome.added + outcome.updated;
     const restoredPaperCount = paperOutcome.added + paperOutcome.updated;
     const skippedCount = outcome.skipped + paperOutcome.skipped;

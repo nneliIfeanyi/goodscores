@@ -1,5 +1,5 @@
 import { api, getUser } from './api.js';
-import { cacheMeta, getCachedMeta } from './db.js';
+import { cacheMeta, getCachedMeta, getOfflineQuestions, remapOfflineMetadata } from './db.js';
 
 /** Terms are available by default; subjects and classes belong to each user. */
 export const DEFAULT_META = {
@@ -28,7 +28,7 @@ function uniqueRows(rows) {
   return (rows || []).filter((item) => {
     const id = item?.id == null ? '' : String(item.id);
     const name = String(item?.name || '').trim().toLowerCase();
-    if ((id && seenIds.has(id)) || (name && seenNames.has(name))) return false;
+    if ((id && seenIds.has(id)) || (!id && name && seenNames.has(name))) return false;
     if (id) seenIds.add(id);
     if (name) seenNames.add(name);
     return true;
@@ -44,8 +44,9 @@ function isPendingRow(row) {
 }
 
 async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
-  const remoteNames = new Set((remoteRows || []).map((row) => String(row?.name || '').trim().toLowerCase()).filter(Boolean));
+  const remoteNames = new Map((remoteRows || []).map((row) => [String(row?.name || '').trim().toLowerCase(), row]));
   const synced = [];
+  const mapping = new Map();
   let failed = 0;
   let lastError = null;
   for (const row of rows.filter(isPendingRow)) {
@@ -57,12 +58,17 @@ async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
       synced.push(row);
       continue;
     }
-    if (remoteNames.has(normalizedName)) continue;
+    if (remoteNames.has(normalizedName)) {
+      mapping.set(String(row.id), remoteNames.get(normalizedName).id);
+      continue;
+    }
     try {
       const response = await api(endpoint, { method: 'POST', body: JSON.stringify(toPayload(row, name)) });
       if (response.data?.id) {
-        synced.push(response.data);
-        remoteNames.add(normalizedName);
+        const remote = { ...response.data, teacher_id: getUser()?.id };
+        synced.push(remote);
+        remoteNames.set(normalizedName, remote);
+        mapping.set(String(row.id), remote.id);
       } else {
         failed += 1;
         lastError = new Error('The server did not confirm the saved record.');
@@ -74,15 +80,43 @@ async function syncPendingRows(endpoint, rows, remoteRows, toPayload) {
       synced.push(row);
     }
   }
-  return { rows: synced, failed, error: lastError };
+  return { rows: synced, mapping, failed, error: lastError };
 }
 
-/**
- * Load subjects, classes, and terms from IndexedDB/defaults only.
- * Account CRUD may explicitly write changes to the server, but ordinary
- * question, paper, and AI workflows never read metadata from the server.
- */
-export async function loadMetaData({ refresh = false, onSyncStatus = null } = {}) {
+async function applyMetadataMappings(mappings) {
+  if (!Object.values(mappings).some((mapping) => mapping.size)) return;
+  const questions = await getOfflineQuestions();
+  const repairs = questions.filter((question) => question.backup_state === 'backed_up' && question.id)
+    .map((question) => {
+      const references = {};
+      for (const [field, mapping] of Object.entries(mappings)) {
+        const id = mapping.get(String(question[field] ?? ''));
+        if (id !== undefined) references[field] = id;
+      }
+      return { id: question.id, offline_id: question.offline_id, ...references };
+    })
+    .filter((question) => Object.keys(question).length > 2);
+  for (let offset = 0; offset < repairs.length; offset += 100) {
+    const batch = repairs.slice(offset, offset + 100);
+    const response = await api('/backup/question-references', {
+      method: 'POST',
+      body: JSON.stringify({ questions: batch }),
+    });
+    if (response.data?.processed !== batch.length) throw new Error('The server did not confirm the question category repair.');
+  }
+  await remapOfflineMetadata(mappings);
+}
+
+let refreshQueue = Promise.resolve();
+
+export async function loadMetaData(options = {}) {
+  if (!options.refresh) return loadMetaDataNow(options);
+  const result = refreshQueue.then(() => loadMetaDataNow(options));
+  refreshQueue = result.catch(() => {});
+  return result;
+}
+
+async function loadMetaDataNow({ refresh = false, onSyncStatus = null } = {}) {
   const user = getUser();
   const cacheKey = `all-v2:${user?.id || 'anonymous'}`;
   let cached = null;
@@ -123,11 +157,26 @@ export async function loadMetaData({ refresh = false, onSyncStatus = null } = {}
         classesResponse.data,
         (row, name) => ({ name, sort_order: Number(row.sort_order || 0) })
       );
+      const termMapping = new Map();
+      for (const term of fallback.terms) {
+        const remote = termsResponse.data.find((item) =>
+          String(item.name || '').trim().toLowerCase() === String(term.name || '').trim().toLowerCase());
+        if (remote && String(remote.id) !== String(term.id)) termMapping.set(String(term.id), remote.id);
+      }
+      const mappings = { subject_id: subjectSync.mapping, class_id: classSync.mapping, term_id: termMapping };
+      await applyMetadataMappings(mappings);
+      if (anonymousCached) {
+        await cacheMeta('all-v2:anonymous', {
+          ...anonymousCached,
+          subjects: (anonymousCached.subjects || []).filter((row) => !subjectSync.mapping.has(String(row.id))),
+          classes: (anonymousCached.classes || []).filter((row) => !classSync.mapping.has(String(row.id))),
+        });
+      }
       fallback = removeLegacyDefaults({
         ...fallback,
-        subjects: mergeRows(subjectsResponse.data, fallback.subjects.filter((row) => !isPendingRow(row)), subjectSync.rows),
-        classes: mergeRows(classesResponse.data, fallback.classes.filter((row) => !isPendingRow(row)), classSync.rows),
-        terms: mergeRows(termsResponse.data, fallback.terms),
+        subjects: mergeRows(subjectsResponse.data, subjectSync.rows),
+        classes: mergeRows(classesResponse.data, classSync.rows),
+        terms: termsResponse.data,
       });
       const pending = [...fallback.subjects, ...fallback.classes].filter(isPendingRow).length;
       const failed = subjectSync.failed + classSync.failed;
