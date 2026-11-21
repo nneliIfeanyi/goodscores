@@ -2,7 +2,7 @@ import { api, getUser, storageUrl } from './api.js';
 import { saveOfflineQuestion, getOfflineQuestion, saveOfflinePassage, getOfflinePassage, getOfflinePassages, getUnsyncedPassages, markPassageBackedUp, replaceOfflinePassageReferences, getUnsyncedQuestions, getOfflineQuestions, getQuestionsForRecovery, prepareQuestionsForRecovery, getOfflinePapers, saveOfflinePaper, markQuestionBackedUp, getOfflineQuestionSummary, mergeRestoredQuestions, mergeRestoredPapers, getCachedMeta, cacheMeta, ownerKey } from './db.js?v=28';
 import { toast } from './toast.js';
 import { requireAuthentication } from './authGate.js';
-import { loadMetaData } from './meta.js';
+import { loadMetaData, canonicalCategoryId } from './meta.js';
 import { confirmModal } from './modal.js';
 import { fetchServerQuestions } from './questionBank.js';
 
@@ -335,6 +335,64 @@ export async function refreshBackupStatus() {
   const summary = await getOfflineQuestionSummary();
   window.dispatchEvent(new CustomEvent('gs-backup-status', { detail: { online: navigator.onLine, ...summary } }));
   return summary;
+}
+
+export async function recoverQuestionCategories() {
+  if (!localStorage.getItem('gs_token') || !navigator.onLine) {
+    toast('Sign in and connect to recover question categories.', 'warn');
+    return;
+  }
+  try {
+    let metaError = null;
+    const meta = await loadMetaData({ refresh: true, onSyncStatus: ({ state, error }) => {
+      if (['error', 'storage-error', 'pending'].includes(state)) metaError = error || new Error('Subjects or classes could not be synced.');
+    } });
+    if (metaError) throw metaError;
+    const localQuestions = await getOfflineQuestions();
+    const response = await api('/backup/questions');
+    if (!Array.isArray(response.data?.questions)) throw new Error('The server returned an invalid question list.');
+    const serverById = new Map(response.data.questions.map((question) => [String(question.id), question]));
+    const repairs = [];
+    let unresolved = 0;
+    for (const local of localQuestions) {
+      if (local.backup_state !== 'backed_up' || !local.id) continue;
+      const server = serverById.get(String(local.id));
+      if (!server || String(server.offline_id || `server:${server.id}`) !== String(local.offline_id)) continue;
+      const item = { id: server.id, offline_id: local.offline_id };
+      for (const [field, rows] of [['subject_id', meta.subjects], ['class_id', meta.classes], ['term_id', meta.terms]]) {
+        const value = local.category_recovery?.[field] || local[field];
+        if (server[field] || !value) continue;
+        const id = canonicalCategoryId(rows, value);
+        if (rows.some((row) => String(row.id) === String(id))) item[field] = id;
+        else unresolved += 1;
+      }
+      if (Object.keys(item).length > 2) repairs.push(item);
+    }
+    if (!repairs.length) {
+      toast(unresolved
+        ? 'No categories could be matched on this device. Reassign them in Questions.'
+        : 'No missing question categories were found in this device’s saved data.', 'info');
+      return;
+    }
+    const confirmed = await confirmModal({
+      title: 'Recover question categories?',
+      message: `Restore missing subject, class or term selections for ${repairs.length} question${repairs.length === 1 ? '' : 's'} from this device? Existing server selections will not be overwritten.${unresolved ? ' Some selections could not be matched and must be reassigned manually.' : ''}`,
+      confirmLabel: 'Recover',
+    });
+    if (!confirmed) return;
+    for (let offset = 0; offset < repairs.length; offset += 100) {
+      const batch = repairs.slice(offset, offset + 100);
+      const result = await api('/backup/question-references', {
+        method: 'POST',
+        body: JSON.stringify({ questions: batch }),
+      });
+      if (result.data?.processed !== batch.length) throw new Error('The server did not confirm every category repair.');
+    }
+    toast(`Checked ${repairs.length} question${repairs.length === 1 ? '' : 's'} for category recovery.${unresolved ? ' Some selections still need manual reassignment.' : ''}`, 'success');
+    window.dispatchEvent(new CustomEvent('gs-questions-refresh'));
+  } catch (error) {
+    toast(error.message || 'Could not recover question categories.', 'error');
+  }
 }
 
 export async function restoreQuestionBank() {

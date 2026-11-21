@@ -4,7 +4,7 @@ import { updateCreditsBadge } from '../../app.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal, inputModal } from '../../utils/modal.js';
 import { clearOfflineStorage, getOfflineQuestionSummary, getOfflinePapers } from '../../utils/db.js';
-import { backupQuestionBank } from '../../utils/backup.js?v=28';
+import { backupQuestionBank, recoverQuestionCategories } from '../../utils/backup.js?v=28';
 import { loadMetaData, updateCachedMeta } from '../../utils/meta.js';
 
 const ACCOUNT_META_FOCUS_INTENT_KEY = 'gs_account_focus_meta';
@@ -252,6 +252,7 @@ export async function renderAccount() {
           <div class="rounded-lg bg-amber-50 dark:bg-amber-900/20 p-2"><p id="settings-sync-pending" class="text-lg font-bold text-amber-700 dark:text-amber-300">0</p><p class="text-[11px] text-gray-500">Pending</p></div>
           <div class="rounded-lg bg-red-50 dark:bg-red-900/20 p-2"><p id="settings-sync-failed" class="text-lg font-bold text-red-700 dark:text-red-300">0</p><p class="text-[11px] text-gray-500">Failed</p></div>
           <div class="rounded-lg bg-green-50 dark:bg-green-900/20 p-2"><p id="settings-sync-synced" class="text-lg font-bold text-green-700 dark:text-green-300">0</p><p class="text-[11px] text-gray-500">Synced</p></div>
+          <button id="settings-recover-categories" type="button" class="col-span-3 text-xs font-semibold text-primary-700 dark:text-primary-300 hover:underline">Recover missing question categories from this device</button>
         </div>
       </section>
 
@@ -580,6 +581,15 @@ export async function renderAccount() {
     document.getElementById('settings-sync-retry')?.classList.toggle('hidden', !status.online || !status.pending);
   };
   updateBackupPanel();
+  document.getElementById('settings-recover-categories')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      await recoverQuestionCategories();
+    } finally {
+      button.disabled = false;
+    }
+  });
   document.getElementById('settings-sync-retry')?.addEventListener('click', async (event) => {
     const button = document.getElementById('settings-sync-retry');
     if (!button) return;

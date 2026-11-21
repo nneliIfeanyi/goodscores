@@ -68,6 +68,16 @@ function preservedLocalCategories(existing, question) {
   return preserved;
 }
 
+function recoveryCategories(existing, question) {
+  if (!existing || existing.backup_state !== 'backed_up') return {};
+  const saved = { ...(existing.category_recovery || {}) };
+  for (const field of ['subject_id', 'class_id', 'term_id']) {
+    if (!question[field] && existing[field]) saved[field] = existing[field];
+    if (question[field]) delete saved[field];
+  }
+  return Object.keys(saved).length ? { category_recovery: saved } : { category_recovery: null };
+}
+
 export async function saveOfflineQuestion(question) {
   const existing = question.offline_id ? await getOfflineQuestion(question.offline_id) : null;
   const now = new Date().toISOString();
@@ -111,6 +121,7 @@ export async function cacheQuestion(question) {
     ...(existing || {}),
     ...question,
     ...preservedLocalCategories(existing, question),
+    ...recoveryCategories(existing, question),
     images: question.images || existing?.images,
     offline_id: offlineId,
     owner_key: ownerKey(),
@@ -181,6 +192,7 @@ export async function mergeRestoredQuestions(serverQuestions) {
       ...(existing || {}),
       ...question,
       ...preservedLocalCategories(existing, question),
+      ...recoveryCategories(existing, question),
       offline_id: offlineId,
       owner_key: ownerKey(),
       deleted: false,

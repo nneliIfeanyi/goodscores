@@ -82,6 +82,7 @@ test('local references survive server caching and are remapped without touching 
     localStorage: { getItem: () => 'device:a' },
     structuredClone,
   });
+
   const source = await readFile(new URL('./db.js', import.meta.url), 'utf8');
   const module = new vm.SourceTextModule(source, { context });
   await module.link(() => {});
@@ -100,4 +101,22 @@ test('local references survive server caching and are remapped without touching 
   assert.equal(questions.get('q2').subject_id, 'local-s');
   assert.equal(passages.get('p1').subject_id, 10);
   assert.equal(passages.get('p1').backup_state, 'pending');
+});
+
+test('caching a server question preserves missing numeric categories for explicit recovery', async () => {
+  const questions = new Map([
+    ['q1', { offline_id: 'q1', id: 1, owner_key: 'device:a', backup_state: 'backed_up', subject_id: 10, class_id: 20, term_id: 30 }],
+  ]);
+  const context = vm.createContext({
+    indexedDB: fakeIndexedDB({ questions, passages: new Map() }),
+    localStorage: { getItem: () => 'device:a' },
+    structuredClone,
+  });
+  const source = await readFile(new URL('./db.js', import.meta.url), 'utf8');
+  const module = new vm.SourceTextModule(source, { context });
+  await module.link(() => {});
+  await module.evaluate();
+  await module.namespace.cacheQuestion({ id: 1, offline_id: 'q1', subject_id: null, class_id: null, term_id: null });
+  assert.deepEqual(questions.get('q1').category_recovery, { subject_id: 10, class_id: 20, term_id: 30 });
+  assert.equal(questions.get('q1').subject_id, null);
 });

@@ -1,5 +1,5 @@
 import { api } from '../../utils/api.js';
-import { loadMetaData } from '../../utils/meta.js';
+import { loadMetaData, canonicalCategoryId } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
 import { API_BASE, storageUrl, getUser } from '../../utils/api.js';
@@ -263,6 +263,10 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
       const response = await api(endpoint);
       existingPaper = response.data;
       if (!existingPaper) throw new Error('Paper not found');
+      if (!schoolWide) {
+        existingPaper.subject_id = canonicalCategoryId(meta.subjects, existingPaper.subject_id);
+        existingPaper.class_id = canonicalCategoryId(meta.classes, existingPaper.class_id);
+      }
     }
     allQuestions = await getQuestionBank({}, { onlineOnly: true, serverOnly: true });
     allQuestions = mergeExistingPaperQuestions(allQuestions, {});
@@ -896,7 +900,9 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
     });
   };
 
+  let filterRequestSequence = 0;
   const loadFilteredQuestions = async () => {
+    const sequence = ++filterRequestSequence;
     questionStatus.textContent = 'Loading questions…';
     questionStatus.classList.remove('hidden');
     questionList.innerHTML = '';
@@ -906,10 +912,12 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
         class_id: form.class_id.value,
         term_id: form.term_id.value,
       };
-      allQuestions = await getQuestionBank(filters, { onlineOnly: true, serverOnly: true });
-      allQuestions = mergeExistingPaperQuestions(allQuestions, filters);
+      const loaded = await getQuestionBank(filters, { onlineOnly: true, serverOnly: true });
+      if (sequence !== filterRequestSequence) return;
+      allQuestions = mergeExistingPaperQuestions(loaded, filters);
       rememberQuestions(allQuestions);
     } catch (error) {
+      if (sequence !== filterRequestSequence) return;
       questionStatus.textContent = error.message || 'Could not load server questions';
       questionStatus.classList.remove('hidden');
       return;

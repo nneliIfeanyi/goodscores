@@ -2,7 +2,7 @@ import { api, getUser, storageUrl } from '../../utils/api.js';
 import { getOfflineQuestions, getOfflineQuestion, deleteOfflineQuestion } from '../../utils/db.js';
 import { backupQuestionBank, saveQuestion } from '../../utils/backup.js?v=28';
 import { getQuestionBank } from '../../utils/questionBank.js';
-import { loadMetaData, optionsHtml } from '../../utils/meta.js';
+import { loadMetaData, optionsHtml, canonicalCategoryId } from '../../utils/meta.js';
 import { toast } from '../../utils/toast.js';
 import { confirmModal } from '../../utils/modal.js';
 import { openAiQuestionFlow } from '../aiQuestions.js';
@@ -14,6 +14,7 @@ import { mathHtml } from '../../utils/math.js';
 let meta = { subjects: [], classes: [], terms: [] };
 let questions = [];
 let editingId = null;
+let questionLoadSequence = 0;
 
 const escapeHtml = (value) => String(value ?? '')
   .replace(/&/g, '&amp;')
@@ -83,15 +84,21 @@ async function renderOfflineDraftStatus() {
 }
 
 async function loadQuestions(filters = {}) {
+  const sequence = ++questionLoadSequence;
   const listEl = document.getElementById('q-list');
   if (listEl) {
     listEl.innerHTML = '<div class="loading-skeleton"></div><div class="loading-skeleton"></div><div class="loading-skeleton"></div>';
   }
-  questions = await getQuestionBank(filters);
+  const loaded = await getQuestionBank(filters);
+  if (sequence !== questionLoadSequence || document.getElementById('q-list') !== listEl) return;
+  questions = loaded;
   questions = questions.map((question) => ({
     ...question,
+    subject_id: canonicalCategoryId(meta.subjects, question.subject_id),
+    class_id: canonicalCategoryId(meta.classes, question.class_id),
     subject_name: question.subject_name || meta.subjects.find((subject) => subject.id == question.subject_id)?.name,
     class_name: question.class_name || meta.classes.find((item) => item.id == question.class_id)?.name,
+    term_name: question.term_name || meta.terms.find((term) => term.id == question.term_id)?.name,
   }));
   renderList();
 }
@@ -155,8 +162,9 @@ function renderList() {
           <div class="flex-1 min-w-0">
             <div class="flex flex-wrap items-center gap-2 mb-1.5">
               <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${typeBadge}">${q.type}</span>
-              ${q.subject_name ? `<span class="text-xs text-gray-500">${q.subject_name}</span>` : ''}
-              ${q.class_name ? `<span class="text-xs text-gray-400">· ${q.class_name}</span>` : ''}
+              ${q.subject_name ? `<span class="text-xs text-gray-500">${escapeHtml(q.subject_name)}</span>` : ''}
+              ${q.class_name ? `<span class="text-xs text-gray-400">· ${escapeHtml(q.class_name)}</span>` : ''}
+              ${q.term_name ? `<span class="text-xs text-gray-400">· ${escapeHtml(q.term_name)}</span>` : ''}
               ${q.passage_id ? `<span class="text-xs text-primary-600">Passage: ${q.passage_title || 'linked'}</span>` : ''}
               ${q.image_count > 0 ? `<span class="text-xs text-primary-600">📷 ${q.image_count}</span>` : ''}
             </div>
@@ -971,6 +979,9 @@ export async function renderQuestions() {
         <select id="f-class" class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shrink-0">
           <option value="">All classes</option>
         </select>
+        <select id="f-term" class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 shrink-0">
+          <option value="">All terms</option>
+        </select>
         <input id="f-search" type="search" placeholder="Search…"
           class="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 w-28 shrink-0" />
       </div>
@@ -985,10 +996,11 @@ export async function renderQuestions() {
     </div>
   `;
 
+  const subjSel = document.getElementById('f-subject');
   await loadMeta();
+  if (document.getElementById('f-subject') !== subjSel) return;
 
   // Populate filter dropdowns
-  const subjSel = document.getElementById('f-subject');
   meta.subjects.forEach((s) => {
     subjSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
   });
@@ -996,17 +1008,22 @@ export async function renderQuestions() {
   meta.classes.forEach((c) => {
     classSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
   });
+  const termSel = document.getElementById('f-term');
+  meta.terms.forEach((term) => {
+    termSel.innerHTML += `<option value="${term.id}">${term.name}</option>`;
+  });
 
   const applyFilters = () => {
     loadQuestions({
       type: document.getElementById('f-type').value,
       subject_id: document.getElementById('f-subject').value,
       class_id: document.getElementById('f-class').value,
+      term_id: document.getElementById('f-term').value,
       search: document.getElementById('f-search').value.trim(),
     });
   };
 
-  ['f-type', 'f-subject', 'f-class'].forEach((id) => {
+  ['f-type', 'f-subject', 'f-class', 'f-term'].forEach((id) => {
     document.getElementById(id)?.addEventListener('change', applyFilters);
   });
   let searchTimer;

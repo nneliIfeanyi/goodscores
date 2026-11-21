@@ -22,6 +22,29 @@ function removeLegacyDefaults(meta) {
   };
 }
 
+function uniqueNames(rows) {
+  const seen = new Map();
+  const result = [];
+  for (const row of rows) {
+    const name = String(row.name || '').trim().toLowerCase();
+    const existing = name && seen.get(name);
+    if (existing) {
+      existing.alias_ids.push(row.id, ...(row.alias_ids || []));
+    } else {
+      const item = { ...row, alias_ids: [...(row.alias_ids || [])] };
+      if (name) seen.set(name, item);
+      result.push(item);
+    }
+  }
+  return result;
+}
+
+export function canonicalCategoryId(rows, id) {
+  const row = rows.find((item) => String(item.id) === String(id)
+    || (item.alias_ids || []).some((alias) => String(alias) === String(id)));
+  return row ? row.id : id;
+}
+
 function uniqueRows(rows) {
   const seenIds = new Set();
   const seenNames = new Set();
@@ -174,8 +197,8 @@ async function loadMetaDataNow({ refresh = false, onSyncStatus = null } = {}) {
       }
       fallback = removeLegacyDefaults({
         ...fallback,
-        subjects: mergeRows(subjectsResponse.data, subjectSync.rows),
-        classes: mergeRows(classesResponse.data, classSync.rows),
+        subjects: uniqueNames(mergeRows(subjectsResponse.data, subjectSync.rows)),
+        classes: uniqueNames(mergeRows(classesResponse.data, classSync.rows)),
         terms: termsResponse.data,
       });
       const pending = [...fallback.subjects, ...fallback.classes].filter(isPendingRow).length;

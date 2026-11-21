@@ -119,7 +119,22 @@ test('all local IDs with the same name are mapped to the account record', async 
     ],
     remote: { subjects: [{ id: 31, name: 'Maths' }] },
   });
+
   await app.load({ refresh: true });
   assert.equal(app.localQuestions[0].subject_id, 31);
   assert.equal(app.localQuestions[1].subject_id, 31);
+});
+
+test('duplicate server categories are displayed once while retaining their IDs', async () => {
+  const app = await setup({
+    remote: {
+      subjects: [{ id: 31, name: 'Maths' }, { id: 32, name: ' maths ' }],
+      classes: [{ id: 41, name: 'JSS 1' }, { id: 42, name: 'jss 1' }],
+    },
+  });
+  const meta = await app.load({ refresh: true });
+  assert.equal(meta.subjects.length, 1);
+  assert.equal(meta.classes.length, 1);
+  assert.equal(meta.subjects[0].alias_ids[0], 32);
+  assert.equal(meta.classes[0].alias_ids[0], 42);
 });
