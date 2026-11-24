@@ -69,7 +69,50 @@ export async function renderPaperHtml(paper) {
   const fontSize = Math.max(8, Math.min(18, Number(settings.pdf_font_size || user.pdf_font_size || 11)));
   const margins = `${Number(settings.margin_top ?? 10)}mm ${Number(settings.margin_right ?? 8)}mm ${Number(settings.margin_bottom ?? 10)}mm ${Number(settings.margin_left ?? 8)}mm`;
   const body = renderQuestions(paper, settings);
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(paper.title || 'Exam Paper')}</title><style>@page{size:${paperSize} ${orientation};margin:${margins}}body{font-family:Arial,sans-serif;color:#111;font-size:${fontSize}pt}.exam-header{border-bottom:2px solid #0d9488;padding-bottom:8px;margin-bottom:8px;min-height:${Number(settings.header_height ?? 80)}px}.header-table,.info-table{width:100%;border-collapse:collapse}.header-table td{vertical-align:middle;text-align:center}.header-logo{display:block;max-width:90px;max-height:55px;margin:auto}.school-name{font-size:16pt;font-weight:bold;color:#0f766e}.extra-line{font-size:9pt;color:#444;margin-top:3px}.info-table{font-size:9pt;margin:4px 0 12px}.info-table td{padding:3px 8px 3px 0;width:33%}h2{text-align:center;border-bottom:1px solid #999;padding-bottom:5px;font-size:13pt}.instructions{font-style:italic;text-align:center}.paper-passage{margin:18px 0 10px;padding:10px 12px;border:1px solid #bbb;background:#fafafa;page-break-inside:avoid}.paper-passage>div{margin-top:6px}.question-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.question-grid.inline-options-layout{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.inline-options{white-space:pre-wrap;tab-size:4}.inline-option{display:inline;margin-right:1.5em}article{margin:0 0 16px;page-break-inside:avoid}.question-image{margin:8px auto;text-align:center}.question-image img{display:block;max-width:100%;max-height:220px;margin:0 auto;object-fit:contain}.marks{float:right;font-size:10pt;color:#555}.options{margin:6px 0 0 24px;line-height:1.5}.footer{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:8pt;color:#777;border-top:1px solid #ddd;padding-top:4px}@media print{.question-grid{break-inside:auto}}</style></head><body><header class="exam-header"><table class="header-table"><tr><td style="width:20%">${logo}</td><td style="width:60%">${settings.show_school_name === false ? '' : `<div class="school-name">${escapeHtml(header.school_name)}</div>`}<div class="extra-line">${escapeHtml(header.extra_line || '')}</div></td><td style="width:20%"></td></tr></table></header><table class="info-table"><tr><td><strong>Term:</strong> ${escapeHtml(paper.term_name || '')}</td><td><strong>Session:</strong> ${escapeHtml(session)}</td><td><strong>Time allowed:</strong> ${escapeHtml(settings.time_allowed || '________')}</td></tr><tr><td><strong>Subject:</strong> ${escapeHtml(paper.subject_name || '')}</td><td><strong>Class:</strong> ${escapeHtml(paper.class_name || '')}</td><td><strong>Total marks:</strong> ${escapeHtml(paper.total_marks || '')}</td></tr></table>${body}<footer class="footer">${escapeHtml(settings.footer_text ?? 'End of Paper')}</footer></body></html>`;
+  const schoolName = settings.show_school_name === false ? '' : `<div class="school-name">${escapeHtml(header.school_name)}</div>`;
+  return `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>${escapeHtml(paper.title || 'Exam Paper')}</title>
+<style>
+@page{size:${paperSize} ${orientation};margin:${margins}}
+body{font-family:Arial,sans-serif;color:#111;font-size:${fontSize}pt}
+.exam-header{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;border-bottom:2px solid #0d9488;padding-bottom:8px;margin-bottom:8px;min-height:${Number(settings.header_height ?? 80)}px;box-sizing:border-box}
+.header-logo{position:absolute;left:0;top:50%;transform:translateY(-50%);max-width:90px;max-height:55px}
+.header-copy{width:100%;padding:0 6px}
+.exam-header.has-logo .header-copy{padding:0 100px}
+.school-name{font-family:Arial,Helvetica,sans-serif;font-size:21pt;font-weight:800;line-height:1.15;letter-spacing:.045em;text-transform:uppercase;color:#0f766e;overflow-wrap:anywhere}
+.extra-line{font-size:9pt;color:#444;margin-top:4px}
+.info-table{width:100%;border-collapse:collapse;font-size:9pt;margin:4px 0 12px}
+.info-table td{padding:3px 8px 3px 0;width:33%}
+h2{text-align:center;border-bottom:1px solid #999;padding-bottom:5px;font-size:13pt}
+.instructions{font-style:italic;text-align:center}
+.paper-passage{margin:18px 0 10px;padding:10px 12px;border:1px solid #bbb;background:#fafafa;page-break-inside:avoid}
+.paper-passage>div{margin-top:6px}
+.question-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.question-grid.inline-options-layout{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.inline-options{white-space:pre-wrap;tab-size:4}
+.inline-option{display:inline;margin-right:1.5em}
+article{margin:0 0 16px;page-break-inside:avoid}
+.question-image{margin:8px auto;text-align:center}
+.question-image img{display:block;max-width:100%;max-height:220px;margin:0 auto;object-fit:contain}
+.marks{float:right;font-size:10pt;color:#555}
+.options{margin:6px 0 0 24px;line-height:1.5}
+.footer{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:8pt;color:#777;border-top:1px solid #ddd;padding-top:4px}
+@media print{.question-grid{break-inside:auto}}
+</style>
+</head>
+<body>
+<header class="exam-header${logo ? ' has-logo' : ''}">
+${logo}
+<div class="header-copy">${schoolName}<div class="extra-line">${escapeHtml(header.extra_line || '')}</div></div>
+</header>
+<table class="info-table"><tr><td><strong>Term:</strong> ${escapeHtml(paper.term_name || '')}</td><td><strong>Session:</strong> ${escapeHtml(session)}</td><td><strong>Time allowed:</strong> ${escapeHtml(settings.time_allowed || '________')}</td></tr><tr><td><strong>Subject:</strong> ${escapeHtml(paper.subject_name || '')}</td><td><strong>Class:</strong> ${escapeHtml(paper.class_name || '')}</td><td><strong>Total marks:</strong> ${escapeHtml(paper.total_marks || '')}</td></tr></table>
+${body}
+<footer class="footer">${escapeHtml(settings.footer_text ?? 'End of Paper')}</footer>
+</body>
+</html>`;
 }
 
 export async function downloadPaperHtml(paper, format = 'html') {

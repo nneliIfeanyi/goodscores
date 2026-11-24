@@ -1,5 +1,5 @@
 /* GoodScores service worker for the domain-root frontend. */
-const CACHE_NAME = 'goodscores-v51';
+const CACHE_NAME = 'goodscores-v52';
 
 // Paths are relative to the service worker at the domain root.
 const CORE_ASSETS = [
