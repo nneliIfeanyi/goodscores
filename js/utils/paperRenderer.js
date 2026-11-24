@@ -40,20 +40,22 @@ function renderQuestions(paper, settings) {
     const itemList = (section.question_ids || []).map((id) => questions.get(String(id))).filter(Boolean).map((question) => {
       number += 1;
       const label = layout.get(String(question.id ?? question.offline_id))?.label || String(number);
+      const singleColumnInline = settings.paper_format === 'single_column_inline';
       const options = question.type === 'mcq'
-        ? (settings.paper_format === 'inline_options'
+        ? (['inline_options', 'single_column_inline'].includes(settings.paper_format)
           ? `<span class="inline-options">\t${(question.options || []).map((option) => `<span class="inline-option"><strong>${escapeHtml(option.key)}.</strong> ${mathHtml(option.text)}</span>`).join('')}</span>`
           : `<div class="options">${(question.options || []).map((option) => `<div><strong>${escapeHtml(option.key)}.</strong> ${mathHtml(option.text)}</div>`).join('')}</div>`)
         : '';
       const images = (question.images || (question._pending_image ? [{ data_url: question._pending_image, original_name: 'Question image' }] : [])).map((image) => `<figure class="question-image"><img style="max-width:400px;width:100%;height:auto;max-height:300px;margin:0 auto;object-fit:contain" src="${escapeHtml(image.data_url || storageUrl(image.file_path))}" alt="${escapeHtml(image.original_name || 'Question image')}"></figure>`).join('');
       const marks = settings.show_marks === false ? '' : `<span class="marks">[${escapeHtml(question.marks || 1)} mark${Number(question.marks) === 1 ? '' : 's'}]</span>`;
-      return `<article style="margin-bottom:8px"><div><strong>${escapeHtml(label)}.</strong> ${mathHtml(question.body || '')}${marks}</div>${images}${options}</article>`;
+      return `<article style="margin-bottom:8px"><div><strong>${escapeHtml(label)}.</strong> ${mathHtml(question.body || '')}${singleColumnInline && options ? ` ${options}` : ''}${marks}</div>${images}${singleColumnInline ? '' : options}</article>`;
     });
+    const singleColumnInline = settings.paper_format === 'single_column_inline';
     const items = settings.paper_format === 'inline_options'
       ? `<div class="inline-question-column">${itemList.slice(0, Math.ceil(itemList.length / 2)).join('')}</div><div class="inline-question-column">${itemList.slice(Math.ceil(itemList.length / 2)).join('')}</div>`
       : itemList.join('');
-    const questionClass = settings.paper_format === 'inline_options' ? 'question-grid inline-options-layout' : 'question-grid';
-    const questionLayout = settings.paper_format === 'inline_options' ? '' : ' style="display:block;columns:2;column-gap:24px"';
+    const questionClass = singleColumnInline ? 'single-column-questions' : (settings.paper_format === 'inline_options' ? 'question-grid inline-options-layout' : 'question-grid');
+    const questionLayout = singleColumnInline || settings.paper_format === 'inline_options' ? '' : ' style="display:block;columns:2;column-gap:24px"';
     return `<section><h2>${escapeHtml(section.title || 'Questions')}</h2><p class="instructions">${escapeHtml(section.instructions || '')}</p>${passageHtml}<div class="${questionClass}"${questionLayout}>${items}</div></section>`;
   }).join('');
 }
@@ -92,6 +94,8 @@ h2{text-align:center;border-bottom:1px solid #999;padding-bottom:5px;font-size:1
 .paper-passage>div{margin-top:6px}
 .question-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
 .question-grid.inline-options-layout{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.single-column-questions{display:block}
+.single-column-questions article{break-inside:avoid}
 .inline-options{white-space:pre-wrap;tab-size:4}
 .inline-option{display:inline;margin-right:1.5em}
 article{margin:0 0 16px;page-break-inside:avoid}
@@ -99,7 +103,6 @@ article{margin:0 0 16px;page-break-inside:avoid}
 .question-image img{display:block;max-width:100%;max-height:220px;margin:0 auto;object-fit:contain}
 .marks{float:right;font-size:10pt;color:#555}
 .options{margin:6px 0 0 24px;line-height:1.5}
-.footer{position:fixed;bottom:0;left:0;right:0;text-align:center;font-size:8pt;color:#777;border-top:1px solid #ddd;padding-top:4px}
 @media print{.question-grid{break-inside:auto}}
 </style>
 </head>
@@ -110,7 +113,6 @@ ${logo}
 </header>
 <table class="info-table"><tr><td><strong>Term:</strong> ${escapeHtml(paper.term_name || '')}</td><td><strong>Session:</strong> ${escapeHtml(session)}</td><td><strong>Time allowed:</strong> ${escapeHtml(settings.time_allowed || '________')}</td></tr><tr><td><strong>Subject:</strong> ${escapeHtml(paper.subject_name || '')}</td><td><strong>Class:</strong> ${escapeHtml(paper.class_name || '')}</td><td><strong>Total marks:</strong> ${escapeHtml(paper.total_marks || '')}</td></tr></table>
 ${body}
-<footer class="footer">${escapeHtml(settings.footer_text ?? 'End of Paper')}</footer>
 </body>
 </html>`;
 }

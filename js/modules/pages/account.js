@@ -282,7 +282,7 @@ export async function renderAccount() {
         <div id="paper-settings-content" class="hidden space-y-3">
         <fieldset>
           <legend class="text-sm font-medium">Default paper format</legend>
-          <div class="grid gap-3 sm:grid-cols-2 mt-2">
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-2">
             <label class="block cursor-pointer">
               <input type="radio" name="paper_format" value="columns" class="peer sr-only" ${((outputSettings.paper_format || 'columns') === 'columns') ? 'checked' : ''} />
               <span class="block rounded-xl border border-gray-200 dark:border-gray-600 p-3 peer-checked:border-primary-600 peer-checked:ring-2 peer-checked:ring-primary-200 dark:peer-checked:ring-primary-900">
@@ -299,7 +299,15 @@ export async function renderAccount() {
               <span class="block rounded-xl border border-gray-200 dark:border-gray-600 p-3 peer-checked:border-primary-600 peer-checked:ring-2 peer-checked:ring-primary-200 dark:peer-checked:ring-primary-900">
                 <span class="block text-xs font-semibold">Inline options</span>
                 <span class="mt-2 block rounded-lg bg-gray-50 dark:bg-gray-900 p-2 text-[9px] leading-tight text-gray-600 dark:text-gray-300">1. What is the answer?&nbsp;&nbsp;&nbsp;&nbsp;A. One&nbsp;&nbsp; B. Two&nbsp;&nbsp; C. Three&nbsp;&nbsp; D. Four</span>
-                <span class="mt-2 block text-[11px] text-gray-500">No columns; options begin after the question with tab-sized spacing.</span>
+                <span class="mt-2 block text-[11px] text-gray-500">Questions use two columns; MCQ options run inline.</span>
+              </span>
+            </label>
+            <label class="block cursor-pointer">
+              <input type="radio" name="paper_format" value="single_column_inline" class="peer sr-only" ${outputSettings.paper_format === 'single_column_inline' ? 'checked' : ''} />
+              <span class="block rounded-xl border border-gray-200 dark:border-gray-600 p-3 peer-checked:border-primary-600 peer-checked:ring-2 peer-checked:ring-primary-200 dark:peer-checked:ring-primary-900">
+                <span class="block text-xs font-semibold">Single-column inline</span>
+                <span class="mt-2 block rounded-lg bg-gray-50 dark:bg-gray-900 p-2 text-[9px] leading-tight text-gray-600 dark:text-gray-300">1. Question? A. One &nbsp; B. Two &nbsp; C. Three</span>
+                <span class="mt-2 block text-[11px] text-gray-500">One question per line, with its options beside it.</span>
               </span>
             </label>
           </div>
@@ -326,7 +334,6 @@ export async function renderAccount() {
           </label>
           ${[['margin_top', 'Top'], ['margin_bottom', 'Bottom'], ['margin_left', 'Left'], ['margin_right', 'Right']].map(([name, label]) => `<label class="text-xs font-medium">Margin ${label} (mm)<input name="${name}" type="number" min="0" max="50" step="1" value="${outputSettings[name] ?? (name.includes('left') || name.includes('right') ? 8 : 10)}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>`).join('')}
           <label class="text-xs font-medium">Header height (px)<input name="header_height" type="number" min="0" max="300" step="1" value="${outputSettings.header_height ?? 80}" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
-          <label class="text-xs font-medium">Footer text<input name="footer_text" value="${outputSettings.footer_text ?? 'End of Paper'}" placeholder="End of Paper" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
           <label class="text-xs font-medium">
             Font size
             <select name="pdf_font_size" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm">
@@ -439,7 +446,6 @@ export async function renderAccount() {
             <select id="sch-orientation" class="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
             ${[['sch-margin-top', 'Top'], ['sch-margin-bottom', 'Bottom'], ['sch-margin-left', 'Left'], ['sch-margin-right', 'Right']].map(([id, label]) => `<label class="text-xs">Margin ${label} (mm)<input id="${id}" type="number" min="0" max="50" value="10" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>`).join('')}
             <label class="text-xs">Header height (px)<input id="sch-header-height" type="number" min="0" max="300" value="80" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
-            <label class="text-xs">Footer text<input id="sch-footer-text" value="End of Paper" class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm" /></label>
           </div>
           <div class="grid grid-cols-2 gap-2 text-xs">
             <label class="flex items-center gap-2"><input id="sch-show-logo" type="checkbox" checked /> Show logo</label>
@@ -663,7 +669,6 @@ export async function renderAccount() {
             header_height: Number(form.header_height.value),
             show_logo: form.show_logo.checked,
             show_school_name: form.show_school_name.checked,
-            footer_text: form.footer_text.value,
             mcq_option_count: Number(form.mcq_option_count.value),
           },
         }),
@@ -1019,7 +1024,7 @@ async function loadSchoolAdmin() {
     if (schoolFontSize) schoolFontSize.value = String(schoolSettings.pdf_font_size || 11);
     if (schoolFontFamily) schoolFontFamily.value = schoolSettings.pdf_font_family || 'dejavusans';
     if (schoolShowMarks) schoolShowMarks.checked = schoolSettings.show_marks !== false;
-    const schoolSettingDefaults = { paper_size: 'A4', orientation: 'portrait', margin_top: 10, margin_bottom: 10, margin_left: 8, margin_right: 8, header_height: 80, footer_text: 'End of Paper', show_logo: true, show_school_name: true };
+    const schoolSettingDefaults = { paper_size: 'A4', orientation: 'portrait', margin_top: 10, margin_bottom: 10, margin_left: 8, margin_right: 8, header_height: 80, show_logo: true, show_school_name: true };
     Object.entries(schoolSettingDefaults).forEach(([key, fallback]) => {
       const element = document.getElementById(`sch-${key.replaceAll('_', '-')}`);
       if (element) element.type === 'checkbox' ? (element.checked = schoolSettings[key] !== false) : (element.value = Object.prototype.hasOwnProperty.call(schoolSettings, key) ? schoolSettings[key] : fallback);
@@ -1127,7 +1132,6 @@ async function loadSchoolAdmin() {
                 margin_left: Number(document.getElementById('sch-margin-left').value),
                 margin_right: Number(document.getElementById('sch-margin-right').value),
                 header_height: Number(document.getElementById('sch-header-height').value),
-                footer_text: document.getElementById('sch-footer-text').value,
                 show_logo: document.getElementById('sch-show-logo').checked,
                 show_school_name: document.getElementById('sch-show-school-name').checked,
               },
