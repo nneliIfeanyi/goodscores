@@ -82,13 +82,36 @@ async function renderOfflineDraftStatus() {
     });
 }
 
-async function loadQuestions(filters = {}) {
+function currentQuestionFilters() {
+  return {
+    type: document.getElementById('f-type')?.value || '',
+    subject_id: document.getElementById('f-subject')?.value || '',
+    class_id: document.getElementById('f-class')?.value || '',
+    term_id: document.getElementById('f-term')?.value || '',
+    search: document.getElementById('f-search')?.value.trim() || '',
+  };
+}
+
+async function loadQuestions(filters = currentQuestionFilters()) {
   const sequence = ++questionLoadSequence;
   const listEl = document.getElementById('q-list');
+  const activeFilters = Object.fromEntries(Object.entries(filters)
+    .filter(([, value]) => String(value ?? '').trim()));
+  if (!Object.keys(activeFilters).length) {
+    questions = [];
+    if (listEl) {
+      listEl.innerHTML = `
+        <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+          <p class="font-medium">Choose a filter to view questions</p>
+          <p class="text-sm mt-1">Select a type, subject, class, or term, or enter a search phrase above.</p>
+        </div>`;
+    }
+    return;
+  }
   if (listEl) {
     listEl.innerHTML = '<div class="loading-skeleton"></div><div class="loading-skeleton"></div><div class="loading-skeleton"></div>';
   }
-  const loaded = await getQuestionBank(filters);
+  const loaded = await getQuestionBank(activeFilters);
   if (sequence !== questionLoadSequence || document.getElementById('q-list') !== listEl) return;
   questions = loaded;
   questions = questions.map((question) => ({
@@ -266,21 +289,21 @@ async function openForm(id = null, offlineId = null) {
         <div class="grid grid-cols-3 gap-2">
           <div>
             <label class="block text-xs font-medium mb-1">Subject</label>
-            <select name="subject_id" class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+            <select name="subject_id" required class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
               <option value="">${meta.subjects.length ? '—' : 'Add a subject in Account settings'}</option>
               ${meta.subjects.map((s) => `<option value="${s.id}" ${q?.subject_id == s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
             </select>
           </div>
           <div>
             <label class="block text-xs font-medium mb-1">Class</label>
-            <select name="class_id" class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+            <select name="class_id" required class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
               <option value="">${meta.classes.length ? '—' : 'Add a class in Account settings'}</option>
               ${meta.classes.map((c) => `<option value="${c.id}" ${q?.class_id == c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
             </select>
           </div>
           <div>
             <label class="block text-xs font-medium mb-1">Term</label>
-            <select name="term_id" class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+            <select name="term_id" required class="w-full px-2 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
               <option value="">—</option>
               ${meta.terms.map((t) => `<option value="${t.id}" ${q?.term_id == t.id ? 'selected' : ''}>${t.name}</option>`).join('')}
             </select>
@@ -643,6 +666,9 @@ async function openForm(id = null, offlineId = null) {
 
     let saved;
     try {
+      if (!payload.subject_id) throw new Error('Select a subject before saving');
+      if (!payload.class_id) throw new Error('Select a class before saving');
+      if (!payload.term_id) throw new Error('Select a term before saving');
       if (!payload.body) {
         throw new Error('Question text is required');
       }
@@ -1048,15 +1074,7 @@ export async function renderQuestions() {
     termSel.innerHTML += `<option value="${term.id}">${term.name}</option>`;
   });
 
-  const applyFilters = () => {
-    loadQuestions({
-      type: document.getElementById('f-type').value,
-      subject_id: document.getElementById('f-subject').value,
-      class_id: document.getElementById('f-class').value,
-      term_id: document.getElementById('f-term').value,
-      search: document.getElementById('f-search').value.trim(),
-    });
-  };
+  const applyFilters = () => loadQuestions(currentQuestionFilters());
 
   ['f-type', 'f-subject', 'f-class', 'f-term'].forEach((id) => {
     document.getElementById(id)?.addEventListener('change', applyFilters);
