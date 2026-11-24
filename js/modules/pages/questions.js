@@ -13,7 +13,6 @@ import { mathHtml } from '../../utils/math.js';
 
 let meta = { subjects: [], classes: [], terms: [] };
 let questions = [];
-let editingId = null;
 let questionLoadSequence = 0;
 
 const escapeHtml = (value) => String(value ?? '')
@@ -208,7 +207,6 @@ function renderList() {
 }
 
 async function openForm(id = null, offlineId = null) {
-  editingId = id;
   let q = id ? questions.find((x) => String(x.id) === String(id) || String(x.offline_id) === String(offlineId || id)) : null;
   if (!q && offlineId) q = await getOfflineQuestion(offlineId);
   const diagramSpec = q?.diagram_spec || q?.diagram_request || null;
@@ -367,9 +365,14 @@ async function openForm(id = null, offlineId = null) {
 
         <div id="q-form-error" class="hidden text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"></div>
 
-        <button type="submit" class="w-full py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm">
-          ${id ? 'Save changes' : 'Create question'}
-        </button>
+        <div class="space-y-2">
+          <button type="submit" value="close" class="w-full py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm">
+            ${id ? 'Save changes' : 'Create question'}
+          </button>
+          ${!id && !offlineId ? `<button type="submit" value="another" class="w-full py-2.5 rounded-xl border border-primary-300 text-primary-700 dark:text-primary-300 font-semibold text-sm">
+            Save and add another
+          </button>` : ''}
+        </div>
       </form>
     </div>
   `;
@@ -386,6 +389,7 @@ async function openForm(id = null, offlineId = null) {
   ].filter(Boolean);
   const editorModeToggle = overlay.querySelector('#editor-mode-toggle');
   let editorMode = 'basic';
+  const editorKey = (textarea) => ['opt_text', 'answer'].includes(textarea.name) ? textarea.id : textarea.name;
 
   const isDarkTheme = () => document.documentElement.classList.contains('dark');
   const setEditorModeLabel = () => {
@@ -397,8 +401,8 @@ async function openForm(id = null, offlineId = null) {
   const initRichEditors = () => {
     if (editorMode !== 'advanced' || !window.tinymce) return;
     richTextareas.forEach((textarea) => {
-      if (editors[textarea.id || textarea.name]) return;
-      const field = textarea.id || textarea.name;
+      const field = editorKey(textarea);
+      if (editors[field]) return;
       window.tinymce.init({
         target: textarea,
         menubar: false,
@@ -415,11 +419,12 @@ async function openForm(id = null, offlineId = null) {
 
   const removeRichEditors = () => {
     richTextareas.forEach((textarea) => {
-      const field = textarea.id || textarea.name;
+      const field = editorKey(textarea);
       const editor = editors[field];
       if (!editor) return;
-      textarea.value = editor.getContent();
+      const content = editor.getContent();
       editor.remove();
+      textarea.value = content;
       delete editors[field];
       textarea.style.display = '';
     });
@@ -429,12 +434,12 @@ async function openForm(id = null, offlineId = null) {
     if (editorMode !== 'advanced' || !window.tinymce) return;
     const values = {};
     richTextareas.forEach((textarea) => {
-      const field = textarea.id || textarea.name;
+      const field = editorKey(textarea);
       values[field] = editors[field]?.getContent() ?? textarea.value;
     });
     removeRichEditors();
     richTextareas.forEach((textarea) => {
-      const field = textarea.id || textarea.name;
+      const field = editorKey(textarea);
       textarea.value = values[field] || '';
     });
     initRichEditors();
@@ -590,6 +595,7 @@ async function openForm(id = null, offlineId = null) {
   document.getElementById('q-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
+    const keepAdding = !id && !offlineId && e.submitter?.value === 'another';
     const errEl = document.getElementById('q-form-error');
     errEl.classList.add('hidden');
 
@@ -628,10 +634,14 @@ async function openForm(id = null, offlineId = null) {
       payload.answer = (editors.answer_other ? editors.answer_other.getContent() : form.answer_other.value).trim();
     }
 
-    const btn = form.querySelector('[type="submit"]');
-    btn.disabled = true;
+    const buttons = [...form.querySelectorAll('[type="submit"]')];
+    const btn = e.submitter || buttons[0];
+    const buttonLabel = btn.textContent;
+    buttons.forEach((button) => { button.disabled = true; });
+    form.inert = true;
     btn.textContent = 'Saving…';
 
+    let saved;
     try {
       if (!payload.body) {
         throw new Error('Question text is required');
@@ -659,18 +669,43 @@ async function openForm(id = null, offlineId = null) {
           sort_order: 0,
         }];
       }
-      const saved = await saveQuestion(payload);
-      closeForm();
-      toast(saved.synced
-        ? 'Question saved successfully'
-        : 'Question saved on this device and will sync when online.', saved.synced ? 'success' : 'info');
-      await loadQuestions();
+      saved = await saveQuestion(payload);
     } catch (err) {
       errEl.textContent = err.message || 'Failed to save';
       errEl.classList.remove('hidden');
     } finally {
-      btn.disabled = false;
-      btn.textContent = editingId ? 'Save changes' : 'Create question';
+      form.inert = false;
+      buttons.forEach((button) => { button.disabled = false; });
+      btn.textContent = buttonLabel;
+    }
+    if (!saved) return;
+
+    if (keepAdding) {
+      ['body', 'answer_other', 'passage_body'].forEach((field) => {
+        form.elements[field].value = '';
+        editors[field]?.setContent('');
+      });
+      form.querySelectorAll('[name="opt_text"], [name="answer"]').forEach((input) => {
+        input.value = '';
+        editors[input.id]?.setContent('');
+      });
+      form.passage_title.value = '';
+      passageSelect.value = '';
+      newPassageFields.classList.add('hidden');
+      attachedDiagram = null;
+      renderAttachedPreview();
+      if (editors.body) editors.body.focus();
+      else form.body.focus();
+    } else {
+      closeForm();
+    }
+    toast(saved.synced
+      ? 'Question saved successfully'
+      : 'Question saved on this device and will sync when online.', saved.synced ? 'success' : 'info');
+    try {
+      await loadQuestions();
+    } catch (err) {
+      toast(err.message || 'Question saved, but the list could not be refreshed.', 'error');
     }
   });
 }
