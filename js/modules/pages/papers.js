@@ -5,6 +5,7 @@ import { confirmModal } from '../../utils/modal.js';
 import { API_BASE, storageUrl, getUser } from '../../utils/api.js';
 import { requireAuthentication } from '../../utils/authGate.js';
 import { getQuestionBank } from '../../utils/questionBank.js';
+import { getSectionQuestionLabels } from '../../utils/paperNumbering.js';
 
 let meta = { subjects: [], classes: [], terms: [] };
 let allQuestions = [];
@@ -308,6 +309,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
         instructions: section.instructions || '',
         passage_id: section.passage_id || null,
         passage: section.passage || null,
+        numbering_mode: section.numbering_mode === 'continue' ? 'continue' : 'restart',
         question_ids: (section.question_ids || []).map(String),
       }))
     : [
@@ -318,6 +320,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
           instructions: 'Answer all questions. Choose the correct option or complete the gap.',
           passage_id: null,
           passage: null,
+          numbering_mode: 'restart',
           question_ids: [],
         },
         {
@@ -327,6 +330,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
           instructions: 'Answer any three questions.',
           passage_id: null,
           passage: null,
+          numbering_mode: 'restart',
           question_ids: [],
         },
       ];
@@ -407,7 +411,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
               <div class="flex items-start justify-between gap-3">
                 <div>
                   <h4 class="text-sm font-semibold">Choose questions</h4>
-                  <p class="text-xs text-gray-500 mt-1">MCQs and fill-in-the-gap questions go to Section A; theory goes to Section B. Add sections in Review when needed.</p>
+                  <p class="text-xs text-gray-500 mt-1">MCQs and fill-in-the-gap questions go to Section A; theory goes to Section B. Assign or move selected questions here, or organize sections in Review.</p>
                 </div>
                 <label class="inline-flex items-center gap-1.5 text-xs text-primary-600 dark:text-primary-400 cursor-pointer shrink-0">
                   <input id="pb-check-all" type="checkbox" class="rounded border-gray-300 text-primary-600" />
@@ -437,7 +441,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
               <div class="flex items-center justify-between mb-2">
                 <div>
                   <p class="text-sm font-semibold">Sections</p>
-                  <p class="text-[11px] text-gray-400 mt-1">Reorder, rename, remove, or add sections and passages.</p>
+                  <p class="text-[11px] text-gray-400 mt-1">Reorder, rename, remove, or add sections and passages. Choose whether each section continues numbering or starts at 1.</p>
                 </div>
                 <button id="pb-add-section" type="button" class="px-2.5 py-1.5 rounded-lg border border-primary-200 text-primary-700 dark:text-primary-300 text-xs font-semibold">Add section</button>
               </div>
@@ -445,7 +449,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
             </div>
             <div>
               <p class="text-xs font-semibold mb-2">Assign selected questions</p>
-              <p class="text-[11px] text-gray-400 mb-2">Drag within a section or use the arrows to change numbering. Use the menu to move a question to another section.</p>
+              <p class="text-[11px] text-gray-400 mb-2">Drag within a section or use the arrows to reorder. Use the section menu to assign or move a question.</p>
               <div id="pb-assignments" class="space-y-2"></div>
             </div>
             <div>
@@ -576,6 +580,23 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
       || sections[isTheory ? 1 : 0]
       || sections[0];
   };
+  selectedQuestionIds.forEach((id) => {
+    if (!sectionForQuestion(id)) defaultSectionForQuestion(knownQuestions.get(id))?.question_ids.push(id);
+  });
+  const questionLayoutForNumbering = () => [...structureState].map(([question_id, state]) => ({ question_id, level: state.level }));
+  const questionLabels = () => getSectionQuestionLabels(sections, knownQuestions, questionLayoutForNumbering());
+  const moveQuestionToSection = (id, sectionKey) => {
+    const destination = sections.find((section) => section.key === sectionKey);
+    if (!destination) {
+      toast('Could not move the question: section not found.', 'error');
+      return;
+    }
+    sections.forEach((section) => { section.question_ids = section.question_ids.filter((questionId) => String(questionId) !== id); });
+    destination.question_ids.push(id);
+    renderSections();
+    renderQuestions();
+    renderStructure();
+  };
   const updateBuilderSummary = () => {
     const selected = [...selectedQuestionIds].map((id) => knownQuestions.get(id)).filter(Boolean);
     const totalMarks = selected.reduce((sum, question) => sum + Number(question.marks || 1), 0);
@@ -608,13 +629,15 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
       updateBuilderSummary();
       return;
     }
+    const labels = questionLabels();
     assignmentsList.innerHTML = ids.map((id) => {
       const question = knownQuestions.get(id);
       const currentSection = sectionForQuestion(id);
       const orderIndex = currentSection?.question_ids.findIndex((questionId) => String(questionId) === id) ?? -1;
+      const label = labels.get(id) || '—';
       const body = (question?.body || 'Selected question').replace(/<[^>]+>/g, '').slice(0, 100);
       return `<div class="grid grid-cols-1 sm:grid-cols-[1fr_12rem] gap-2 items-center rounded-lg border border-gray-100 dark:border-gray-800 p-2 pb-question-order-item"
-          data-review-question="${escapeHtml(id)}" data-review-section="${escapeHtml(currentSection?.key || '')}">
+          data-review-question="${escapeHtml(id)}">
         <div class="flex min-w-0 items-center gap-2">
           <div class="flex shrink-0 flex-col items-center">
             <button type="button" data-question-move="-1" aria-label="Move question up" title="Move question up" ${orderIndex <= 0 ? 'disabled' : ''} class="px-1 text-xs text-gray-500 disabled:opacity-30">↑</button>
@@ -622,7 +645,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
             <button type="button" data-question-move="1" aria-label="Move question down" title="Move question down" ${orderIndex < 0 || orderIndex >= currentSection.question_ids.length - 1 ? 'disabled' : ''} class="px-1 text-xs text-gray-500 disabled:opacity-30">↓</button>
           </div>
           <div class="min-w-0">
-          <span class="text-[10px] font-semibold text-primary-600">${orderIndex >= 0 ? `${orderIndex + 1}.` : '—'}</span>
+          <span class="text-[10px] font-semibold text-primary-600">${escapeHtml(label)}.</span>
           <p class="text-xs truncate">${escapeHtml(body)}</p>
           <p class="text-[10px] text-gray-400">${question ? `${escapeHtml(question.type)} · ${escapeHtml(question.marks || 1)} marks` : 'Question details unavailable'}</p>
           </div>
@@ -632,14 +655,10 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
         </select>
       </div>`;
     }).join('');
-    assignmentsList.querySelectorAll('[data-review-section]').forEach((select) => {
+    assignmentsList.querySelectorAll('select[data-review-section]').forEach((select) => {
       select.addEventListener('change', () => {
         const id = String(select.closest('[data-review-question]')?.dataset.reviewQuestion || '');
-        sections.forEach((section) => { section.question_ids = section.question_ids.filter((questionId) => String(questionId) !== id); });
-        sections.find((section) => section.key === select.value)?.question_ids.push(id);
-        renderSections();
-        renderQuestions();
-        renderStructure();
+        moveQuestionToSection(id, select.value);
       });
     });
     let pointerDrag = null;
@@ -705,6 +724,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
   const renderSections = () => {
     sections.forEach((section, index) => {
       section.key = String.fromCharCode(65 + index);
+      if (index === 0) section.numbering_mode = 'restart';
     });
     sectionsList.innerHTML = sections.map((section, index) => `
       <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-2" data-section-index="${index}">
@@ -725,6 +745,13 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
               .map((passage) => `<option value="${escapeHtml(passage.id)}" ${String(section.passage_id || '') === String(passage.id) ? 'selected' : ''}>${escapeHtml(passage.title)}</option>`).join('')}
           </select>
         </div>
+        <label class="flex items-center justify-between gap-2 text-xs">
+          <span>Question numbering</span>
+          <select data-section-numbering aria-label="Question numbering" ${index === 0 ? 'disabled' : ''} class="px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs disabled:opacity-60">
+            <option value="restart" ${section.numbering_mode !== 'continue' ? 'selected' : ''}>Start at 1</option>
+            <option value="continue" ${section.numbering_mode === 'continue' ? 'selected' : ''}>Continue from previous section</option>
+          </select>
+        </label>
         <textarea data-section-instructions rows="2" placeholder="Instructions, e.g. Answer any three questions" class="w-full px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">${escapeHtml(section.instructions)}</textarea>
         <p class="text-[11px] text-gray-400">${section.question_ids.length} question${section.question_ids.length === 1 ? '' : 's'} assigned</p>
       </div>`).join('');
@@ -736,6 +763,11 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
         updateBuilderSummary();
       });
       card.querySelector('[data-section-type]').addEventListener('change', (event) => { sections[index].type = event.target.value; });
+      card.querySelector('[data-section-numbering]').addEventListener('change', (event) => {
+        sections[index].numbering_mode = event.target.value;
+        renderAssignments();
+        renderStructure();
+      });
       card.querySelector('[data-section-passage]').addEventListener('change', (event) => {
         sections[index].passage_id = event.target.value || null;
         sections[index].passage = passages.find((passage) => String(passage.id) === String(event.target.value)) || null;
@@ -764,7 +796,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
   };
 
   document.getElementById('pb-add-section').addEventListener('click', () => {
-    sections.push({ key: '', type: 'custom', title: `Section ${String.fromCharCode(65 + sections.length)}`, instructions: '', passage_id: null, passage: null, question_ids: [] });
+    sections.push({ key: '', type: 'custom', title: `Section ${String.fromCharCode(65 + sections.length)}`, instructions: '', passage_id: null, passage: null, numbering_mode: 'restart', question_ids: [] });
     renderSections();
     renderQuestions();
   });
@@ -783,14 +815,22 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
     const visible = visibleQuestions();
     questionStatus.textContent = `${visible.length} of ${allQuestions.length} questions shown`;
     questionList.innerHTML = visible.length ? visible.map((q) => `
-      <label data-question-id="${escapeHtml(questionKey(q))}" class="flex items-start gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
-        <input type="checkbox" name="qid" value="${questionKey(q)}" class="mt-1 rounded border-gray-300 text-primary-600" ${selectedQuestionIds.has(questionKey(q)) ? 'checked' : ''} />
-        <div class="min-w-0 flex-1">
-          <span class="text-[10px] font-semibold uppercase text-primary-600">${escapeHtml(q.type)}</span>
-          <p class="text-xs text-gray-700 dark:text-gray-300 line-clamp-2">${escapeHtml((q.body || '').replace(/<[^>]+>/g, '').slice(0, 80))}</p>
-          <p class="text-[10px] text-gray-400">${escapeHtml(q.marks || 1)} mk · ${escapeHtml(q.subject_name || '')}</p>
-        </div>
-      </label>
+      <div data-question-id="${escapeHtml(questionKey(q))}" class="rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 p-2">
+        <label class="flex items-start gap-2 cursor-pointer">
+          <input type="checkbox" name="qid" value="${escapeHtml(questionKey(q))}" class="mt-1 rounded border-gray-300 text-primary-600" ${selectedQuestionIds.has(questionKey(q)) ? 'checked' : ''} />
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] font-semibold uppercase text-primary-600">${escapeHtml(q.type)}</span>
+            <p class="text-xs text-gray-700 dark:text-gray-300 line-clamp-2">${escapeHtml((q.body || '').replace(/<[^>]+>/g, '').slice(0, 80))}</p>
+            <p class="text-[10px] text-gray-400">${escapeHtml(q.marks || 1)} mk · ${escapeHtml(q.subject_name || '')}</p>
+          </div>
+        </label>
+        ${selectedQuestionIds.has(questionKey(q)) ? `<label class="flex items-center justify-end gap-2 mt-1 text-[10px] text-gray-500">
+          <span>Section</span>
+          <select data-question-section aria-label="Assign question to section" class="max-w-[70%] px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-xs">
+            ${sections.map((section) => `<option value="${escapeHtml(section.key)}" ${sectionForQuestion(questionKey(q))?.key === section.key ? 'selected' : ''}>${escapeHtml(section.key)} · ${escapeHtml(section.title)}</option>`).join('')}
+          </select>
+        </label>` : ''}
+      </div>
     `).join('') : '<p class="text-sm text-gray-400 text-center py-4">No questions match your search.</p>';
 
     questionList.querySelectorAll('[name="qid"]').forEach((checkbox) => {
@@ -806,6 +846,13 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
         updateCheckAll();
         renderSections();
         renderStructure();
+        renderQuestions();
+      });
+    });
+    questionList.querySelectorAll('[data-question-section]').forEach((select) => {
+      select.addEventListener('change', () => {
+        const id = String(select.closest('[data-question-id]')?.dataset.questionId || '');
+        moveQuestionToSection(id, select.value);
       });
     });
     updateCheckAll();
@@ -831,49 +878,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
       return;
     }
 
-    let mainNumber = 0;
-    let partNumber = 0;
-    let subPartNumber = 0;
-    let currentMain = 0;
-    let currentPart = 0;
-    const labels = new Map();
-    theoryQuestions.forEach((q, index) => {
-      const state = structureState.get(questionKey(q)) || { level: 0 };
-      const level = Math.max(0, Math.min(2, state.level));
-      if (level === 0) {
-        mainNumber += 1;
-        currentMain = mainNumber;
-        const nextState = theoryQuestions[index + 1]
-          ? structureState.get(questionKey(theoryQuestions[index + 1])) || { level: 0 }
-          : { level: 0 };
-        const hasParts = nextState.level > 0;
-        partNumber = hasParts ? 1 : 0;
-        subPartNumber = 0;
-        currentPart = hasParts ? 1 : 0;
-        labels.set(questionKey(q), hasParts ? `${currentMain}(a)` : String(currentMain));
-      } else if (level === 1) {
-        if (!currentMain) {
-          mainNumber += 1;
-          currentMain = mainNumber;
-        }
-        partNumber += 1;
-        subPartNumber = 0;
-        currentPart = partNumber;
-        labels.set(questionKey(q), `${currentMain}(${String.fromCharCode(96 + currentPart)})`);
-      } else {
-        if (!currentMain) {
-          mainNumber += 1;
-          currentMain = mainNumber;
-        }
-        if (!currentPart) {
-          partNumber += 1;
-          currentPart = partNumber;
-        }
-        subPartNumber += 1;
-        const roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'][subPartNumber - 1] || String(subPartNumber);
-        labels.set(questionKey(q), `${currentMain}(${String.fromCharCode(96 + currentPart)})(${roman})`);
-      }
-    });
+    const labels = questionLabels();
 
     structureList.innerHTML = theoryQuestions.map((q) => {
       const level = Math.max(0, Math.min(2, structureState.get(questionKey(q))?.level || 0));
@@ -996,6 +1001,7 @@ async function openBuilder(paperOrId = null, schoolWide = false) {
           title: section.title.trim() || `Section ${String.fromCharCode(65 + index)}`,
           instructions: section.instructions.trim(),
           passage_id: section.passage_id || null,
+          numbering_mode: index === 0 ? 'restart' : section.numbering_mode,
           question_ids: section.question_ids.filter((id) => qids.includes(String(id))),
         })).filter((section) => section.question_ids.length || section.title),
         question_layout: questionLayout,
@@ -1039,6 +1045,11 @@ async function viewPaper(id, schoolWide = false) {
       if (!Array.isArray(historyResponse.data)) throw new Error('The server returned an invalid paper edit history');
       history = historyResponse.data;
     }
+    const paperSections = p.paper_settings?.sections?.length
+      ? p.paper_settings.sections
+      : [{ key: 'A', title: 'Questions', instructions: '', question_ids: (p.questions || []).map((q) => q.id) }];
+    const paperQuestionMap = new Map((p.questions || []).map((question) => [questionKey(question), question]));
+    const paperLabels = getSectionQuestionLabels(paperSections, paperQuestionMap, p.paper_settings?.question_layout || []);
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4';
     overlay.innerHTML = `
@@ -1055,19 +1066,19 @@ async function viewPaper(id, schoolWide = false) {
           </div>
         </div>
         <div class="space-y-4 text-sm">
-          ${((p.paper_settings?.sections?.length ? p.paper_settings.sections : [{ key: 'A', title: 'Questions', instructions: '', question_ids: (p.questions || []).map((q) => q.id) }])).map((section) => `
+          ${paperSections.map((section) => `
             <section>
               <h4 class="font-semibold border-b border-gray-200 dark:border-gray-700 pb-1">${section.title}</h4>
               ${section.instructions ? `<p class="text-xs text-gray-500 mt-1">${section.instructions}</p>` : ''}
               ${section.passage ? `<div class="my-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-3"><p class="font-semibold">${section.passage.title}</p><div class="mt-1 text-xs leading-5">${section.passage.body}</div></div>` : ''}
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 mt-3">
-              ${(section.question_ids || []).map((qid, i) => {
+              ${(section.question_ids || []).map((qid) => {
                 const q = (p.questions || []).find((item) => questionKey(item) === String(qid));
                 if (!q) return '';
                 const layout = isTheoryQuestion(q)
                   ? (p.paper_settings?.question_layout || []).find((item) => String(item.question_id) === String(qid))
                   : null;
-                const label = layout?.label || String(i + 1);
+                const label = paperLabels.get(String(qid)) || layout?.label || '';
                 const indent = Math.max(0, Math.min(2, Number(layout?.level || 0))) * 18;
                 return `
             <div class="border-b border-gray-100 dark:border-gray-800 pb-3" style="margin-left:${indent}px">

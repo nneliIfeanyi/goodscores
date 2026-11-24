@@ -1,5 +1,6 @@
 import { api, getUser, storageUrl } from './api.js';
 import { mathHtml } from './math.js';
+import { getSectionQuestionLabels } from './paperNumbering.js';
 
 const escapeHtml = (value) => String(value ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -31,15 +32,14 @@ function renderQuestions(paper, settings) {
   const sections = settings.sections?.length ? settings.sections : [{ title: 'Questions', instructions: '', question_ids: (paper.questions || []).map((q) => q.id || q.offline_id) }];
   const questions = new Map((paper.questions || []).map((q) => [String(q.id ?? q.offline_id), q]));
   const layout = new Map((settings.question_layout || []).map((item) => [String(item.question_id), item]));
-  let number = 0;
+  const labels = getSectionQuestionLabels(sections, questions, settings.question_layout || []);
   return sections.map((section) => {
     const passage = section.passage;
     const passageHtml = passage
       ? `<div class="paper-passage"><strong>${escapeHtml(passage.title || 'Passage')}</strong><div>${mathHtml(passage.body || '')}</div></div>`
       : '';
     const itemList = (section.question_ids || []).map((id) => questions.get(String(id))).filter(Boolean).map((question) => {
-      number += 1;
-      const label = layout.get(String(question.id ?? question.offline_id))?.label || String(number);
+      const label = labels.get(String(question.id ?? question.offline_id)) || layout.get(String(question.id ?? question.offline_id))?.label || '';
       const singleColumnInline = settings.paper_format === 'single_column_inline';
       const options = question.type === 'mcq'
         ? (['inline_options', 'single_column_inline'].includes(settings.paper_format)
